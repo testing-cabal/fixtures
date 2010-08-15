@@ -1,0 +1,23 @@
+fixtures goals
+==============
+
+* Declarative interface for creating both simple and complex fixtures for
+  tests.
+
+* Play nice with testscenarios (for parameterisation of tests) and
+  testresources (for optimising the use and overhead of expensive fixtures.
+
+* Either define a protocol for decoration-to-inject-fixtures, or explicitly
+  delegate that to testresources/testscenarios (but require that if delegated
+  the simple case should still be simple).
+
+* Be able to, in princple, provide test isolation like chdir and $HOME
+  substition so that tests which work with external processes aren't tainted by
+  the users home dir.
+
+* Be able to manage external processes as a fixture.
+
+* usable in trial, bzr, Zope testrunner, nose and the plain python unittest
+  module.
+
+* Be useful outside of a purely testing context.

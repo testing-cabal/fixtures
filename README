@@ -1,0 +1,142 @@
+*************************************************************
+fixtures: Fixtures with cleanups for testing and convenience.
+*************************************************************
+
+  Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
+  
+  Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
+  license at the users choice. A copy of both licenses are available in the
+  project source as Apache-2.0 and BSD. You may not use this file except in
+  compliance with one of these two licences.
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
+  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+  license you chose for the specific language governing permissions and
+  limitations under that license.
+
+
+Fixtures defines a Python contract for reusable state / support logic,
+primarily for unit testing. Helper and adaption logic is included to make it
+easy to write your own fixtures using the fixtures contract. Glue code is
+provided that makes using fixtures that meet the Fixtures contract in unittest
+compatible test cases easy and straight forward.
+
+Dependencies
+============
+
+* Python 2.4+
+
+For use in a unit test suite using the included glue, one of:
+* Python 2.7
+* unittest2
+* bzrlib.tests
+* testtools <https://launchpad.net/testtools>
+* Or any other test environment that supports TestCase.addCleanup.
+
+Writing your own glue code is easy, or you can simply use Fixtures directly
+without any support code.
+
+To run the test suite for fixtures, testtools is needed.
+
+Why Fixtures
+============
+
+Standard Python unittest.py provides no obvious method for making and reusing
+state needed in a test case other than by adding a method on the test class.
+This scales poorly - complex helper functions propogating up a test class
+hierarchy is a regular pattern when this is done. Mocking while a great tool
+doesn't itself prevent this (and helpers to mock complex things can accumulate
+in the same way if placed on the test class).
+
+By defining a uniform contract where helpers have no dependency on the test
+class we permit all the regular code hygiene activities to take place without
+the distorting influence of being in a class hierarchy that is modelling an
+entirely different thing - which is what helpers on a TestCase suffer from.
+
+About Fixtures
+==============
+
+A Fixture represents some state. Each fixture has attributes on it that are
+specific to the fixture. For instance, a fixture representing a directory that
+can be used for temporary files might have a attribute 'path'.
+
+Creating Fixtures
+=================
+
+Minimally, subclass Fixture, define setUp to initialize your state and schedule
+a cleanup for when cleanUp is called and you're done::
+
+  >>> import unittest
+  >>> import fixtures
+  >>> class NoddyFixture(fixtures.Fixture):
+  ...     def setUp(self):
+  ...         super(NoddyFixture, self).setUp()
+  ...         self.frobnozzle = 42
+  ...         self.addCleanup(delattr, self, 'frobnozzle')
+
+This will initialize frobnozzle when setUp is called, and when cleanUp is
+called get rid of the frobnozzle attribute.
+
+There is a helper for adapting a function or function pair into Fixtures. it
+puts the result of the function in fn_result::
+
+  >>> import os.path
+  >>> import shutil
+  >>> import tempfile
+  >>> def setup_function():
+  ...     return tempfile.mkdtemp()
+  >>> def teardown_function(fixture):
+  ...     shutil.rmtree(fixture)
+  >>> fixture = fixtures.FunctionFixture(setup_function, teardown_function)
+  >>> fixture.setUp()
+  >>> print os.path.isdir(fixture.fn_result)
+  True
+  >>> fixture.cleanUp()
+
+The Fixture API
+===============
+
+The example above introduces some of the Fixture API. In order to be able to
+clean up after a fixture has been used, all fixtures define a ``cleanUp``
+method which should be called when a fixture is finished with.
+
+Because its nice to be able to build a particular set of related fixtures in
+advance of using them, fixtures also have define a ``setUp`` method which
+should be called before trying to use them.
+
+One common desire with fixtures that are expensive to create is to reuse them
+in many test cases; to support this the base Fixture also defines a ``reset``
+which calls ``self.cleanUp(); self.setUp()``. Fixtures that can more
+efficiently make themselves reusable should override this method. This can then
+be used with multiple test state via things like ``testresources``,
+``setUpClass``, or ``setUpModule``.
+
+When using a fixture with a test you can manually call the setUp and cleanUp
+methods. More convenient though is to use the included glue from
+``fixtures.TestWithFixtures`` which provides a mixin defining
+``useFixture`` (camel case because unittest is camel case throughout) method.
+It will call setUp on the fixture, call self.addCleanup(fixture) to schedule a
+cleanup, and return the fixture. This lets one write::
+
+  >>> import testtools
+  >>> import unittest
+
+Note that we use testtools TestCase here as we need to guarantee a
+TestCase.addCleanup method.
+
+  >>> class NoddyTest(testtools.TestCase, fixtures.TestWithFixtures):
+  ...     def test_example(self):
+  ...         fixture = self.useFixture(NoddyFixture())
+  ...         self.assertEqual(42, fixture.frobnozzle)
+  >>> result = unittest.TestResult()
+  >>> _ = NoddyTest('test_example').run(result)
+  >>> print result.wasSuccessful()
+  True
+
+Fixtures implement the context protocol, so you can also use a fixture as a
+context manager::
+
+  >>> with fixtures.FunctionFixture(setup_function, teardown_function) as fixture:
+  ...    print os.path.isdir(fixture.fn_result)
+  True

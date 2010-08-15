@@ -1,0 +1,17 @@
+----------------------
+fixtures release notes
+----------------------
+
+
+IN DEVELOPMENT
+~~~~~~~~~~~~~~
+
+0.1
+~~~
+
+CHANGES:
+
+* Created project. The primary interfaces are
+  ``fixtures.TestWithFixtures`` and ``fixtures.Fixture``.
+  Documentation is primarily in README.  (Robert Collins)
+

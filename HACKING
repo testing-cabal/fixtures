@@ -1,0 +1,37 @@
+Contributing to fixtures
+========================
+
+Code access
++++++++++++
+
+Branch from the trunk (all patches should be for trunk unless there are
+exceptional circumstances)::
+
+  bzr branch lp:python-fixtures path-to-new-local-branch
+
+Publish your branches whereever you like, I encourage Launchpad hosting though,
+as it can notify the community of new fixtures branches::
+
+  bzr push lp:~YOURUSERNAME/python-fixtures/YOURBRANCHNAME
+
+Copyright
++++++++++
+
+Fixtures is Copyright (C) 2010 Robert Collins. I'd like to be able to
+offer it up for stdlib inclusion once it has proved itself, so am asking for
+copyright assignment to me - or for your contributions to be under the BSD and
+Apache-2.0 licences that Fixtures is under (which permit inclusion in Python).
+
+Coding standards
+++++++++++++++++
+
+PEP-8 coding style please, though perfection isn't needed. Make sure that 'make
+check' passes before sending in a patch.
+
+Code arrangement
+++++++++++++++++
+
+The ``fixtures`` module should simply import classes and functions from
+more specific modules, rather than becoming large and bloated itself. For
+instance, TestWithFixtures lives in fixtures.testcase, and is imported in
+the fixtures __init__.py.
