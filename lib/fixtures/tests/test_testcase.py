@@ -31,3 +31,17 @@ class TestTestWithFixtures(unittest.TestCase):
         SimpleTest('test_foo').run(result)
         self.assertTrue(result.wasSuccessful())
         self.assertEqual(['setUp', 'cleanUp'], fixture.calls)
+
+    def test_useFixture_uses_raise_first(self):
+        calls = []
+        def raiser(ignored):
+            calls.append('called')
+            raise Exception('foo')
+        fixture = fixtures.FunctionFixture(lambda:None, raiser)
+        class SimpleTest(testtools.TestCase, fixtures.TestWithFixtures):
+            def test_foo(self):
+                self.useFixture(fixture)
+        result = unittest.TestResult()
+        SimpleTest('test_foo').run(result)
+        self.assertFalse(result.wasSuccessful())
+        self.assertEqual(['called'], calls)
