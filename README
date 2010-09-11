@@ -140,3 +140,35 @@ context manager::
   >>> with fixtures.FunctionFixture(setup_function, teardown_function) as fixture:
   ...    print os.path.isdir(fixture.fn_result)
   True
+
+Note that the context protocol does not ensure that all nested contexts
+execute when exceptions are raised in cleanups. The context manager support as
+such is a down-grading of the raw capabilities of fixtures - but it can be very
+useful when the loss of fidelity is aacceptable. Specificaly, when multiple
+exceptions are raised from the cleanups in nested fixtures, only the first one
+will be raised from the __exit__ of the outermost fixture.
+
+To demonstrate the issue with content managers:
+
+  >>> from contextlib import contextmanager
+  >>> actions = []
+  >>> @contextmanager
+  ... def raiser(message):
+  ...    yield
+  ...    actions.append(message)
+  ...    raise RuntimeError(message)
+  >>> with raiser("outer"):
+  ...     with raiser("inner"):
+  ...         pass
+  Traceback (most recent call last):
+    File "demo.py", line 11, in <module>
+      print "test code"
+    File "/usr/lib/python2.6/contextlib.py", line 23, in __exit__
+      self.gen.next()
+    File "demo.py", line 7, in raiser
+      raise RuntimeError(message)
+  RuntimeError: inner
+  >>> actions
+  ['inner']
+
+
