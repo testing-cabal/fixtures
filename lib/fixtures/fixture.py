@@ -18,6 +18,8 @@ __all__ = [
     'FunctionFixture',
     ]
 
+import sys
+
 
 class Fixture(object):
     """A Fixture representing some state or resource.
@@ -46,7 +48,7 @@ class Fixture(object):
         """
         self._cleanups.append((cleanup, args, kwargs))
 
-    def cleanUp(self):
+    def cleanUp(self, raise_first=False):
         """Cleanup the fixture.
 
         This function will free all resources managed by the Fixture, restoring
@@ -54,15 +56,22 @@ class Fixture(object):
         directories and so forth_ to their original state.
 
         This should not typically be overridden, see addCleanup instead.
+
+        :return: A list of the exc_info() for each exception that occured.
         """
         cleanups = reversed(self._cleanups)
         self._clear_cleanups()
+        result = []
         for cleanup, args, kwargs in cleanups:
             try:
                 cleanup(*args, **kwargs)
             except Exception:
-                # For now, swallow exceptions.
-                pass
+                result.append(sys.exc_info())
+        if result and raise_first:
+            # Additional errors get swallowed - a context manager limitation.
+            error = result[0]
+            raise error[0], error[1], error[2]
+        return result
 
     def _clear_cleanups(self):
         """Clean the cleanup queue without running them.
@@ -78,7 +87,7 @@ class Fixture(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.cleanUp()
+        errors = self.cleanUp(raise_first=True)
         return False # propogate exceptions from the with body.
 
     def setUp(self):
@@ -95,12 +104,11 @@ class Fixture(object):
         """
         self._clear_cleanups()
 
-
     def reset(self):
         """Reset a setUp Fixture to the 'just setUp' state again.
 
         The default implementation calls
-        self.cleanUp()
+        self.cleanUp(raise_first=True)
         self.setUp()
 
         but this function may be overridden to provide an optimised routine to
@@ -108,7 +116,7 @@ class Fixture(object):
 
         :return: None.
         """
-        self.cleanUp()
+        self.cleanUp(raise_first=True)
         self.setUp()
 
 

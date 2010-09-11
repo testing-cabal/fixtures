@@ -13,14 +13,15 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-import unittest
+import sys
+
 import testtools
 
 import fixtures
 from fixtures.tests.helpers import LoggingFixture
 
 
-class TestFixture(unittest.TestCase):
+class TestFixture(testtools.TestCase):
 
     def test_resetCallsSetUpCleanUp(self):
         calls = []
@@ -35,7 +36,19 @@ class TestFixture(unittest.TestCase):
         fixture.cleanUp()
         self.assertEqual(['setUp', 'cleanUp', 'setUp', 'cleanUp'], calls)
 
-    def test_cleanUpcallscleanups_swallows_exceptions(self):
+    def test_reset_raises_if_cleanup_raises(self):
+        class FixtureWithSetupOnly(fixtures.Fixture):
+            def do_raise(self):
+                raise Exception('foo')
+            def setUp(self):
+                super(FixtureWithSetupOnly, self).setUp()
+                self.addCleanup(self.do_raise)
+        fixture = FixtureWithSetupOnly()
+        fixture.setUp()
+        exc = self.assertRaises(Exception, fixture.reset)
+        self.assertEqual(('foo',), exc.args)
+
+    def test_cleanUpcallscleanups_returns_exceptions(self):
         calls = []
         def raise_exception1():
             calls.append('1')
@@ -50,16 +63,44 @@ class TestFixture(unittest.TestCase):
                 self.addCleanup(raise_exception1)
         fixture = FixtureWithException()
         fixture.setUp()
-        fixture.cleanUp()
+        exceptions = fixture.cleanUp()
         self.assertEqual(['1', '2'], calls)
+        # There should be two exceptions
+        self.assertEqual(2, len(exceptions))
+        # They should be a sys.exc_info tuple.
+        self.assertEqual(3, len(exceptions[0]))
+        type, value, tb = exceptions[0]
+        self.assertEqual(Exception, type)
+        self.assertIsInstance(value, Exception)
+        self.assertEqual(('woo',), value.args)
+        self.assertIsInstance(tb, sys.exc_info()[2].__class__)
 
     def test_exit_propogates_exceptions(self):
         fixture = fixtures.Fixture()
         fixture.__enter__()
         self.assertEqual(False, fixture.__exit__(None, None, None))
 
+    def test_exit_runs_all_raises_first_exception(self):
+        calls = []
+        def raise_exception1():
+            calls.append('1')
+            raise Exception('woo')
+        def raise_exception2():
+            calls.append('2')
+            raise Exception('woo')
+        class FixtureWithException(fixtures.Fixture):
+            def setUp(self):
+                super(FixtureWithException, self).setUp()
+                self.addCleanup(raise_exception2)
+                self.addCleanup(raise_exception1)
+        fixture = FixtureWithException()
+        ctx = fixture.__enter__()
+        exc = self.assertRaises(Exception, fixture.__exit__, None, None, None)
+        self.assertEqual(('woo',), exc.args)
+        self.assertEqual(['1', '2'], calls)
 
-class TestFunctionFixture(unittest.TestCase):
+
+class TestFunctionFixture(testtools.TestCase):
 
     def test_setup_only(self):
         fixture = fixtures.FunctionFixture(lambda: 42)
