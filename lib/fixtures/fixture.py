@@ -16,9 +16,16 @@
 __all__ = [
     'Fixture',
     'FunctionFixture',
+    'MultipleExceptions',
     ]
 
 import sys
+
+try:
+    from testtools import MultipleExceptions
+except ImportError:
+    class MultipleExceptions(Exception):
+        """Report multiple exc_info tuples in self.args."""
 
 
 class Fixture(object):
@@ -48,7 +55,7 @@ class Fixture(object):
         """
         self._cleanups.append((cleanup, args, kwargs))
 
-    def cleanUp(self, raise_first=False):
+    def cleanUp(self, raise_first=True):
         """Cleanup the fixture.
 
         This function will free all resources managed by the Fixture, restoring
@@ -57,7 +64,10 @@ class Fixture(object):
 
         This should not typically be overridden, see addCleanup instead.
 
-        :return: A list of the exc_info() for each exception that occured.
+        :param raise_first: Deprecated parameter from before testtools gained
+            MultipleExceptions.
+        :return: A list of the exc_info() for each exception that occured if
+            raise_first was False
         """
         cleanups = reversed(self._cleanups)
         self._clear_cleanups()
@@ -68,10 +78,13 @@ class Fixture(object):
             except Exception:
                 result.append(sys.exc_info())
         if result and raise_first:
-            # Additional errors get swallowed - a context manager limitation.
-            error = result[0]
-            raise error[0], error[1], error[2]
-        return result
+            if 1 == len(result):
+                error = result[0]
+                raise error[0], error[1], error[2]
+            else:
+                raise MultipleExceptions(*result)
+        if not raise_first:
+            return result
 
     def _clear_cleanups(self):
         """Clean the cleanup queue without running them.
@@ -87,7 +100,7 @@ class Fixture(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        errors = self.cleanUp(raise_first=True)
+        errors = self.cleanUp()
         return False # propogate exceptions from the with body.
 
     def setUp(self):
@@ -108,7 +121,7 @@ class Fixture(object):
         """Reset a setUp Fixture to the 'just setUp' state again.
 
         The default implementation calls
-        self.cleanUp(raise_first=True)
+        self.cleanUp()
         self.setUp()
 
         but this function may be overridden to provide an optimised routine to
@@ -116,7 +129,7 @@ class Fixture(object):
 
         :return: None.
         """
-        self.cleanUp(raise_first=True)
+        self.cleanUp()
         self.setUp()
 
 

@@ -36,5 +36,5 @@ class TestWithFixtures(unittest.TestCase):
            it.
         """
         fixture.setUp()
-        self.addCleanup(fixture.cleanUp, raise_first=True)
+        self.addCleanup(fixture.cleanUp)
         return fixture

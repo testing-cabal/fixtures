@@ -93,7 +93,6 @@ puts the result of the function in fn_result::
   >>> print os.path.isdir(fixture.fn_result)
   True
   >>> fixture.cleanUp()
-  []
 
 The Fixture API
 ===============
@@ -142,42 +141,21 @@ context manager::
   ...    print os.path.isdir(fixture.fn_result)
   True
 
-Note that the context protocol does not report on all exceptions raised within
-it - only the ultimate exception is raised. In tests though, it is desirable to
-know all the exceptions that occur (even though some may be cascading) so that
-tests in slow environments can have as much analysis and correction done on them
-as possible. Fixtures support this by returning a list of the exc_info
-information for all exceptions occuring in the cleanUp() call. The context
-manager support as such is a down-grading of the raw capabilities of fixtures -
-but it can be very useful when the loss of fidelity is aacceptable.
-Specificaly, when multiple exceptions are raised from the cleanups in fixtures,
-the first one will be raised from the __exit__ of the outermost fixture.
+When multiple cleanups error, fixture.cleanUp() will raise a wrapper exception
+rather than choosing an arbitrary single exception to raise::
 
-To demonstrate the basic behaviour of content managers:
-
-  >>> from contextlib import contextmanager
-  >>> actions = []
-  >>> @contextmanager
-  ... def raiser(message):
-  ...    try:
-  ...        yield
-  ...    finally:
-  ...        actions.append(message)
-  ...        raise RuntimeError(message)
-  >>> with raiser("outer"):
-  ...     with raiser("inner"):
-  ...         pass
-  Traceback (most recent call last):
-    File "demo.py", line 11, in <module>
-      print "test code"
-    File "/usr/lib/python2.6/contextlib.py", line 23, in __exit__
-      self.gen.next()
-    File "demo.py", line 7, in raiser
-      raise RuntimeError(message)
-  RuntimeError: outer
-  >>> actions
-  ['inner', 'outer']
-
-
-With a fixture that has two cleanups, which both raise, both exceptions will be
-available in the return value of cleanUp.
+  >>> import sys
+  >>> from fixtures.fixture import MultipleExceptions
+  >>> class BrokenFixture(fixtures.Fixture):
+  ...     def setUp(self):
+  ...         fixtures.Fixture.setUp(self)
+  ...         self.addCleanup(lambda:1/0)
+  ...         self.addCleanup(lambda:1/0)
+  >>> fixture = BrokenFixture()
+  >>> fixture.setUp()
+  >>> try:
+  ...    fixture.cleanUp()
+  ... except MultipleExceptions:
+  ...    exc_info = sys.exc_info()
+  >>> print exc_info[1].args[0][0]
+  <type 'exceptions.ZeroDivisionError'>

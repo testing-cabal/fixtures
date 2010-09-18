@@ -48,7 +48,7 @@ class TestFixture(testtools.TestCase):
         exc = self.assertRaises(Exception, fixture.reset)
         self.assertEqual(('foo',), exc.args)
 
-    def test_cleanUpcallscleanups_returns_exceptions(self):
+    def test_cleanUp_raise_first_false_callscleanups_returns_exceptions(self):
         calls = []
         def raise_exception1():
             calls.append('1')
@@ -63,7 +63,7 @@ class TestFixture(testtools.TestCase):
                 self.addCleanup(raise_exception1)
         fixture = FixtureWithException()
         fixture.setUp()
-        exceptions = fixture.cleanUp()
+        exceptions = fixture.cleanUp(raise_first=False)
         self.assertEqual(['1', '2'], calls)
         # There should be two exceptions
         self.assertEqual(2, len(exceptions))
@@ -87,7 +87,7 @@ class TestFixture(testtools.TestCase):
             raise Exception('woo')
         def raise_exception2():
             calls.append('2')
-            raise Exception('woo')
+            raise Exception('hoo')
         class FixtureWithException(fixtures.Fixture):
             def setUp(self):
                 super(FixtureWithException, self).setUp()
@@ -96,7 +96,8 @@ class TestFixture(testtools.TestCase):
         fixture = FixtureWithException()
         ctx = fixture.__enter__()
         exc = self.assertRaises(Exception, fixture.__exit__, None, None, None)
-        self.assertEqual(('woo',), exc.args)
+        self.assertEqual(('woo',), exc.args[0][1].args)
+        self.assertEqual(('hoo',), exc.args[1][1].args)
         self.assertEqual(['1', '2'], calls)
 
 
