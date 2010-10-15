@@ -6,6 +6,11 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+0.3.1
+~~~~~
+
+Point release adding experimental PopenFixture.
+
 CHANGES:
 
 * Experimental PopenFixture providing a test double for testing code that runs
