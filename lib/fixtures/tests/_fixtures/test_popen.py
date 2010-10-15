@@ -13,6 +13,7 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+import StringIO
 import subprocess
 
 import testtools
@@ -55,3 +56,13 @@ class TestFakeProcess(testtools.TestCase):
         proc = FakeProcess({}, {})
         proc.returncode = 45
         self.assertEqual(45, proc.wait())
+
+    def test_communicate(self):
+        proc = FakeProcess({}, {})
+        self.assertEqual(('', ''), proc.communicate())
+        self.assertEqual(0, proc.returncode)
+
+    def test_communicate_with_out(self):
+        proc = FakeProcess({}, {'stdout': StringIO.StringIO('foo')})
+        self.assertEqual(('foo', ''), proc.communicate())
+        self.assertEqual(0, proc.returncode)

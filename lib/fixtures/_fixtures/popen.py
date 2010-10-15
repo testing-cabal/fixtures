@@ -34,6 +34,18 @@ class FakeProcess(object):
         self.pid = random.randint(0, 65536)
         self.returncode = None
 
+    def communicate(self):
+        self.returncode = 0
+        if self.stdout:
+            out = self.stdout.getvalue()
+        else:
+            out = ''
+        if self.stderr:
+            err = self.stderr.getvalue()
+        else:
+            err = ''
+        return out, err
+
     def wait(self):
         return self.returncode
 
