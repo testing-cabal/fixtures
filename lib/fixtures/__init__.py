@@ -41,11 +41,13 @@ __version__ = (0, 3, 0, 'final', 0)
 __all__ = [
     'Fixture',
     'FunctionFixture',
+    'PopenFixture',
     'TestWithFixtures',
     ]
 
 
 from fixtures.fixture import Fixture, FunctionFixture
+from fixtures._fixtures import PopenFixture
 from fixtures.testcase import TestWithFixtures
 
 

@@ -6,6 +6,11 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+CHANGES:
+
+* Experimental PopenFixture providing a test double for testing code that runs
+  external processes. (Robert Collins)
+
 0.3
 ~~~
 

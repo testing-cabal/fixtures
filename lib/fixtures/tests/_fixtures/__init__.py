@@ -13,30 +13,11 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-import doctest
-import sys
-import unittest
-
-import fixtures.tests._fixtures
-
-
-def test_suite():
-    result = unittest.TestSuite()
-    standard_tests = unittest.TestSuite()
-    loader = unittest.TestLoader()
-    return load_tests(loader, standard_tests, None)
-
-
 def load_tests(loader, standard_tests, pattern):
     test_modules = [
-        'fixture',
-        'testcase',
+        'popen',
         ]
-    prefix = "fixtures.tests.test_"
+    prefix = "fixtures.tests._fixtures.test_"
     test_mod_names = [prefix + test_module for test_module in test_modules]
     standard_tests.addTests(loader.loadTestsFromNames(test_mod_names))
-    standard_tests.addTests(fixtures.tests._fixtures.load_tests(
-        loader, loader.loadTestsFromName('fixtures.tests._fixtures'), pattern))
-    doctest.set_unittest_reportflags(doctest.REPORT_ONLY_FIRST_FAILURE)
-    standard_tests.addTest(doctest.DocFileSuite("../../../README"))
     return standard_tests
