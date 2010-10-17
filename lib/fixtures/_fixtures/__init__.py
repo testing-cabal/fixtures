@@ -17,8 +17,10 @@
 """Included fixtures."""
 
 __all__ = [
+    'EnvironmentVariableFixture',
     'PopenFixture',
     ]
 
 
+from fixtures._fixtures.environ import EnvironmentVariableFixture
 from fixtures._fixtures.popen import PopenFixture

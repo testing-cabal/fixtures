@@ -36,9 +36,10 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 # established at this point, and setup.py will use a version of next-$(revno).
 # If the releaselevel is 'final', then the tarball will be major.minor.micro.
 # Otherwise it is major.minor.micro~$(revno).
-__version__ = (0, 3, 1, 'final', 0)
+__version__ = (0, 3, 2, 'final', 0)
 
 __all__ = [
+    'EnvironmentVariableFixture',
     'Fixture',
     'FunctionFixture',
     'PopenFixture',
@@ -47,7 +48,10 @@ __all__ = [
 
 
 from fixtures.fixture import Fixture, FunctionFixture
-from fixtures._fixtures import PopenFixture
+from fixtures._fixtures import (
+    EnvironmentVariableFixture,
+    PopenFixture,
+    )
 from fixtures.testcase import TestWithFixtures
 
 

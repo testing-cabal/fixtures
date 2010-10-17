@@ -6,7 +6,7 @@ import os.path
 description = file(os.path.join(os.path.dirname(__file__), 'README'), 'rb').read()
 
 setup(name="fixtures",
-      version="0.3.1",
+      version="0.3.2",
       description="Fixtures, reusable state for writing clean tests and more.",
       long_description=description,
       maintainer="Robert Collins",

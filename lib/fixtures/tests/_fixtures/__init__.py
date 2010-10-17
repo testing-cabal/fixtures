@@ -15,6 +15,7 @@
 
 def load_tests(loader, standard_tests, pattern):
     test_modules = [
+        'environ',
         'popen',
         ]
     prefix = "fixtures.tests._fixtures.test_"

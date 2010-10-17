@@ -6,6 +6,17 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+0.3.2
+~~~~~
+
+Point release adding new EnvironmentVariableFixture for controlling environment
+variables.
+
+CHANGES:
+
+* New EnvironmentVariableFixture which can set or unset environment variables.
+  (Robert Collins)
+
 0.3.1
 ~~~~~
 
