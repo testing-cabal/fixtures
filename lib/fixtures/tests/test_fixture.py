@@ -100,6 +100,16 @@ class TestFixture(testtools.TestCase):
         self.assertEqual(('hoo',), exc.args[1][1].args)
         self.assertEqual(['1', '2'], calls)
 
+    def test_useFixture(self):
+        parent = LoggingFixture('-outer')
+        nested = LoggingFixture('-inner', calls=parent.calls)
+        parent.setUp()
+        parent.useFixture(nested)
+        parent.cleanUp()
+        self.assertEqual(
+            ['setUp-outer', 'setUp-inner', 'cleanUp-inner', 'cleanUp-outer'],
+            parent.calls)
+
 
 class TestFunctionFixture(testtools.TestCase):
 

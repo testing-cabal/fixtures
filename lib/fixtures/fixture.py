@@ -132,6 +132,19 @@ class Fixture(object):
         self.cleanUp()
         self.setUp()
 
+    def useFixture(self, fixture):
+        """Use another fixture.
+
+        The fixture will be setUp, and self.addCleanup(fixture.cleanUp) called.
+
+        :param fixture: The fixture to use.
+        :return: The fixture, after setting it up and scheduling a cleanup for
+           it.
+        """
+        fixture.setUp()
+        self.addCleanup(fixture.cleanUp)
+        return fixture
+
 
 class FunctionFixture(Fixture):
     """An adapter to use function(s) as a Fixture.

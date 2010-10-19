@@ -6,6 +6,17 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+0.3.3
+~~~~~
+
+Fixtures now have a ``useFixture`` method as well, making nesting of fixtures
+trivial.
+
+CHANGES:
+
+* New method ``Fixture.useFixture`` allowing fixtures to compose other
+  fixtures. (Robert Collins)
+
 0.3.2
 ~~~~~
 

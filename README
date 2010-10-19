@@ -28,10 +28,15 @@ Dependencies
 * Python 2.4+
 
 For use in a unit test suite using the included glue, one of:
+
 * Python 2.7
+
 * unittest2
+
 * bzrlib.tests
+
 * testtools <https://launchpad.net/testtools>
+
 * Or any other test environment that supports TestCase.addCleanup.
 
 Writing your own glue code is easy, or you can simply use Fixtures directly
