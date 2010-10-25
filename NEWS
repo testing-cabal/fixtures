@@ -6,6 +6,11 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+CHANGES:
+
+* New helper ``MethodFixture`` for wrapping an object similarly to
+  ``FunctionFixture`` (Robert Collins)
+
 0.3.3
 ~~~~~
 

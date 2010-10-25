@@ -42,12 +42,13 @@ __all__ = [
     'EnvironmentVariableFixture',
     'Fixture',
     'FunctionFixture',
+    'MethodFixture',
     'PopenFixture',
     'TestWithFixtures',
     ]
 
 
-from fixtures.fixture import Fixture, FunctionFixture
+from fixtures.fixture import Fixture, FunctionFixture, MethodFixture
 from fixtures._fixtures import (
     EnvironmentVariableFixture,
     PopenFixture,
