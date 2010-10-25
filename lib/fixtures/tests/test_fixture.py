@@ -110,6 +110,22 @@ class TestFixture(testtools.TestCase):
             ['setUp-outer', 'setUp-inner', 'cleanUp-inner', 'cleanUp-outer'],
             parent.calls)
 
+    def test_getDetails(self):
+        fixture = fixtures.Fixture()
+        with fixture:
+            self.assertEqual({}, fixture.getDetails())
+
+    def test_addDetail(self):
+        fixture = fixtures.Fixture()
+        with fixture:
+            fixture.addDetail('foo', 'content')
+            self.assertEqual({'foo': 'content'}, fixture.getDetails())
+            del fixture.getDetails()['foo']
+            self.assertEqual({}, fixture.getDetails())
+            fixture.addDetail('foo', 'content')
+        # Cleanup clears the details too.
+        self.assertEqual({}, fixture.getDetails())
+
 
 class TestFunctionFixture(testtools.TestCase):
 

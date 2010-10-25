@@ -56,6 +56,18 @@ class Fixture(object):
         """
         self._cleanups.append((cleanup, args, kwargs))
 
+    def addDetail(self, name, content_object):
+        """Add a detail to the Fixture.
+
+        This may only be called after setUp has been called.
+
+        :param name: The name for the detail being added. Overrides existing
+            identically named details.
+        :param content_object: The content object (meeting the
+            testtools.content.Content protocol) being added.
+        """
+        self._details[name] = content_object
+
     def cleanUp(self, raise_first=True):
         """Cleanup the fixture.
 
@@ -93,8 +105,11 @@ class Fixture(object):
         This is a helper that can be useful for subclasses which define
         reset(): they may perform something equivalent to a typical cleanUp
         without actually calling the cleanups.
+
+        This also clears the details dict.
         """
         self._cleanups = []
+        self._details = {}
 
     def __enter__(self):
         self.setUp()
@@ -103,6 +118,16 @@ class Fixture(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         errors = self.cleanUp()
         return False # propogate exceptions from the with body.
+
+    def getDetails(self):
+        """Get the current details registered with the fixture.
+
+        This returns the internal dictionary: mutating it is supported (but not
+        encouraged).
+        
+        :return: Dict from name -> content_object.
+        """
+        return self._details
 
     def setUp(self):
         """Prepare the Fixture for use.

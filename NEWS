@@ -8,6 +8,9 @@ IN DEVELOPMENT
 
 CHANGES:
 
+* Fixture now supports ``addDetail`` and provides a``getDetails`` call
+  compatible with the ``testtools.TestCase`` calls. (Robert Collins, #640119)
+
 * New helper ``MethodFixture`` for wrapping an object similarly to
   ``FunctionFixture`` (Robert Collins)
 
