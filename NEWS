@@ -6,6 +6,9 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+0.3.4
+~~~~~
+
 CHANGES:
 
 * Fixture now supports ``addDetail`` and provides a``getDetails`` call
