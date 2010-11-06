@@ -43,6 +43,7 @@ __all__ = [
     'Fixture',
     'FunctionFixture',
     'MethodFixture',
+    'MonkeyPatch',
     'PopenFixture',
     'TestWithFixtures',
     ]
@@ -51,6 +52,7 @@ __all__ = [
 from fixtures.fixture import Fixture, FunctionFixture, MethodFixture
 from fixtures._fixtures import (
     EnvironmentVariableFixture,
+    MonkeyPatch,
     PopenFixture,
     )
 from fixtures.testcase import TestWithFixtures

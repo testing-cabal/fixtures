@@ -6,6 +6,11 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+CHANGES:
+
+* New helper ``MonkeyPatch`` which patches (or deletes) an existing attribute
+  and restores it afterwards. (Robert Collins)
+
 0.3.4
 ~~~~~
 

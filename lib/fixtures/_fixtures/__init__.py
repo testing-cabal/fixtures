@@ -18,9 +18,11 @@
 
 __all__ = [
     'EnvironmentVariableFixture',
+    'MonkeyPatch',
     'PopenFixture',
     ]
 
 
 from fixtures._fixtures.environ import EnvironmentVariableFixture
+from fixtures._fixtures.monkeypatch import MonkeyPatch
 from fixtures._fixtures.popen import PopenFixture
