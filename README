@@ -99,6 +99,17 @@ puts the result of the function in fn_result::
   True
   >>> fixture.cleanUp()
 
+Another variation is is MethodFixture which is useful for adapting alternate
+fixture implementations to Fixture::
+
+  >>> class MyServer:
+  ...    def start(self):
+  ...        pass
+  ...    def stop(self):
+  ...        pass
+  >>> server = MyServer()
+  >>> fixture = fixtures.MethodFixture(server, server.start, server.stop)
+
 The Fixture API
 ===============
 
@@ -164,3 +175,36 @@ rather than choosing an arbitrary single exception to raise::
   ...    exc_info = sys.exc_info()
   >>> print exc_info[1].args[0][0]
   <type 'exceptions.ZeroDivisionError'>
+
+Stock Fixtures
+==============
+
+In addition to the Fixture, FunctionFixture and MethodFixture classes fixtures
+includes a number of precanned fixtures. The API docs for fixtures will list
+the complete set of these, should the dcs be out of date or not to hand.
+
+EnvironmentVariableFixture
+++++++++++++++++++++++++++
+
+Isolate your code from environmental variables, delete them or set them to a
+new value.
+
+  >>> fixture = fixtures.EnvironmentVariableFixture('HOME')
+
+MonkeyPatch
++++++++++++
+
+Control the value of a named python attribute.
+
+  >>> def fake_open(path, mode):
+  ...     pass
+  >>> fixture = fixtures.MonkeyPatch('__builtin__.open', fake_open)
+
+PopenFixture
+++++++++++++
+
+Pretend to run an external command rather than needing it to be present to run
+tests.
+
+  >>> from StringIO import StringIO
+  >>> fixture = fixtures.PopenFixture(lambda _:{'stdout': StringIO('foobar')})
