@@ -13,14 +13,23 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-def load_tests(loader, standard_tests, pattern):
-    test_modules = [
-        'environ',
-        'monkeypatch',
-        'popen',
-        'tempdir',
-        ]
-    prefix = "fixtures.tests._fixtures.test_"
-    test_mod_names = [prefix + test_module for test_module in test_modules]
-    standard_tests.addTests(loader.loadTestsFromNames(test_mod_names))
-    return standard_tests
+__all__ = [
+    'TempDir'
+    ]
+
+import shutil
+import tempfile
+
+from fixtures import Fixture
+
+
+class TempDir(Fixture):
+    """Create a temporary directory.
+
+    :ivar path: The path of the temporary directory.
+    """
+
+    def setUp(self):
+        Fixture.setUp(self)
+        self.path = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.path, ignore_errors=True)

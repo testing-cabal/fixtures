@@ -8,8 +8,10 @@ IN DEVELOPMENT
 
 CHANGES:
 
-* New helper ``MonkeyPatch`` which patches (or deletes) an existing attribute
+* New fixture ``MonkeyPatch`` which patches (or deletes) an existing attribute
   and restores it afterwards. (Robert Collins)
+
+* New fixture ``TempDir`` which manages a temporary directory. (Robert Collins)
 
 0.3.4
 ~~~~~

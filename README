@@ -99,6 +99,14 @@ puts the result of the function in fn_result::
   True
   >>> fixture.cleanUp()
 
+This can be expressed even more pithily:
+
+  >>> fixture = fixtures.FunctionFixture(tempfile.mkdtemp, shutil.rmtree)
+  >>> fixture.setUp()
+  >>> print os.path.isdir(fixture.fn_result)
+  True
+  >>> fixture.cleanUp()
+
 Another variation is is MethodFixture which is useful for adapting alternate
 fixture implementations to Fixture::
 
@@ -208,3 +216,10 @@ tests.
 
   >>> from StringIO import StringIO
   >>> fixture = fixtures.PopenFixture(lambda _:{'stdout': StringIO('foobar')})
+
+TempDir
++++++++
+
+Create a temporary directory and clean it up later.
+
+  >>> fixture = fixtures.TempDir()

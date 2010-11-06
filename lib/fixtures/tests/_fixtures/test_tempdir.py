@@ -13,14 +13,24 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-def load_tests(loader, standard_tests, pattern):
-    test_modules = [
-        'environ',
-        'monkeypatch',
-        'popen',
-        'tempdir',
-        ]
-    prefix = "fixtures.tests._fixtures.test_"
-    test_mod_names = [prefix + test_module for test_module in test_modules]
-    standard_tests.addTests(loader.loadTestsFromNames(test_mod_names))
-    return standard_tests
+import os
+
+import testtools
+
+import fixtures
+from fixtures import TempDir, TestWithFixtures
+
+        
+class TestTempDir(testtools.TestCase, TestWithFixtures):
+
+    def test_basic(self):
+        fixture = TempDir()
+        sentinel = object()
+        self.assertEqual(sentinel, getattr(fixture, 'path', sentinel))
+        fixture.setUp()
+        try:
+            path = fixture.path
+            self.assertTrue(os.path.isdir(path))
+        finally:
+            fixture.cleanUp()
+            self.assertFalse(os.path.isdir(path))
