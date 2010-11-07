@@ -6,6 +6,9 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+0.3.5
+~~~~~
+
 CHANGES:
 
 * New fixture ``MonkeyPatch`` which patches (or deletes) an existing attribute
