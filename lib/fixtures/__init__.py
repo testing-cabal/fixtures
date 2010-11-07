@@ -45,6 +45,7 @@ __all__ = [
     'MethodFixture',
     'MonkeyPatch',
     'PopenFixture',
+    'PythonPackage',
     'TempDir',
     'TestWithFixtures',
     ]
@@ -55,6 +56,7 @@ from fixtures._fixtures import (
     EnvironmentVariableFixture,
     MonkeyPatch,
     PopenFixture,
+    PythonPackage,
     TempDir,
     )
 from fixtures.testcase import TestWithFixtures

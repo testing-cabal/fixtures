@@ -217,6 +217,15 @@ tests.
   >>> from StringIO import StringIO
   >>> fixture = fixtures.PopenFixture(lambda _:{'stdout': StringIO('foobar')})
 
+PythonPackage
++++++++++++++
+
+Creates a python package directory. Particularly useful for testing code that
+dynamically loads packages/modules, or for mocking out the command line entry
+points to Python programs.
+
+  >>> fixture = fixtures.PythonPackage('foo.bar', [('quux.py', '')])
+
 TempDir
 +++++++
 
