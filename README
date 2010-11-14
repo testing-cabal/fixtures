@@ -184,6 +184,77 @@ rather than choosing an arbitrary single exception to raise::
   >>> print exc_info[1].args[0][0]
   <type 'exceptions.ZeroDivisionError'>
 
+Shared Dependencies
++++++++++++++++++++
+
+A common use case within complex environments is having some fixtures shared by
+other ones.
+
+Consider the case of testing using a ``TempDir`` with two fixtures built on top
+of it; say a small database and a web server. Writing either one is nearly
+trivial. However handling ``reset()`` correctly is hard: both the database and
+web server would reasonably expect to be able to discard operating system
+resources they may have open within the temporary directory before its removed.
+A recursive ``reset()`` implementation would work for one, but not both.
+Calling ``reset()`` on the ``TempDir`` instance between each test is probably
+desirable but we don't want to have to do a complete ``cleanUp`` of the higher
+layer fixtures (which would make the ``TempDir`` be unused and trivially
+resettable. We have a few options available to us.
+
+Imagine that the webserver does not depend on the DB fixture in any way - we
+just want the webserver and DB fixture to coexist in the same tempdir.
+
+A simple option is to just provide an explicit dependency fixture for the
+higher layer fixtures to use.  This pushes complexity out of the core and onto
+users of fixtures::
+
+  >>> class WithDep(fixtures.Fixture):
+  ...     def __init__(self, tempdir, dependency_fixture):
+  ...         super(WithDep, self).__init__()
+  ...         self.tempdir = tempdir
+  ...         self.dependency_fixture = dependency_fixture
+  ...     def setUp(self):
+  ...         super(WithDep, self).setUp()
+  ...         self.addCleanup(self.dependency_fixture.cleanUp)
+  ...         self.dependency_fixture.setUp()
+  ...         # we assume that at this point self.tempdir is usable.
+  >>> DB = WithDep
+  >>> WebServer = WithDep
+  >>> tempdir = fixtures.TempDir()
+  >>> db = DB(tempdir, tempdir)
+  >>> server = WebServer(tempdir, db)
+  >>> server.setUp()
+  >>> server.cleanUp()
+
+Another option is to write the fixtures to gracefully handle a dependency
+being reset underneath them. This is insufficient if the fixtures would
+block the dependency resetting (for instance by holding file locks open
+in a tempdir - on Windows this will prevent the directory being deleted).
+
+Another approach which ``fixtures`` neither helps nor hinders is to raise
+a signal of some sort for each user of a fixture before it is reset. In the
+example here, ``TempDir`` might offer a subscribers attribute that both the
+DB and web server would be registered in. Calling ``reset`` or ``cleanUp``
+on the tempdir would trigger a callback to all the subscribers; the DB and
+web server reset methods would look something like:
+
+  >>> def reset(self):
+  ...     if not self._cleaned:
+  ...         self._clean()
+
+(Their action on the callback from the tempdir would be to do whatever work
+was needed and set ``self._cleaned``.) This approach has the (perhaps)
+suprising effect that resetting the webserver may reset the DB - if the
+webserver were to be depending on ``tempdir.reset`` as a way to reset the
+webservers state.
+
+Another approach which is not currently implemented is to provide an object
+graph of dependencies and a reset mechanism that can traverse that, along with
+a separation between 'reset starting' and 'reset finishing' - the DB and
+webserver would both have their ``reset_starting`` methods called, then the
+tempdir would be reset, and finally the DB and webserver would have
+``reset_finishing`` called.
+
 Stock Fixtures
 ==============
 
