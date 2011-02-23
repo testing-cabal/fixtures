@@ -43,8 +43,8 @@ class Fixture(object):
     def addCleanup(self, cleanup, *args, **kwargs):
         """Add a clean function to be called from cleanUp.
 
-        All cleanup functions are called and regular exceptions caught and
-        swallowed.
+        All cleanup functions are called - see cleanUp for details on how
+        multiple exceptions are handled.
 
         If for some reason you need to cancel cleanups, call
         self._clear_cleanups.
@@ -78,7 +78,13 @@ class Fixture(object):
         This should not typically be overridden, see addCleanup instead.
 
         :param raise_first: Deprecated parameter from before testtools gained
-            MultipleExceptions.
+            MultipleExceptions. raise_first defaults to True. When True
+            if a single exception is raised, it is reraised after all the
+            cleanUps have run. If multiple exceptions are raised, they are
+            all wrapped into a MultipleExceptions object, and that is reraised.
+            Thus, to cach a specific exception from cleanUp, you need to catch
+            both the exception and MultipleExceptions, and then check within
+            a MultipleExceptions instance for the type you're catching.
         :return: A list of the exc_info() for each exception that occured if
             raise_first was False
         """
