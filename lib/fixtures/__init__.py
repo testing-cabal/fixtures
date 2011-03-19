@@ -46,6 +46,7 @@ __all__ = [
     'MonkeyPatch',
     'PopenFixture',
     'PythonPackage',
+    'PythonPathEntry',
     'TempDir',
     'TestWithFixtures',
     ]
@@ -57,6 +58,7 @@ from fixtures._fixtures import (
     MonkeyPatch,
     PopenFixture,
     PythonPackage,
+    PythonPathEntry,
     TempDir,
     )
 from fixtures.testcase import TestWithFixtures

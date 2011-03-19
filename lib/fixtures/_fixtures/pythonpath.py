@@ -1,6 +1,6 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
-# Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
+# Copyright (c) 2011, Robert Collins <robertc@robertcollins.net>
 # 
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
@@ -13,22 +13,31 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-
-"""Included fixtures."""
-
 __all__ = [
-    'EnvironmentVariableFixture',
-    'MonkeyPatch',
-    'PopenFixture',
-    'PythonPackage',
-    'PythonPathEntry',
-    'TempDir',
+    'PythonPathEntry'
     ]
 
+import sys
 
-from fixtures._fixtures.environ import EnvironmentVariableFixture
-from fixtures._fixtures.monkeypatch import MonkeyPatch
-from fixtures._fixtures.popen import PopenFixture
-from fixtures._fixtures.pythonpackage import PythonPackage
-from fixtures._fixtures.pythonpath import PythonPathEntry
-from fixtures._fixtures.tempdir import TempDir
+from fixtures import Fixture
+
+
+class PythonPathEntry(Fixture):
+    """Add a path to sys.path.
+    
+    If the path is already in sys.path, sys.path will not be altered.
+    """
+
+    def __init__(self, directory):
+        """Create a PythonPathEntry.
+
+        :param directory: The directory to add to sys.path.
+        """
+        self.directory = directory
+
+    def setUp(self):
+        Fixture.setUp(self)
+        if self.directory in sys.path:
+            return
+        self.addCleanup(sys.path.remove, self.directory)
+        sys.path.append(self.directory)

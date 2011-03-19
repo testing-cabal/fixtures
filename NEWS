@@ -6,6 +6,11 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+CHANGES:
+
+* New fixture ``PythonPathEntry`` which patches sys.path.
+  (Robert Collins, #737503)
+
 0.3.5
 ~~~~~
 

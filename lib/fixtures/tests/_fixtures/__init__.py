@@ -19,6 +19,7 @@ def load_tests(loader, standard_tests, pattern):
         'monkeypatch',
         'popen',
         'pythonpackage',
+        'pythonpath',
         'tempdir',
         ]
     prefix = "fixtures.tests._fixtures.test_"

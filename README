@@ -297,9 +297,20 @@ points to Python programs.
 
   >>> fixture = fixtures.PythonPackage('foo.bar', [('quux.py', '')])
 
+PythonPathEntry
++++++++++++++++
+
+Adds a single directory to sys.path. If the directory is already in the path,
+nothing happens, if it isn't then it is added on setUp and removed on cleanUp.
+
+  >>> fixture = fixtures.PythonPathEntry('/foo/bar')
+
 TempDir
 +++++++
 
 Create a temporary directory and clean it up later.
 
   >>> fixture = fixtures.TempDir()
+
+The created directory is stored in the ``path`` attribute of the fixture after
+setUp.
