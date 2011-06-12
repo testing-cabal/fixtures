@@ -110,6 +110,7 @@ class TestFixture(testtools.TestCase):
             ['setUp-outer', 'setUp-inner', 'cleanUp-inner', 'cleanUp-outer'],
             parent.calls)
 
+    # TODO: Skip if testtools.testcase.gather_details is not available.
     def test_useFixture_details_captured_from_setUp(self):
         # Details added during fixture set-up are gathered even if setUp()
         # fails with an exception.
