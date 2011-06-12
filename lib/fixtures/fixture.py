@@ -28,6 +28,11 @@ except ImportError:
     class MultipleExceptions(Exception):
         """Report multiple exc_info tuples in self.args."""
 
+try:
+    from testtools.testcase import gather_details
+except ImportError:
+    gather_details = None
+
 
 class Fixture(object):
     """A Fixture representing some state or resource.
@@ -173,9 +178,17 @@ class Fixture(object):
         :return: The fixture, after setting it up and scheduling a cleanup for
            it.
         """
-        fixture.setUp()
-        self.addCleanup(fixture.cleanUp)
-        return fixture
+        try:
+            fixture.setUp()
+        except:
+            if gather_details is not None:
+                gather_details(fixture, self)
+            raise
+        else:
+            self.addCleanup(fixture.cleanUp)
+            if gather_details is not None:
+                self.addCleanup(gather_details, fixture, self)
+            return fixture
 
 
 class FunctionFixture(Fixture):
