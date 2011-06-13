@@ -16,8 +16,11 @@
 import sys
 
 import testtools
+from testtools.content import text_content
+from testtools.testcase import skipIf
 
 import fixtures
+from fixtures.fixture import gather_details
 from fixtures.tests.helpers import LoggingFixture
 
 
@@ -110,11 +113,10 @@ class TestFixture(testtools.TestCase):
             ['setUp-outer', 'setUp-inner', 'cleanUp-inner', 'cleanUp-outer'],
             parent.calls)
 
-    # TODO: Skip if testtools.testcase.gather_details is not available.
+    @skipIf(gather_details is None, "gather_details() is not available.")
     def test_useFixture_details_captured_from_setUp(self):
         # Details added during fixture set-up are gathered even if setUp()
         # fails with an exception.
-        from testtools.content import text_content
         class SomethingBroke(Exception): pass
         class BrokenFixture(fixtures.Fixture):
             def setUp(self):
