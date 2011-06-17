@@ -22,16 +22,15 @@ __all__ = [
 
 import sys
 
-try:
-    from testtools import MultipleExceptions
-except ImportError:
-    class MultipleExceptions(Exception):
-        """Report multiple exc_info tuples in self.args."""
+from testtools.helpers import try_import
 
-try:
-    from testtools.testcase import gather_details
-except ImportError:
-    gather_details = None
+class MultipleExceptions(Exception):
+    """Report multiple exc_info tuples in self.args."""
+
+MultipleExceptions = try_import(
+    "testtools.MultipleExceptions", MultipleExceptions)
+
+gather_details = try_import("testtools.testcase.gather_details")
 
 
 class Fixture(object):
