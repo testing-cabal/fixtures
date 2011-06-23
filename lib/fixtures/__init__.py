@@ -44,6 +44,7 @@ __all__ = [
     'FunctionFixture',
     'MethodFixture',
     'MonkeyPatch',
+    'PackagePathEntry',
     'PopenFixture',
     'PythonPackage',
     'PythonPathEntry',
@@ -56,6 +57,7 @@ from fixtures.fixture import Fixture, FunctionFixture, MethodFixture
 from fixtures._fixtures import (
     EnvironmentVariableFixture,
     MonkeyPatch,
+    PackagePathEntry,
     PopenFixture,
     PythonPackage,
     PythonPathEntry,

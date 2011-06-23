@@ -283,6 +283,15 @@ Control the value of a named python attribute.
   ...     pass
   >>> fixture = fixtures.MonkeyPatch('__builtin__.open', fake_open)
 
+PackagePathEntry
+++++++++++++++++
+
+Adds a single directory to the path for an existing python package. This adds
+to the package.__path__ list. If the directory is already in the path, nothing
+happens, if it isn't then it is added on setUp and removed on cleanUp.
+
+  >>> fixture = fixtures.PackagePathEntry('package/name', '/foo/bar')
+
 PopenFixture
 ++++++++++++
 

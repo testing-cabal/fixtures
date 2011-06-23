@@ -13,6 +13,10 @@ CHANGES:
   gather_details helper).
   (Gavin Panella, #796253)
 
+* New fixture ``PackagePathEntry`` which patches the path of an existing
+  package, allowing importing part of it from aonther directory.
+  (Robert Collins)
+
 * New fixture ``PythonPathEntry`` which patches sys.path.
   (Robert Collins, #737503)
 
