@@ -14,6 +14,7 @@
 # limitations under that license.
 
 import sys
+import types
 
 import testtools
 
@@ -73,7 +74,7 @@ class TestFixture(testtools.TestCase):
         self.assertEqual(Exception, type)
         self.assertIsInstance(value, Exception)
         self.assertEqual(('woo',), value.args)
-        self.assertIsInstance(tb, sys.exc_info()[2].__class__)
+        self.assertIsInstance(tb, types.TracebackType)
 
     def test_exit_propogates_exceptions(self):
         fixture = fixtures.Fixture()

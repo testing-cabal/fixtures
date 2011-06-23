@@ -11,6 +11,10 @@ CHANGES:
 * New fixture ``PythonPathEntry`` which patches sys.path.
   (Robert Collins, #737503)
 
+* Test failure on some setups in
+  test_cleanUp_raise_first_false_callscleanups_returns_exceptions.
+  (Gavin Panella, #796249)
+
 0.3.5
 ~~~~~
 
