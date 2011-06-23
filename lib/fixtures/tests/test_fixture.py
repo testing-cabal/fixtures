@@ -25,6 +25,10 @@ from fixtures.fixture import gather_details
 from fixtures.tests.helpers import LoggingFixture
 
 
+require_gather_details = skipIf(gather_details is None,
+        "gather_details() is not available.")
+
+
 class TestFixture(testtools.TestCase):
 
     def test_resetCallsSetUpCleanUp(self):
@@ -114,7 +118,7 @@ class TestFixture(testtools.TestCase):
             ['setUp-outer', 'setUp-inner', 'cleanUp-inner', 'cleanUp-outer'],
             parent.calls)
 
-    @skipIf(gather_details is None, "gather_details() is not available.")
+    @require_gather_details
     def test_useFixture_details_captured_from_setUp(self):
         # Details added during fixture set-up are gathered even if setUp()
         # fails with an exception.
@@ -143,12 +147,28 @@ class TestFixture(testtools.TestCase):
         with fixture:
             self.assertEqual({}, fixture.getDetails())
 
+    def test_details_from_child_fixtures_are_returned(self):
+        parent = fixtures.Fixture()
+        with parent:
+            child = fixtures.Fixture()
+            parent.useFixture(child)
+            # Note that we add the detail *after* using the fixture: the parent
+            # has to query just-in-time.
+            child.addDetail('foo', 'content')
+            self.assertEqual({'foo': 'content'}, parent.getDetails())
+            # And dropping it from the child drops it from the parent.
+            del child._details['foo']
+            self.assertEqual({}, parent.getDetails())
+            # After cleanup the child details are still gone.
+            child.addDetail('foo', 'content')
+        self.assertEqual({}, parent.getDetails())
+
     def test_addDetail(self):
         fixture = fixtures.Fixture()
         with fixture:
             fixture.addDetail('foo', 'content')
             self.assertEqual({'foo': 'content'}, fixture.getDetails())
-            del fixture.getDetails()['foo']
+            del fixture._details['foo']
             self.assertEqual({}, fixture.getDetails())
             fixture.addDetail('foo', 'content')
         # Cleanup clears the details too.

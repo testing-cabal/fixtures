@@ -44,10 +44,14 @@ class TestWithFixtures(unittest.TestCase):
             fixture.setUp()
         except:
             if use_details:
+                # Capture the details now, in case the fixture goes away.
                 gather_details(fixture, self)
             raise
         else:
             self.addCleanup(fixture.cleanUp)
             if use_details:
+                # Capture the details from the fixture during test teardown;
+                # this will evaluate the details before tearing down the
+                # fixture.
                 self.addCleanup(gather_details, fixture, self)
             return fixture

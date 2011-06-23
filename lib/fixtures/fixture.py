@@ -20,6 +20,7 @@ __all__ = [
     'MultipleExceptions',
     ]
 
+import itertools
 import sys
 
 from testtools.helpers import try_import
@@ -31,6 +32,17 @@ MultipleExceptions = try_import(
     "testtools.MultipleExceptions", MultipleExceptions)
 
 gather_details = try_import("testtools.testcase.gather_details")
+
+# This would be better in testtools (or a common library)
+def combine_details(source_details, target_details):
+    """Add every value from source to target deduping common keys."""
+    for name, content_object in source_details.items():
+        new_name = name
+        disambiguator = itertools.count(1)
+        while new_name in target_details:
+            new_name = '%s-%d' % (name, advance_iterator(disambiguator))
+        name = new_name
+        target_details[name] = content_object
 
 
 class Fixture(object):
@@ -120,6 +132,7 @@ class Fixture(object):
         """
         self._cleanups = []
         self._details = {}
+        self._detail_sources = []
 
     def __enter__(self):
         self.setUp()
@@ -132,12 +145,15 @@ class Fixture(object):
     def getDetails(self):
         """Get the current details registered with the fixture.
 
-        This returns the internal dictionary: mutating it is supported (but not
-        encouraged).
+        This does not return the internal dictionary: mutating it will have no
+        effect. If you need to mutate it, just do so directly.
         
         :return: Dict from name -> content_object.
         """
-        return self._details
+        result = dict(self._details)
+        for source in self._detail_sources:
+            combine_details(source.getDetails(), result)
+        return result
 
     def setUp(self):
         """Prepare the Fixture for use.
@@ -180,13 +196,16 @@ class Fixture(object):
         try:
             fixture.setUp()
         except:
+            # The child failed to come up, capture any details it has (copying
+            # the content, it may go away anytime).
             if gather_details is not None:
                 gather_details(fixture, self)
             raise
         else:
             self.addCleanup(fixture.cleanUp)
-            if gather_details is not None:
-                self.addCleanup(gather_details, fixture, self)
+            # Calls to getDetails while this fixture is setup will return
+            # details from the child fixture.
+            self._detail_sources.append(fixture)
             return fixture
 
 

@@ -6,12 +6,20 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+Another small API break - sorry. Fixture.getDetails no longer returns the
+internal details dict (self._details). Access that directly if needed. It now
+looks for details in used fixtures and returns those as well as details added
+directly.
+
 CHANGES:
 
 * Details from child fixtures for both Fixture and TestWithFixtures no longer
   quash same-named details if testtools 0.9.11 is available (for the
   gather_details helper).
   (Gavin Panella, #796253)
+
+* Fixture.getDetails will now return all the details of fixtures added using
+  useFixture. (RobertCollins, #780806)
 
 * New fixture ``PackagePathEntry`` which patches the path of an existing
   package, allowing importing part of it from aonther directory.
