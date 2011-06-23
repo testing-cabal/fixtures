@@ -26,6 +26,12 @@ Dependencies
 ============
 
 * Python 2.4+
+  This is the base language fixtures is written in and for.
+
+* testtools <https://launchpad.net/testtools> 0.9.8 or newer.
+  testtools provides helpful glue functions for the details API used to report
+  information about a fixture (whether its used in a testing or production
+  environment).
 
 For use in a unit test suite using the included glue, one of:
 
@@ -34,8 +40,6 @@ For use in a unit test suite using the included glue, one of:
 * unittest2
 
 * bzrlib.tests
-
-* testtools <https://launchpad.net/testtools>
 
 * Or any other test environment that supports TestCase.addCleanup.
 

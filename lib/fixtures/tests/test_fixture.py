@@ -17,8 +17,11 @@ import sys
 import types
 
 import testtools
+from testtools.content import text_content
+from testtools.testcase import skipIf
 
 import fixtures
+from fixtures.fixture import gather_details
 from fixtures.tests.helpers import LoggingFixture
 
 
@@ -110,6 +113,30 @@ class TestFixture(testtools.TestCase):
         self.assertEqual(
             ['setUp-outer', 'setUp-inner', 'cleanUp-inner', 'cleanUp-outer'],
             parent.calls)
+
+    @skipIf(gather_details is None, "gather_details() is not available.")
+    def test_useFixture_details_captured_from_setUp(self):
+        # Details added during fixture set-up are gathered even if setUp()
+        # fails with an exception.
+        class SomethingBroke(Exception): pass
+        class BrokenFixture(fixtures.Fixture):
+            def setUp(self):
+                super(BrokenFixture, self).setUp()
+                self.addDetail('content', text_content("foobar"))
+                raise SomethingBroke()
+        broken_fixture = BrokenFixture()
+        class SimpleFixture(fixtures.Fixture):
+            def setUp(self):
+                super(SimpleFixture, self).setUp()
+                self.useFixture(broken_fixture)
+        simple_fixture = SimpleFixture()
+        self.assertRaises(SomethingBroke, simple_fixture.setUp)
+        self.assertEqual(
+            {"content": text_content("foobar")},
+            broken_fixture.getDetails())
+        self.assertEqual(
+            {"content": text_content("foobar")},
+            simple_fixture.getDetails())
 
     def test_getDetails(self):
         fixture = fixtures.Fixture()

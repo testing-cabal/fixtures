@@ -19,6 +19,8 @@ __all__ = [
 
 import unittest
 
+from fixtures.fixture import gather_details
+
 
 class TestWithFixtures(unittest.TestCase):
     """A TestCase with a helper function to use fixtures.
@@ -35,6 +37,17 @@ class TestWithFixtures(unittest.TestCase):
         :return: The fixture, after setting it up and scheduling a cleanup for
            it.
         """
-        fixture.setUp()
-        self.addCleanup(fixture.cleanUp)
-        return fixture
+        use_details = (
+            gather_details is not None and
+            getattr(self, "addDetail", None) is not None)
+        try:
+            fixture.setUp()
+        except:
+            if use_details:
+                gather_details(fixture, self)
+            raise
+        else:
+            self.addCleanup(fixture.cleanUp)
+            if use_details:
+                self.addCleanup(gather_details, fixture, self)
+            return fixture

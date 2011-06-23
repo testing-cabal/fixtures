@@ -22,11 +22,15 @@ __all__ = [
 
 import sys
 
-try:
-    from testtools import MultipleExceptions
-except ImportError:
-    class MultipleExceptions(Exception):
-        """Report multiple exc_info tuples in self.args."""
+from testtools.helpers import try_import
+
+class MultipleExceptions(Exception):
+    """Report multiple exc_info tuples in self.args."""
+
+MultipleExceptions = try_import(
+    "testtools.MultipleExceptions", MultipleExceptions)
+
+gather_details = try_import("testtools.testcase.gather_details")
 
 
 class Fixture(object):
@@ -173,9 +177,17 @@ class Fixture(object):
         :return: The fixture, after setting it up and scheduling a cleanup for
            it.
         """
-        fixture.setUp()
-        self.addCleanup(fixture.cleanUp)
-        return fixture
+        try:
+            fixture.setUp()
+        except:
+            if gather_details is not None:
+                gather_details(fixture, self)
+            raise
+        else:
+            self.addCleanup(fixture.cleanUp)
+            if gather_details is not None:
+                self.addCleanup(gather_details, fixture, self)
+            return fixture
 
 
 class FunctionFixture(Fixture):
