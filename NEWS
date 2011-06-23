@@ -6,6 +6,9 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+0.3.6
+~~~~~
+
 Another small API break - sorry. Fixture.getDetails no longer returns the
 internal details dict (self._details). Access that directly if needed. It now
 looks for details in used fixtures and returns those as well as details added
