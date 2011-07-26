@@ -13,10 +13,13 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-import StringIO
 import subprocess
 
 import testtools
+from testtools.compat import (
+    _b,
+    BytesIO,
+    )
 
 import fixtures
 from fixtures import PopenFixture, TestWithFixtures
@@ -63,6 +66,6 @@ class TestFakeProcess(testtools.TestCase):
         self.assertEqual(0, proc.returncode)
 
     def test_communicate_with_out(self):
-        proc = FakeProcess({}, {'stdout': StringIO.StringIO('foo')})
-        self.assertEqual(('foo', ''), proc.communicate())
+        proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
+        self.assertEqual((_b('foo'), ''), proc.communicate())
         self.assertEqual(0, proc.returncode)

@@ -16,6 +16,7 @@
 import os.path
 
 import testtools
+from testtools.compat import _b
 
 import fixtures
 from fixtures import PythonPackage, TempDir, TestWithFixtures
@@ -32,18 +33,18 @@ class TestPythonPackage(testtools.TestCase, TestWithFixtures):
             fixture.cleanUp()
    
     def test_writes_package(self):
-        fixture = PythonPackage('foo', [('bar.py', 'woo')])
+        fixture = PythonPackage('foo', [('bar.py', _b('woo'))])
         fixture.setUp()
         try:
-            self.assertEqual('', file(os.path.join(fixture.base, 'foo',
+            self.assertEqual('', open(os.path.join(fixture.base, 'foo',
                 '__init__.py')).read())
-            self.assertEqual('woo', file(os.path.join(fixture.base, 'foo',
+            self.assertEqual('woo', open(os.path.join(fixture.base, 'foo',
                 'bar.py')).read())
         finally:
             fixture.cleanUp()
 
     def test_no__init__(self):
-        fixture = PythonPackage('foo', [('bar.py', 'woo')], init=False)
+        fixture = PythonPackage('foo', [('bar.py', _b('woo'))], init=False)
         fixture.setUp()
         try:
             self.assertFalse(os.path.exists(os.path.join(fixture.base, 'foo',

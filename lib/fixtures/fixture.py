@@ -23,6 +23,7 @@ __all__ = [
 import itertools
 import sys
 
+from testtools.compat import reraise
 from testtools.helpers import try_import
 
 class MultipleExceptions(Exception):
@@ -115,7 +116,7 @@ class Fixture(object):
         if result and raise_first:
             if 1 == len(result):
                 error = result[0]
-                raise error[0], error[1], error[2]
+                reraise(error[0], error[1], error[2])
             else:
                 raise MultipleExceptions(*result)
         if not raise_first:
