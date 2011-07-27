@@ -6,6 +6,13 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+CHANGES:
+
+* Python 3 now supported. (Jonathan Lange, #816665)
+
+* Updated to match the changed ``gather_details`` API in testtools. See #801027.
+  (Jonathan Lange)
+
 0.3.6
 ~~~~~
 
