@@ -55,7 +55,7 @@ class PythonPackage(Fixture):
         os.mkdir(root)
         init_seen = not self.init
         for modulename, contents in self.modulelist:
-            stream = file(os.path.join(root, modulename), 'wb')
+            stream = open(os.path.join(root, modulename), 'wb')
             try:
                 stream.write(contents)
             finally:
@@ -63,4 +63,4 @@ class PythonPackage(Fixture):
             if modulename == '__init__.py':
                 init_seen = True
         if not init_seen:
-            file(os.path.join(root, '__init__.py'), 'wb').close()
+            open(os.path.join(root, '__init__.py'), 'wb').close()

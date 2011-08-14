@@ -28,7 +28,7 @@ Dependencies
 * Python 2.4+
   This is the base language fixtures is written in and for.
 
-* testtools <https://launchpad.net/testtools> 0.9.8 or newer.
+* testtools <https://launchpad.net/testtools> 0.9.12 or newer.
   testtools provides helpful glue functions for the details API used to report
   information about a fixture (whether its used in a testing or production
   environment).
@@ -99,7 +99,7 @@ puts the result of the function in fn_result::
   ...     shutil.rmtree(fixture)
   >>> fixture = fixtures.FunctionFixture(setup_function, teardown_function)
   >>> fixture.setUp()
-  >>> print os.path.isdir(fixture.fn_result)
+  >>> print (os.path.isdir(fixture.fn_result))
   True
   >>> fixture.cleanUp()
 
@@ -107,7 +107,7 @@ This can be expressed even more pithily:
 
   >>> fixture = fixtures.FunctionFixture(tempfile.mkdtemp, shutil.rmtree)
   >>> fixture.setUp()
-  >>> print os.path.isdir(fixture.fn_result)
+  >>> print (os.path.isdir(fixture.fn_result))
   True
   >>> fixture.cleanUp()
 
@@ -159,14 +159,14 @@ TestCase.addCleanup method.
   ...         self.assertEqual(42, fixture.frobnozzle)
   >>> result = unittest.TestResult()
   >>> _ = NoddyTest('test_example').run(result)
-  >>> print result.wasSuccessful()
+  >>> print (result.wasSuccessful())
   True
 
 Fixtures implement the context protocol, so you can also use a fixture as a
 context manager::
 
   >>> with fixtures.FunctionFixture(setup_function, teardown_function) as fixture:
-  ...    print os.path.isdir(fixture.fn_result)
+  ...    print (os.path.isdir(fixture.fn_result))
   True
 
 When multiple cleanups error, fixture.cleanUp() will raise a wrapper exception
@@ -185,8 +185,8 @@ rather than choosing an arbitrary single exception to raise::
   ...    fixture.cleanUp()
   ... except MultipleExceptions:
   ...    exc_info = sys.exc_info()
-  >>> print exc_info[1].args[0][0]
-  <type 'exceptions.ZeroDivisionError'>
+  >>> print (exc_info[1].args[0][0].__name__)
+  ZeroDivisionError
 
 Shared Dependencies
 +++++++++++++++++++
@@ -298,8 +298,8 @@ PopenFixture
 Pretend to run an external command rather than needing it to be present to run
 tests.
 
-  >>> from StringIO import StringIO
-  >>> fixture = fixtures.PopenFixture(lambda _:{'stdout': StringIO('foobar')})
+  >>> from testtools.compat import BytesIO
+  >>> fixture = fixtures.PopenFixture(lambda _:{'stdout': BytesIO('foobar')})
 
 PythonPackage
 +++++++++++++

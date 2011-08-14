@@ -23,6 +23,7 @@ __all__ = [
 import itertools
 import sys
 
+from testtools.compat import reraise
 from testtools.helpers import try_import
 
 class MultipleExceptions(Exception):
@@ -115,7 +116,7 @@ class Fixture(object):
         if result and raise_first:
             if 1 == len(result):
                 error = result[0]
-                raise error[0], error[1], error[2]
+                reraise(error[0], error[1], error[2])
             else:
                 raise MultipleExceptions(*result)
         if not raise_first:
@@ -199,7 +200,7 @@ class Fixture(object):
             # The child failed to come up, capture any details it has (copying
             # the content, it may go away anytime).
             if gather_details is not None:
-                gather_details(fixture, self)
+                gather_details(fixture.getDetails(), self._details)
             raise
         else:
             self.addCleanup(fixture.cleanUp)
