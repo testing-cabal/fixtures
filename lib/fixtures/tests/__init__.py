@@ -35,8 +35,13 @@ def load_tests(loader, standard_tests, pattern):
     prefix = "fixtures.tests.test_"
     test_mod_names = [prefix + test_module for test_module in test_modules]
     standard_tests.addTests(loader.loadTestsFromNames(test_mod_names))
-    standard_tests.addTests(fixtures.tests._fixtures.load_tests(
-        loader, loader.loadTestsFromName('fixtures.tests._fixtures'), pattern))
+    if sys.version_info >= (2, 7):
+        # 2.7 calls load_tests for us
+        standard_tests.addTests(loader.loadTestsFromName('fixtures.tests._fixtures'))
+    else:
+        # We need to call it ourselves.
+        standard_tests.addTests(fixtures.tests._fixtures.load_tests(
+            loader, loader.loadTestsFromName('fixtures.tests._fixtures'), pattern))
     doctest.set_unittest_reportflags(doctest.REPORT_ONLY_FIRST_FAILURE)
     standard_tests.addTest(doctest.DocFileSuite("../../../README"))
     return standard_tests
