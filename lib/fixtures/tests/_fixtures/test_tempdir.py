@@ -16,12 +16,13 @@
 import os
 
 import testtools
+from testtools.matchers import StartsWith
 
 import fixtures
-from fixtures import TempDir, TestWithFixtures
+from fixtures import TempDir
 
         
-class TestTempDir(testtools.TestCase, TestWithFixtures):
+class TestTempDir(testtools.TestCase):
 
     def test_basic(self):
         fixture = TempDir()
@@ -34,3 +35,11 @@ class TestTempDir(testtools.TestCase, TestWithFixtures):
         finally:
             fixture.cleanUp()
             self.assertFalse(os.path.isdir(path))
+
+    def test_under_dir(self):
+        root = self.useFixture(TempDir()).path
+        fixture = TempDir(root)
+        fixture.setUp()
+        with fixture:
+            self.assertThat(fixture.path, StartsWith(root))
+

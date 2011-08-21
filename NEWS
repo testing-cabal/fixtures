@@ -13,6 +13,11 @@ CHANGES:
 
 * Python 3 now supported. (Jonathan Lange, #816665)
 
+* ``TempDir`` supports creating the temporary directory under a specific path.
+  An example of where this is useful would be if you have some specific long
+  lived temporary items and need to avoid running afoul of tmpreaper.
+  (Robert Collins, #830757)
+
 * Updated to match the changed ``gather_details`` API in testtools. See #801027.
   This is an incompatible change in testtools and requires testtools 0.9.12.
   (Jonathan Lange)

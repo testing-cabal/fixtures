@@ -29,7 +29,15 @@ class TempDir(Fixture):
     :ivar path: The path of the temporary directory.
     """
 
+    def __init__(self, rootdir=None):
+        """Create a TempDir.
+
+        :param rootdir: If supplied force the tempoary directory to be a child
+            of rootdir.
+        """
+        self.rootdir = rootdir
+
     def setUp(self):
         Fixture.setUp(self)
-        self.path = tempfile.mkdtemp()
+        self.path = tempfile.mkdtemp(dir=self.rootdir)
         self.addCleanup(shutil.rmtree, self.path, ignore_errors=True)
