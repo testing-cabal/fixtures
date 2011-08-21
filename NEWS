@@ -11,6 +11,7 @@ CHANGES:
 * Python 3 now supported. (Jonathan Lange, #816665)
 
 * Updated to match the changed ``gather_details`` API in testtools. See #801027.
+  This is an incompatible change in testtools and requires testtools 0.9.12.
   (Jonathan Lange)
 
 0.3.6
