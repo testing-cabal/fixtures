@@ -35,6 +35,7 @@ class TempDir(Fixture):
         :param rootdir: If supplied force the tempoary directory to be a child
             of rootdir.
         """
+        Fixture.setUp(self)
         self.rootdir = rootdir
 
     def setUp(self):
