@@ -41,7 +41,7 @@ CHANGES:
   useFixture. (RobertCollins, #780806)
 
 * New fixture ``PackagePathEntry`` which patches the path of an existing
-  package, allowing importing part of it from aonther directory.
+  package, allowing importing part of it from another directory.
   (Robert Collins)
 
 * New fixture ``PythonPathEntry`` which patches sys.path.
