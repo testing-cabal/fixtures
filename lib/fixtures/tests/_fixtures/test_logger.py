@@ -25,44 +25,70 @@ class LoggerFixtureTest(TestCase, TestWithFixtures):
 
     def setUp(self):
         super(LoggerFixtureTest, self).setUp()
-        # Silence the default sysout logger
-        self.handler = logging.StreamHandler(StringIO())
         self.logger = logging.getLogger()
-        self.logger.addHandler(self.handler)
 
     def tearDown(self):
         super(LoggerFixtureTest, self).tearDown()
-        # Restore the default sysout logger
-        self.logger.removeHandler(self.handler)
+        for handler in self.logger.handlers:
+            self.logger.removeHandler(handler)
 
     def test_output(self):
-        """The L{LoggerFixture.output} property returns the logging output."""
+        """
+        The L{LoggerFixture.output} property returns the logging output.
+        """
         fixture = LoggerFixture()
         self.useFixture(fixture)
         logging.info("some message")
         self.assertEqual("some message\n", fixture.output)
 
-    def test_replace_and_restore_logger(self):
-        """The logger is replaced upon setup and restored upon cleanup."""
+    def test_replace_and_restore_handlers(self):
+        """
+        The logger handlers are replaced upon setup and restored upon cleanup.
+        """
+        stream = StringIO()
+        logger = logging.getLogger()
+        logger.addHandler(logging.StreamHandler(stream))
+        logger.setLevel(logging.INFO)
+        logging.info("one")
         fixture = LoggerFixture()
-        logging.info("first message")
         with fixture:
-            logging.info("second message")
-        logging.info("third message")
-        self.assertEqual("second message\n", fixture.output)
+            logging.info("two")
+        logging.info("three")
+        self.assertEqual("two\n", fixture.output)
+        self.assertEqual("one\nthree\n", stream.getvalue())
+
+    def test_dont_nuke(self):
+        """
+        Optionally it's possible to choose to not nuke existing handlers.
+        """
+        stream = StringIO()
+        self.logger.addHandler(logging.StreamHandler(stream))
+        self.logger.setLevel(logging.INFO)
+        fixture = LoggerFixture(nuke_handlers=False)
+        with fixture:
+            logging.info("message")
+        self.assertEqual("message\n", fixture.output)
+        self.assertEqual("message\n", stream.getvalue())
 
     def test_restore_level(self):
-        """The original logging level is restored at cleanup."""
+        """
+        The original logging level is restored at cleanup.
+        """
+        self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
         fixture = LoggerFixture(level=logging.WARNING)
         with fixture:
             # The fixture won't capture this, because the DEBUG level
             # is lower than the WARNING one
             logging.debug("debug message")
+            self.assertEqual(logging.WARNING, self.logger.level)
         self.assertEqual("", fixture.output)
+        self.assertEqual(logging.DEBUG, self.logger.level)
 
     def test_format(self):
-        """It's possible to set an alternate format for the logger."""
+        """
+        It's possible to set an alternate format for the logger.
+        """
         fixture = LoggerFixture(format="%(module)s")
         self.useFixture(fixture)
         logging.info("message")

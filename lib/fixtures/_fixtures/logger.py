@@ -28,6 +28,7 @@ class LoggerFixture(Fixture):
     :param name: Optionally, the name of the logger to replace.
     :param level: Optionally, the log level to set.
     :param format: Optionally, the format the logger should use.
+    :param nuke_handlers: Optionally, whether to nuke existing handlers.
 
     Example:
 
@@ -37,17 +38,23 @@ class LoggerFixture(Fixture):
           self.assertEqual('message', fixture.output)
     """
 
-    def __init__(self, name="", level=INFO, format=""):
+    def __init__(self, name="", level=INFO, format="", nuke_handlers=True):
         super(LoggerFixture, self).__init__()
         self._name = name
         self._level = level
         self._format = format
+        self._nuke_handlers = nuke_handlers
+        self._old_handlers = []
 
     def setUp(self):
         super(LoggerFixture, self).setUp()
         self._output = StringIO()
         self._handler = StreamHandler(self._output)
-        self._logger = getLogger(self._name)
+        self._logger = getLogger(self._name) 
+        if self._nuke_handlers:
+            for handler in self._logger.handlers:
+                self._logger.removeHandler(handler)
+                self._old_handlers.append(handler)
         self._logger.addHandler(self._handler)
 
         if self._format:
@@ -59,6 +66,13 @@ class LoggerFixture(Fixture):
 
         self.addCleanup(self._logger.removeHandler, self._handler)
         self.addCleanup(self._logger.setLevel, self._old_level)
+
+    def cleanUp(self):
+        super(LoggerFixture, self).cleanUp()
+        self._logger.removeHandler(self._handler)
+        self._logger.setLevel(self._old_level)
+        for handler in self._old_handlers:
+            self._logger.addHandler(handler)        
 
     @property
     def output(self):
