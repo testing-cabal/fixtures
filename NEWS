@@ -6,6 +6,9 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+0.3.7
+~~~~~
+
 CHANGES:
 
 * New fixture LoggerFixture which replaces a logging module logger.
