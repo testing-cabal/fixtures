@@ -111,7 +111,7 @@ This can be expressed even more pithily:
   True
   >>> fixture.cleanUp()
 
-Another variation is is MethodFixture which is useful for adapting alternate
+Another variation is MethodFixture which is useful for adapting alternate
 fixture implementations to Fixture::
 
   >>> class MyServer:
