@@ -6,6 +6,11 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+CHANGES:
+
+* EnvironmentVariableFixture now upcalls via super().
+  (Jonathan Lange, #881120)
+
 0.3.7
 ~~~~~
 
