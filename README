@@ -274,6 +274,14 @@ new value.
 
   >>> fixture = fixtures.EnvironmentVariableFixture('HOME')
 
+LoggerFixture
++++++++++++++
+
+Isolate your code from an external logging configuration - so that your test
+gets the output from logged messages, but they don't go to e.g. the console.
+
+  >>> fixture = fixtures.LoggerFixture()
+
 MonkeyPatch
 +++++++++++
 
