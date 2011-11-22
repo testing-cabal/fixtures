@@ -24,7 +24,7 @@ __all__ = [
 
 
 class LoggerFixture(Fixture):
-    """Replace a logger and capture it's output."""
+    """Replace a logger and capture its output."""
 
     def __init__(self, name="", level=INFO, format=None, nuke_handlers=True):
         """Create a LoggerFixture.
