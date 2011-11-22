@@ -42,6 +42,7 @@ __all__ = [
     'EnvironmentVariableFixture',
     'Fixture',
     'FunctionFixture',
+    'LoggerFixture',
     'MethodFixture',
     'MonkeyPatch',
     'PackagePathEntry',
@@ -56,6 +57,7 @@ __all__ = [
 from fixtures.fixture import Fixture, FunctionFixture, MethodFixture
 from fixtures._fixtures import (
     EnvironmentVariableFixture,
+    LoggerFixture,
     MonkeyPatch,
     PackagePathEntry,
     PopenFixture,

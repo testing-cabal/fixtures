@@ -8,6 +8,9 @@ IN DEVELOPMENT
 
 CHANGES:
 
+* New fixture LoggerFixture which replaces a logging module logger.
+  (Free Ekanayaka)
+
 * On Python 2.7 and above the _fixtures tests are no longer run twice.
   (Robert Collins)
 

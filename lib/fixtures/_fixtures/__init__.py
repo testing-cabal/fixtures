@@ -18,6 +18,7 @@
 
 __all__ = [
     'EnvironmentVariableFixture',
+    'LoggerFixture',
     'MonkeyPatch',
     'PackagePathEntry',
     'PopenFixture',
@@ -28,6 +29,7 @@ __all__ = [
 
 
 from fixtures._fixtures.environ import EnvironmentVariableFixture
+from fixtures._fixtures.logger import LoggerFixture
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from fixtures._fixtures.popen import PopenFixture
 from fixtures._fixtures.packagepath import PackagePathEntry
