@@ -1,6 +1,6 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
-# Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
+# Copyright (c) 2010, 2011, Robert Collins <robertc@robertcollins.net>
 # 
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
@@ -20,6 +20,7 @@ __all__ = [
     'EnvironmentVariable',
     'EnvironmentVariableFixture',
     'FakeLogger',
+    'FakePopen',
     'LoggerFixture',
     'MonkeyPatch',
     'PackagePathEntry',
@@ -39,7 +40,10 @@ from fixtures._fixtures.logger import (
     LoggerFixture,
     )
 from fixtures._fixtures.monkeypatch import MonkeyPatch
-from fixtures._fixtures.popen import PopenFixture
+from fixtures._fixtures.popen import (
+    FakePopen,
+    PopenFixture,
+    )
 from fixtures._fixtures.packagepath import PackagePathEntry
 from fixtures._fixtures.pythonpackage import PythonPackage
 from fixtures._fixtures.pythonpath import PythonPathEntry

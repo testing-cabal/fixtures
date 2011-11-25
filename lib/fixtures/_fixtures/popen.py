@@ -1,6 +1,6 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
-# Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
+# Copyright (c) 2010, 2011, Robert Collins <robertc@robertcollins.net>
 # 
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
@@ -14,6 +14,7 @@
 # limitations under that license.
 
 __all__ = [
+    'FakePopen',
     'PopenFixture'
     ]
 
@@ -50,7 +51,7 @@ class FakeProcess(object):
         return self.returncode
 
 
-class PopenFixture(Fixture):
+class FakePopen(Fixture):
     """Replace subprocess.Popen.
 
     Primarily useful for testing, this fixture replaces subprocess.Popen with a
@@ -67,10 +68,11 @@ class PopenFixture(Fixture):
             call, and should return a dict with any desired attributes.
             e.g. return {'stdin': StringIO('foobar')}
         """
+        super(FakePopen, self).__init__()
         self.get_info = get_info
 
     def setUp(self):
-        super(PopenFixture, self).setUp()
+        super(FakePopen, self).setUp()
         self.addCleanup(setattr, subprocess, 'Popen', subprocess.Popen)
         subprocess.Popen = self
         self.procs = []
@@ -83,3 +85,6 @@ class PopenFixture(Fixture):
         result = FakeProcess(proc_args, proc_info)
         self.procs.append(result)
         return result
+
+
+PopenFixture = FakePopen

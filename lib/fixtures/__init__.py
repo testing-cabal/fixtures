@@ -1,6 +1,6 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
-# Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
+# Copyright (c) 2010, 2011, Robert Collins <robertc@robertcollins.net>
 # 
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
@@ -42,6 +42,7 @@ __all__ = [
     'EnvironmentVariable',
     'EnvironmentVariableFixture',
     'FakeLogger',
+    'FakePopen',
     'Fixture',
     'FunctionFixture',
     'LoggerFixture',
@@ -61,6 +62,7 @@ from fixtures._fixtures import (
     EnvironmentVariable,
     EnvironmentVariableFixture,
     FakeLogger,
+    FakePopen,
     LoggerFixture,
     MonkeyPatch,
     PackagePathEntry,
@@ -73,7 +75,6 @@ from fixtures.testcase import TestWithFixtures
 
 
 def test_suite():
-    import unittest
     import fixtures.tests
     return fixtures.tests.test_suite()
 

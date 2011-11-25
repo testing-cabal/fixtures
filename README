@@ -282,6 +282,15 @@ gets the output from logged messages, but they don't go to e.g. the console.
 
   >>> fixture = fixtures.FakeLogger()
 
+FakePopen
++++++++++
+
+Pretend to run an external command rather than needing it to be present to run
+tests.
+
+  >>> from testtools.compat import BytesIO
+  >>> fixture = fixtures.FakePopen(lambda _:{'stdout': BytesIO('foobar')})
+
 MonkeyPatch
 +++++++++++
 
@@ -299,15 +308,6 @@ to the package.__path__ list. If the directory is already in the path, nothing
 happens, if it isn't then it is added on setUp and removed on cleanUp.
 
   >>> fixture = fixtures.PackagePathEntry('package/name', '/foo/bar')
-
-PopenFixture
-++++++++++++
-
-Pretend to run an external command rather than needing it to be present to run
-tests.
-
-  >>> from testtools.compat import BytesIO
-  >>> fixture = fixtures.PopenFixture(lambda _:{'stdout': BytesIO('foobar')})
 
 PythonPackage
 +++++++++++++
