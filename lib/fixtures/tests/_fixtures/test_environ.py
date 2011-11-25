@@ -1,6 +1,6 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
-# Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
+# Copyright (c) 2010, 2011, Robert Collins <robertc@robertcollins.net>
 # 
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
