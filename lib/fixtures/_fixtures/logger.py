@@ -19,15 +19,16 @@ from cStringIO import StringIO
 from fixtures import Fixture
 
 __all__ = [
+    'FakeLogger',
     'LoggerFixture',
     ]
 
 
-class LoggerFixture(Fixture):
+class FakeLogger(Fixture):
     """Replace a logger and capture its output."""
 
     def __init__(self, name="", level=INFO, format=None, nuke_handlers=True):
-        """Create a LoggerFixture.
+        """Create a FakeLogger fixture.
 
         :param name: The name of the logger to replace. Defaults to "".
         :param level: The log level to set, defaults to INFO.
@@ -43,14 +44,14 @@ class LoggerFixture(Fixture):
               logging.info('message')
               self.assertEqual('message', fixture.output)
         """
-        super(LoggerFixture, self).__init__()
+        super(FakeLogger, self).__init__()
         self._name = name
         self._level = level
         self._format = format
         self._nuke_handlers = nuke_handlers
 
     def setUp(self):
-        super(LoggerFixture, self).setUp()
+        super(FakeLogger, self).setUp()
         self._output = StringIO()
         logger = getLogger(self._name) 
         if self._level:
@@ -71,3 +72,6 @@ class LoggerFixture(Fixture):
     @property
     def output(self):
         return self._output.getvalue()
+
+
+LoggerFixture = FakeLogger

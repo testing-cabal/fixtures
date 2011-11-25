@@ -8,8 +8,8 @@ IN DEVELOPMENT
 
 CHANGES:
 
-* EnvironmentVariableFixture renamed to EnvironmentVariable. Still available
-  under old, deprecated name.
+* EnvironmentVariableFixture and LoggerFixture renamed to EnvironmentVariable
+  and FakeLogger. Both are still available under their old, deprecated names.
   (Jonathan Lange, #893539)
 
 * EnvironmentVariableFixture now upcalls via super().

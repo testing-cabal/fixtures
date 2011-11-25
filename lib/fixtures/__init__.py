@@ -41,6 +41,7 @@ __version__ = (0, 3, 8, 'beta', 0)
 __all__ = [
     'EnvironmentVariable',
     'EnvironmentVariableFixture',
+    'FakeLogger',
     'Fixture',
     'FunctionFixture',
     'LoggerFixture',
@@ -59,6 +60,7 @@ from fixtures.fixture import Fixture, FunctionFixture, MethodFixture
 from fixtures._fixtures import (
     EnvironmentVariable,
     EnvironmentVariableFixture,
+    FakeLogger,
     LoggerFixture,
     MonkeyPatch,
     PackagePathEntry,
