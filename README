@@ -266,13 +266,13 @@ In addition to the Fixture, FunctionFixture and MethodFixture classes fixtures
 includes a number of precanned fixtures. The API docs for fixtures will list
 the complete set of these, should the dcs be out of date or not to hand.
 
-EnvironmentVariableFixture
-++++++++++++++++++++++++++
+EnvironmentVariable
++++++++++++++++++++
 
 Isolate your code from environmental variables, delete them or set them to a
 new value.
 
-  >>> fixture = fixtures.EnvironmentVariableFixture('HOME')
+  >>> fixture = fixtures.EnvironmentVariable('HOME')
 
 LoggerFixture
 +++++++++++++

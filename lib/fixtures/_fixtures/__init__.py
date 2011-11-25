@@ -17,6 +17,7 @@
 """Included fixtures."""
 
 __all__ = [
+    'EnvironmentVariable',
     'EnvironmentVariableFixture',
     'LoggerFixture',
     'MonkeyPatch',
@@ -28,7 +29,10 @@ __all__ = [
     ]
 
 
-from fixtures._fixtures.environ import EnvironmentVariableFixture
+from fixtures._fixtures.environ import (
+    EnvironmentVariable,
+    EnvironmentVariableFixture,
+    )
 from fixtures._fixtures.logger import LoggerFixture
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from fixtures._fixtures.popen import PopenFixture

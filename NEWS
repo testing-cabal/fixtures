@@ -8,6 +8,10 @@ IN DEVELOPMENT
 
 CHANGES:
 
+* EnvironmentVariableFixture renamed to EnvironmentVariable. Still available
+  under old, deprecated name.
+  (Jonathan Lange, #893539)
+
 * EnvironmentVariableFixture now upcalls via super().
   (Jonathan Lange, #881120)
 

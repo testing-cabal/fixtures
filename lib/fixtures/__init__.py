@@ -39,6 +39,7 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 __version__ = (0, 3, 8, 'beta', 0)
 
 __all__ = [
+    'EnvironmentVariable',
     'EnvironmentVariableFixture',
     'Fixture',
     'FunctionFixture',
@@ -56,6 +57,7 @@ __all__ = [
 
 from fixtures.fixture import Fixture, FunctionFixture, MethodFixture
 from fixtures._fixtures import (
+    EnvironmentVariable,
     EnvironmentVariableFixture,
     LoggerFixture,
     MonkeyPatch,
