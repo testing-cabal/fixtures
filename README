@@ -343,9 +343,9 @@ Aborts if the covered code takes more than a specified number of whole wall-cloc
 seconds.
 
 There are two possibilities, controlled by the 'gentle' argument: when gentle,
-an exception will be raised and the test will fail.  When not gentle, the
-entire test process will be terminated, which is less clean, but more likely to
-break hangs where no Python code is running.  
+an exception will be raised and the test (or other covered code) will fail.
+When not gentle, the entire process will be terminated, which is less clean,
+but more likely to break hangs where no Python code is running.  
 
 *Caution:* Only one timeout can be active at any time across all threads in a
 single process.  Using more than one has undefined results.  (This could be

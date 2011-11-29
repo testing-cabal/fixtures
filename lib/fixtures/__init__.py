@@ -52,6 +52,7 @@ __all__ = [
     'TempDir',
     'TestWithFixtures',
     'Timeout',
+    'TimeoutException',
     ]
 
 
@@ -66,6 +67,7 @@ from fixtures._fixtures import (
     PythonPathEntry,
     TempDir,
     Timeout,
+    TimeoutException,
     )
 from fixtures.testcase import TestWithFixtures
 

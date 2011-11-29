@@ -15,6 +15,7 @@
 
 import os
 import signal
+import time
 
 import testtools
 from testtools.testcase import (
@@ -22,27 +23,22 @@ from testtools.testcase import (
     )
 
 import fixtures
-from fixtures import EnvironmentVariableFixture, TestWithFixtures
 
 
-class ExampleTests(testtools.TestCase, TestWithFixtures):
-    """These are not intended to pass: they are sample data for the real tests"""
-
-    def sample_timeout_passes(self):
-        self.useFixture(fixtures.Timeout(100, gentle=True))
+def sample_timeout_passes():
+    with fixtures.Timeout(100, gentle=True):
         pass  # Timeout shouldn't fire
 
-    def sample_long_delay_with_timeout(self):
-        self.useFixture(fixtures.Timeout(2, gentle=True))
+def sample_long_delay_with_gentle_timeout():
+    with fixtures.Timeout(1, gentle=True):
         time.sleep(100)  # Expected to be killed here.
 
-    def sample_long_delay_with_harsh_timeout(self):
-        self.useFixture(fixtures.Timeout(2, gentle=False))
+def sample_long_delay_with_harsh_timeout():
+    with fixtures.Timeout(1, gentle=False):
         time.sleep(100)  # Expected to be killed here.
 
 
-
-class TestTimeout(testtools.TestCase, TestWithFixtures):
+class TestTimeout(testtools.TestCase, fixtures.TestWithFixtures):
 
     def requireUnix(self):
         if getattr(signal, 'alarm', None) is None:
@@ -50,26 +46,22 @@ class TestTimeout(testtools.TestCase, TestWithFixtures):
 
     def test_timeout_passes(self):
         # This can pass even on Windows - the test is skipped.
-        test = ExampleTests('sample_timeout_passes')
-        result = test.run()
-        self.assertTrue(result.wasSuccessful())
+        sample_timeout_passes()
 
     def test_timeout_gentle(self):
         self.requireUnix()
-        test = ExampleTests('sample_long_delay_with_timeout')
-        result = test.run()
-        self.assertFalse(result.wasSuccessful())
+        self.assertRaises(
+            fixtures.TimeoutException,
+            sample_long_delay_with_gentle_timeout)
 
     def test_timeout_harsh(self):
         self.requireUnix()
-        test = ExampleTests('sample_long_delay_with_harsh_timeout')
         # This will normally kill the whole process, which would be
         # inconvenient.  Let's hook the alarm here so we can observe it.
-        got_alarm = False
-        def sigalrm_handler():
-            got_alarm = True
+        self.got_alarm = False
+        def sigalrm_handler(signum, frame):
+            self.got_alarm = True
         old_handler = signal.signal(signal.SIGALRM, sigalrm_handler)
         self.addCleanup(signal.signal, signal.SIGALRM, old_handler)
-        result = test.run()
-        self.assertFalse(result.wasSuccessful())
-        self.assertTrue(got_alarm)
+        sample_long_delay_with_harsh_timeout()
+        self.assertTrue(self.got_alarm)
