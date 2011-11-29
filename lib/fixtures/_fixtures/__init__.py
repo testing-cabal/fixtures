@@ -25,6 +25,7 @@ __all__ = [
     'PythonPackage',
     'PythonPathEntry',
     'TempDir',
+    'TestTimeout',
     ]
 
 
@@ -36,3 +37,4 @@ from fixtures._fixtures.packagepath import PackagePathEntry
 from fixtures._fixtures.pythonpackage import PythonPackage
 from fixtures._fixtures.pythonpath import PythonPathEntry
 from fixtures._fixtures.tempdir import TempDir
+from fixtures._fixtures.timeout import TestTimeout
