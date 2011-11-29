@@ -11,7 +11,7 @@ CHANGES:
 * EnvironmentVariableFixture now upcalls via super().
   (Jonathan Lange, #881120)
 
-* New TimeoutFixture.  (Martin Pool)
+* New Timeout fixture.  (Martin Pool)
 
 0.3.7
 ~~~~~

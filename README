@@ -336,16 +336,20 @@ Create a temporary directory and clean it up later.
 The created directory is stored in the ``path`` attribute of the fixture after
 setUp.
 
-TimeoutFixture
-++++++++++++++
+Timeout
++++++++
 
-Interrupts tests if they take more than a specified number of whole wall-clock
+Aborts if the covered code takes more than a specified number of whole wall-clock
 seconds.
 
 There are two possibilities, controlled by the 'gentle' argument: when gentle,
 an exception will be raised and the test will fail.  When not gentle, the
 entire test process will be terminated, which is less clean, but more likely to
-break hangs where no Python code is running.  You can only use one in any given
-test.
+break hangs where no Python code is running.  
 
-Currently supported only on Unix because it relies on the ``alarm`` system call.
+*Caution:* Only one timeout can be active at any time across all threads in a
+single process.  Using more than one has undefined results.  (This could be
+improved by chaining alarms.)
+
+*Note:* Currently supported only on Unix because it relies on the ``alarm``
+system call.

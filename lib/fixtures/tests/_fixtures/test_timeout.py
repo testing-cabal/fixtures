@@ -29,20 +29,20 @@ class ExampleTests(testtools.TestCase, TestWithFixtures):
     """These are not intended to pass: they are sample data for the real tests"""
 
     def sample_timeout_passes(self):
-        self.useFixture(fixtures.TestTimeout(100, gentle=True))
+        self.useFixture(fixtures.Timeout(100, gentle=True))
         pass  # Timeout shouldn't fire
 
     def sample_long_delay_with_timeout(self):
-        self.useFixture(fixtures.TestTimeout(2, gentle=True))
+        self.useFixture(fixtures.Timeout(2, gentle=True))
         time.sleep(100)  # Expected to be killed here.
 
     def sample_long_delay_with_harsh_timeout(self):
-        self.useFixture(fixtures.TestTimeout(2, gentle=False))
+        self.useFixture(fixtures.Timeout(2, gentle=False))
         time.sleep(100)  # Expected to be killed here.
 
 
 
-class TestTimeoutFixture(testtools.TestCase, TestWithFixtures):
+class TestTimeout(testtools.TestCase, TestWithFixtures):
 
     def requireUnix(self):
         if getattr(signal, 'alarm', None) is None:
@@ -70,7 +70,6 @@ class TestTimeoutFixture(testtools.TestCase, TestWithFixtures):
             got_alarm = True
         old_handler = signal.signal(signal.SIGALRM, sigalrm_handler)
         self.addCleanup(signal.signal, signal.SIGALRM, old_handler)
-        import pdb;pdb.set_trace()
         result = test.run()
         self.assertFalse(result.wasSuccessful())
         self.assertTrue(got_alarm)

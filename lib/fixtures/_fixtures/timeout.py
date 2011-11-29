@@ -23,7 +23,7 @@ class TestTimeoutException(Exception):
     """Test timed out"""
 
 
-class TestTimeout(fixtures.Fixture):
+class Timeout(fixtures.Fixture):
 
     def __init__(self, timeout_secs, gentle):
         self.timeout_secs = timeout_secs
