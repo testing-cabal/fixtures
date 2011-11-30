@@ -20,6 +20,7 @@ __all__ = [
     'EnvironmentVariableFixture',
     'LoggerFixture',
     'MonkeyPatch',
+    'NestedTempfile',
     'PackagePathEntry',
     'PopenFixture',
     'PythonPackage',
@@ -31,8 +32,11 @@ __all__ = [
 from fixtures._fixtures.environ import EnvironmentVariableFixture
 from fixtures._fixtures.logger import LoggerFixture
 from fixtures._fixtures.monkeypatch import MonkeyPatch
-from fixtures._fixtures.popen import PopenFixture
 from fixtures._fixtures.packagepath import PackagePathEntry
+from fixtures._fixtures.popen import PopenFixture
 from fixtures._fixtures.pythonpackage import PythonPackage
 from fixtures._fixtures.pythonpath import PythonPathEntry
-from fixtures._fixtures.tempdir import TempDir
+from fixtures._fixtures.tempdir import (
+    NestedTempfile,
+    TempDir,
+    )

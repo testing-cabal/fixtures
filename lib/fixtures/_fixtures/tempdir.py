@@ -14,16 +14,17 @@
 # limitations under that license.
 
 __all__ = [
-    'TempDir'
+    'NestedTempfile',
+    'TempDir',
     ]
 
 import shutil
 import tempfile
 
-from fixtures import Fixture
+import fixtures
 
 
-class TempDir(Fixture):
+class TempDir(fixtures.Fixture):
     """Create a temporary directory.
 
     :ivar path: The path of the temporary directory.
@@ -32,13 +33,27 @@ class TempDir(Fixture):
     def __init__(self, rootdir=None):
         """Create a TempDir.
 
-        :param rootdir: If supplied force the tempoary directory to be a child
-            of rootdir.
+        :param rootdir: If supplied force the temporary directory to be a
+            child of rootdir.
         """
-        Fixture.setUp(self)
         self.rootdir = rootdir
 
     def setUp(self):
-        Fixture.setUp(self)
+        super(TempDir, self).setUp()
         self.path = tempfile.mkdtemp(dir=self.rootdir)
         self.addCleanup(shutil.rmtree, self.path, ignore_errors=True)
+
+
+class NestedTempfile(fixtures.Fixture):
+    """Nest all temporary files and directories inside another directory.
+
+    This temporarily monkey-patches `tempfile` to create all temporary files
+    and directories inside a new temporary directory. This new temporary
+    directory is removed when the fixture is torn down.
+    """
+
+    def setUp(self):
+        super(NestedTempfile, self).setUp()
+        tempdir = self.useFixture(TempDir()).path
+        patch = fixtures.MonkeyPatch("tempfile.tempdir", tempdir)
+        self.useFixture(patch)

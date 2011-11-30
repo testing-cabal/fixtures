@@ -45,6 +45,7 @@ __all__ = [
     'LoggerFixture',
     'MethodFixture',
     'MonkeyPatch',
+    'NestedTempfile',
     'PackagePathEntry',
     'PopenFixture',
     'PythonPackage',
@@ -54,11 +55,16 @@ __all__ = [
     ]
 
 
-from fixtures.fixture import Fixture, FunctionFixture, MethodFixture
+from fixtures.fixture import (
+    Fixture,
+    FunctionFixture,
+    MethodFixture,
+    )
 from fixtures._fixtures import (
     EnvironmentVariableFixture,
     LoggerFixture,
     MonkeyPatch,
+    NestedTempfile,
     PackagePathEntry,
     PopenFixture,
     PythonPackage,
@@ -69,7 +75,6 @@ from fixtures.testcase import TestWithFixtures
 
 
 def test_suite():
-    import unittest
     import fixtures.tests
     return fixtures.tests.test_suite()
 
