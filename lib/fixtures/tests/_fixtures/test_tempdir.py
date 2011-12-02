@@ -54,7 +54,7 @@ class NestedTempfileTest(testtools.TestCase):
         starting_tempdir = tempfile.gettempdir()
         with NestedTempfile():
             self.assertEqual(tempfile.tempdir, tempfile.gettempdir())
-            self.assertNotEqual(tempfile.tempdir, starting_tempdir)
+            self.assertNotEqual(starting_tempdir, tempfile.tempdir)
             self.assertTrue(os.path.isdir(tempfile.tempdir))
             nested_tempdir = tempfile.tempdir
         self.assertEqual(tempfile.tempdir, tempfile.gettempdir())
