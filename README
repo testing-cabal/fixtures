@@ -266,21 +266,30 @@ In addition to the Fixture, FunctionFixture and MethodFixture classes fixtures
 includes a number of precanned fixtures. The API docs for fixtures will list
 the complete set of these, should the dcs be out of date or not to hand.
 
-EnvironmentVariableFixture
-++++++++++++++++++++++++++
+EnvironmentVariable
++++++++++++++++++++
 
 Isolate your code from environmental variables, delete them or set them to a
 new value.
 
-  >>> fixture = fixtures.EnvironmentVariableFixture('HOME')
+  >>> fixture = fixtures.EnvironmentVariable('HOME')
 
-LoggerFixture
-+++++++++++++
+FakeLogger
+++++++++++
 
 Isolate your code from an external logging configuration - so that your test
 gets the output from logged messages, but they don't go to e.g. the console.
 
-  >>> fixture = fixtures.LoggerFixture()
+  >>> fixture = fixtures.FakeLogger()
+
+FakePopen
++++++++++
+
+Pretend to run an external command rather than needing it to be present to run
+tests.
+
+  >>> from testtools.compat import BytesIO
+  >>> fixture = fixtures.FakePopen(lambda _:{'stdout': BytesIO('foobar')})
 
 MonkeyPatch
 +++++++++++
@@ -299,15 +308,6 @@ to the package.__path__ list. If the directory is already in the path, nothing
 happens, if it isn't then it is added on setUp and removed on cleanUp.
 
   >>> fixture = fixtures.PackagePathEntry('package/name', '/foo/bar')
-
-PopenFixture
-++++++++++++
-
-Pretend to run an external command rather than needing it to be present to run
-tests.
-
-  >>> from testtools.compat import BytesIO
-  >>> fixture = fixtures.PopenFixture(lambda _:{'stdout': BytesIO('foobar')})
 
 PythonPackage
 +++++++++++++

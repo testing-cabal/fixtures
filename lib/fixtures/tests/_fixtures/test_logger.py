@@ -18,13 +18,13 @@ import logging
 from testtools import TestCase
 from cStringIO import StringIO
 
-from fixtures import LoggerFixture, TestWithFixtures
+from fixtures import FakeLogger, TestWithFixtures
 
 
-class LoggerFixtureTest(TestCase, TestWithFixtures):
+class FakeLoggerTest(TestCase, TestWithFixtures):
 
     def setUp(self):
-        super(LoggerFixtureTest, self).setUp()
+        super(FakeLoggerTest, self).setUp()
         self.logger = logging.getLogger()
         self.addCleanup(self.removeHandlers, self.logger)
 
@@ -33,7 +33,7 @@ class LoggerFixtureTest(TestCase, TestWithFixtures):
             logger.removeHandler(handler)
 
     def test_output_property_has_output(self):
-        fixture = self.useFixture(LoggerFixture())
+        fixture = self.useFixture(FakeLogger())
         logging.info("some message")
         self.assertEqual("some message\n", fixture.output)
 
@@ -43,7 +43,7 @@ class LoggerFixtureTest(TestCase, TestWithFixtures):
         logger.addHandler(logging.StreamHandler(stream))
         logger.setLevel(logging.INFO)
         logging.info("one")
-        fixture = LoggerFixture()
+        fixture = FakeLogger()
         with fixture:
             logging.info("two")
         logging.info("three")
@@ -54,7 +54,7 @@ class LoggerFixtureTest(TestCase, TestWithFixtures):
         stream = StringIO()
         self.logger.addHandler(logging.StreamHandler(stream))
         self.logger.setLevel(logging.INFO)
-        fixture = LoggerFixture(nuke_handlers=False)
+        fixture = FakeLogger(nuke_handlers=False)
         with fixture:
             logging.info("message")
         self.assertEqual("message\n", fixture.output)
@@ -62,7 +62,7 @@ class LoggerFixtureTest(TestCase, TestWithFixtures):
 
     def test_logging_level_restored(self):
         self.logger.setLevel(logging.DEBUG)
-        fixture = LoggerFixture(level=logging.WARNING)
+        fixture = FakeLogger(level=logging.WARNING)
         with fixture:
             # The fixture won't capture this, because the DEBUG level
             # is lower than the WARNING one
@@ -72,7 +72,7 @@ class LoggerFixtureTest(TestCase, TestWithFixtures):
         self.assertEqual(logging.DEBUG, self.logger.level)
 
     def test_custom_format(self):
-        fixture = LoggerFixture(format="%(module)s")
+        fixture = FakeLogger(format="%(module)s")
         self.useFixture(fixture)
         logging.info("message")
         self.assertEqual("test_logger\n", fixture.output)

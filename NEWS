@@ -8,8 +8,12 @@ IN DEVELOPMENT
 
 CHANGES:
 
-* EnvironmentVariableFixture now upcalls via super().
+* EnvironmentVariable now upcalls via super().
   (Jonathan Lange, #881120)
+
+* EnvironmentVariableFixture, LoggerFixture, PopenFixture renamed to
+  EnvironmentVariable, FakeLogger and FakePopen respectively. All are still
+  available under their old, deprecated names.  (Jonathan Lange, #893539)
 
 * gather_details fixed to handle the case where two child fixtures have the
   same detail name. (Jonathan Lange, #895652)
