@@ -23,7 +23,10 @@ __all__ = [
 import itertools
 import sys
 
-from testtools.compat import reraise
+from testtools.compat import (
+    advance_iterator,
+    reraise,
+    )
 from testtools.helpers import try_import
 
 class MultipleExceptions(Exception):

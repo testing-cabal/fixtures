@@ -11,6 +11,9 @@ CHANGES:
 * EnvironmentVariableFixture now upcalls via super().
   (Jonathan Lange, #881120)
 
+* gather_details fixed to handle the case where two child fixtures have the
+  same detail name. (Jonathan Lange, #895652)
+
 * New Timeout fixture.  (Martin Pool)
 
 0.3.7

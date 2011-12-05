@@ -163,6 +163,18 @@ class TestFixture(testtools.TestCase):
             child.addDetail('foo', 'content')
         self.assertEqual({}, parent.getDetails())
 
+    def test_duplicate_details_are_disambiguated(self):
+        parent = fixtures.Fixture()
+        with parent:
+            parent.addDetail('foo', 'parent-content')
+            child = fixtures.Fixture()
+            parent.useFixture(child)
+            # Note that we add the detail *after* using the fixture: the parent
+            # has to query just-in-time.
+            child.addDetail('foo', 'child-content')
+            self.assertEqual({'foo': 'parent-content',
+                              'foo-1': 'child-content',}, parent.getDetails())
+
     def test_addDetail(self):
         fixture = fixtures.Fixture()
         with fixture:
