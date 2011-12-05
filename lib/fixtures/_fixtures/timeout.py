@@ -55,10 +55,14 @@ class Timeout(fixtures.Fixture):
         super(Timeout, self).setUp()
         if self.alarm_fn is None:
             return  # Can't run on Windows
-        self.alarm_fn(self.timeout_secs)
-        self.addCleanup(lambda: self.alarm_fn(0))
         if self.gentle:
-            saved_handler = signal.signal(signal.SIGALRM, self.signal_handler)
-            self.addCleanup(lambda: signal.signal(
-                signal.SIGALRM, saved_handler))
-            # Otherwise, the SIGALRM will probably kill the process.
+            # Install a handler for SIGARLM so we can raise an exception rather
+            # than the default handler executing, which kills the process.
+            old_handler = signal.signal(signal.SIGALRM, self.signal_handler)
+        # We add the slarm cleanup before the cleanup for the signal handler,
+        # otherwise there is a race condition where the signal handler is
+        # cleaned up but the alarm still fires.
+        self.addCleanup(lambda: self.alarm_fn(0))
+        self.alarm_fn(self.timeout_secs)
+        if self.gentle:
+            self.addCleanup(lambda: signal.signal(signal.SIGALRM, old_handler))
