@@ -300,6 +300,16 @@ Control the value of a named python attribute.
   ...     pass
   >>> fixture = fixtures.MonkeyPatch('__builtin__.open', fake_open)
 
+NestedTempfile
+++++++++++++++
+
+Change the default directory that the tempfile module places temporary files
+and directories in. This can be useful for containing the noise created by
+code which doesn't clean up its temporary files. This does not affect
+temporary file creation where an explicit containing directory was provided.
+
+  >>> fixture = fixtures.NestedTempfile()
+
 PackagePathEntry
 ++++++++++++++++
 

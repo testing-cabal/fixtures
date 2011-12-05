@@ -18,6 +18,9 @@ CHANGES:
 * gather_details fixed to handle the case where two child fixtures have the
   same detail name. (Jonathan Lange, #895652)
 
+* ``NestedTempfile`` which will change the default path for tempfile temporary
+  file / directory creation. (Gavin Panella)
+
 * New Timeout fixture.  (Martin Pool)
 
 0.3.7
