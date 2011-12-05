@@ -6,6 +6,12 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+0.3.8
+~~~~~
+
+Simpler names for a number of fixtures, and two new fixtures NestedTempfile and
+Timeout. See the manual for more information.
+
 CHANGES:
 
 * EnvironmentVariable now upcalls via super().
