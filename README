@@ -349,7 +349,7 @@ setUp.
 TempHomeDir
 +++++++++++
 
-Create a temporary directory and set is as $HOME in the environment.
+Create a temporary directory and set it as $HOME in the environment.
 
   >>> fixture = fixtures.TempHomeDir()
 
