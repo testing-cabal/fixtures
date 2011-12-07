@@ -78,6 +78,7 @@ from fixtures._fixtures import (
     PythonPackage,
     PythonPathEntry,
     TempDir,
+    TempHomeDir,
     Timeout,
     TimeoutException,
     )

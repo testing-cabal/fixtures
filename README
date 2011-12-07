@@ -346,6 +346,20 @@ Create a temporary directory and clean it up later.
 The created directory is stored in the ``path`` attribute of the fixture after
 setUp.
 
+TempHomeDir
++++++++++++
+
+Create a temporary directory and set is as $HOME in the environment.
+
+  >>> fixture = fixtures.TempHomeDir()
+
+The created directory is stored in the ``path`` attribute of the fixture after
+setUp. The TempDir fixture that created the path is available at ``tempdir``
+if you need it.
+
+The environment will now have $HOME set to the same path, and the value
+will be returned to its previous value after tearDown.
+
 Timeout
 +++++++
 

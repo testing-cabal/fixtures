@@ -4,6 +4,7 @@ PYTHON ?= python
 all: check
 
 check:
+	echo $(PYTHONPATH)
 	PYTHONPATH=$(PYTHONPATH) $(PYTHON) -m testtools.run \
 	    fixtures.test_suite
 
