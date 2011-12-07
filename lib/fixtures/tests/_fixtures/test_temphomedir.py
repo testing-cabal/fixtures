@@ -29,12 +29,10 @@ class TestTempDir(testtools.TestCase):
         fixture = TempHomeDir()
         sentinel = object()
         self.assertEqual(sentinel, getattr(fixture, 'path', sentinel))
-        self.assertEqual(sentinel, getattr(fixture, 'tempdir', sentinel))
         fixture.setUp()
         try:
             path = fixture.path
             self.assertTrue(os.path.isdir(path))
-            self.assertEqual(path, fixture.tempdir.path)
             self.assertEqual(path, os.environ.get("HOME"))
         finally:
             fixture.cleanUp()

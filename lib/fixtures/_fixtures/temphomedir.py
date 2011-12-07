@@ -18,28 +18,15 @@ __all__ = [
     ]
 
 import fixtures
+from fixtures._fixtures.tempdir import TempDir
 
 
-class TempHomeDir(fixtures.Fixture):
+class TempHomeDir(TempDir):
     """Create a temporary directory and set it as $HOME
 
     :ivar path: the path of the temporary directory.
-    :ivar tempdir: The TempDir fixture providing the directory.
     """
-
-    def __init__(self, rootdir=None):
-        """Create a TempDir.
-
-        :param rootdir: If supplied force the temporary directory to be a
-            child of rootdir.
-        """
-        self.rootdir = rootdir
 
     def setUp(self):
         super(TempHomeDir, self).setUp()
-        self.tempdir = self.useFixture(fixtures.TempDir(rootdir=self.rootdir))
-        self.useFixture(fixtures.EnvironmentVariable("HOME", self.tempdir.path))
-
-    @property
-    def path(self):
-        return self.tempdir.path
+        self.useFixture(fixtures.EnvironmentVariable("HOME", self.path))

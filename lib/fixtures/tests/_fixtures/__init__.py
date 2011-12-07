@@ -23,6 +23,7 @@ def load_tests(loader, standard_tests, pattern):
         'pythonpackage',
         'pythonpath',
         'tempdir',
+        'temphomedir',
         'timeout',
         ]
     prefix = "fixtures.tests._fixtures.test_"
