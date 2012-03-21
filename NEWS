@@ -6,6 +6,12 @@ fixtures release notes
 IN DEVELOPMENT
 ~~~~~~~~~~~~~~
 
+CHANGES:
+
+* New TempHomeDir fixture to create and activate a temporary home directory.
+  (James Westby)
+
+
 0.3.8
 ~~~~~
 

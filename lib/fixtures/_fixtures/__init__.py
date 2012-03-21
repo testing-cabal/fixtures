@@ -54,6 +54,9 @@ from fixtures._fixtures.tempdir import (
     NestedTempfile,
     TempDir,
     )
+from fixtures._fixtures.temphomedir import (
+    TempHomeDir,
+    )
 from fixtures._fixtures.timeout import (
     Timeout,
     TimeoutException,
