@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2011, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -15,6 +15,9 @@
 
 from logging import StreamHandler, getLogger, INFO, Formatter
 from cStringIO import StringIO
+
+from testtools.content import Content
+from testtools.content_type import ContentType
 
 from fixtures import Fixture
 
@@ -53,7 +56,7 @@ class FakeLogger(Fixture):
     def setUp(self):
         super(FakeLogger, self).setUp()
         self._output = StringIO()
-        logger = getLogger(self._name) 
+        logger = getLogger(self._name)
         if self._level:
             self.addCleanup(logger.setLevel, logger.level)
             logger.setLevel(self._level)
@@ -72,6 +75,12 @@ class FakeLogger(Fixture):
     @property
     def output(self):
         return self._output.getvalue()
+
+    def getDetails(self):
+        details = super(FakeLogger, self).getDetails()
+        content = Content(ContentType('text', 'plain'), lambda: [self.output])
+        details[self.__class__.__name__] = content
+        return details
 
 
 LoggerFixture = FakeLogger

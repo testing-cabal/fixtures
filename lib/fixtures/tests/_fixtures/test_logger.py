@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2011, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -16,6 +16,7 @@
 import logging
 
 from testtools import TestCase
+from testtools.content import text_content
 from cStringIO import StringIO
 
 from fixtures import FakeLogger, TestWithFixtures
@@ -76,3 +77,19 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
         self.useFixture(fixture)
         logging.info("message")
         self.assertEqual("test_logger\n", fixture.output)
+
+    def test_fixture_details(self):
+        # Ensure the FakeLogger correctly returns details.
+        fixture = self.useFixture(FakeLogger())
+        name = 'details'
+        msg = 'some message'
+        fixture.addDetail(name, text_content(msg))
+        content =  fixture.getDetails()[name]
+        self.assertEqual(msg, content.as_text())
+
+    def test_logs_returned_as_details(self):
+        # Ensure logs are correctly returned as fixture details.
+        fixture = self.useFixture(FakeLogger())
+        logging.info('some message')
+        content =  fixture.getDetails()[fixture.__class__.__name__]
+        self.assertEqual(fixture.output, content.as_text())
