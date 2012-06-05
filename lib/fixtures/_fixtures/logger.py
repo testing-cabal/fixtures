@@ -17,7 +17,7 @@ from logging import StreamHandler, getLogger, INFO, Formatter
 from cStringIO import StringIO
 
 from testtools.content import Content
-from testtools.content_type import ContentType
+from testtools.content_type import UTF8_TEXT
 
 from fixtures import Fixture
 
@@ -52,10 +52,14 @@ class FakeLogger(Fixture):
         self._level = level
         self._format = format
         self._nuke_handlers = nuke_handlers
+        self._detail_name = u"pythonlogging:'%s'" % self._name
 
     def setUp(self):
         super(FakeLogger, self).setUp()
         self._output = StringIO()
+        self.addDetail(
+            self._detail_name,
+            Content(UTF8_TEXT, lambda: [self.output]))
         logger = getLogger(self._name)
         if self._level:
             self.addCleanup(logger.setLevel, logger.level)
@@ -75,12 +79,6 @@ class FakeLogger(Fixture):
     @property
     def output(self):
         return self._output.getvalue()
-
-    def getDetails(self):
-        details = super(FakeLogger, self).getDetails()
-        content = Content(ContentType('text', 'plain'), lambda: [self.output])
-        details[self.__class__.__name__] = content
-        return details
 
 
 LoggerFixture = FakeLogger

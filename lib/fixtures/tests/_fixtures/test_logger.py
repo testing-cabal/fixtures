@@ -78,18 +78,9 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
         logging.info("message")
         self.assertEqual("test_logger\n", fixture.output)
 
-    def test_fixture_details(self):
-        # Ensure the FakeLogger correctly returns details.
-        fixture = self.useFixture(FakeLogger())
-        name = 'details'
-        msg = 'some message'
-        fixture.addDetail(name, text_content(msg))
-        content =  fixture.getDetails()[name]
-        self.assertEqual(msg, content.as_text())
-
     def test_logs_returned_as_details(self):
         # Ensure logs are correctly returned as fixture details.
         fixture = self.useFixture(FakeLogger())
         logging.info('some message')
-        content =  fixture.getDetails()[fixture.__class__.__name__]
+        content =  fixture.getDetails()[fixture._detail_name]
         self.assertEqual(fixture.output, content.as_text())
