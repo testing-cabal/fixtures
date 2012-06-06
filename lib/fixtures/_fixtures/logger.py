@@ -52,13 +52,12 @@ class FakeLogger(Fixture):
         self._level = level
         self._format = format
         self._nuke_handlers = nuke_handlers
-        self._detail_name = u"pythonlogging:'%s'" % self._name
 
     def setUp(self):
         super(FakeLogger, self).setUp()
         self._output = StringIO()
         self.addDetail(
-            self._detail_name,
+            u"pythonlogging:'%s'" % self._name,
             Content(UTF8_TEXT, lambda: [self.output]))
         logger = getLogger(self._name)
         if self._level:

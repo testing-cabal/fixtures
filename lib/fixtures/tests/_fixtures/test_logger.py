@@ -81,6 +81,7 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
     def test_logs_returned_as_details(self):
         # Ensure logs are correctly returned as fixture details.
         fixture = self.useFixture(FakeLogger())
+        details =  fixture.getDetails()
         logging.info('some message')
-        content =  fixture.getDetails()[fixture._detail_name]
+        content = details["pythonlogging:''"]
         self.assertEqual(fixture.output, content.as_text())
