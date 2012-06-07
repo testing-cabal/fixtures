@@ -16,7 +16,6 @@
 import logging
 
 from testtools import TestCase
-from testtools.content import text_content
 from cStringIO import StringIO
 
 from fixtures import FakeLogger, TestWithFixtures
