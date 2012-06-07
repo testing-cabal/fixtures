@@ -11,6 +11,10 @@ CHANGES:
 * New TempHomeDir fixture to create and activate a temporary home directory.
   (James Westby)
 
+* ``FakeLogger`` now includes the output from python logging - the .output
+  attribute as a content object in getDetails, so the logs will automatically
+  be included in failed test output (or other similar circumstances).
+  (Francesco Banconi)
 
 0.3.8
 ~~~~~

@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -151,7 +151,7 @@ class Fixture(object):
 
         This does not return the internal dictionary: mutating it will have no
         effect. If you need to mutate it, just do so directly.
-        
+
         :return: Dict from name -> content_object.
         """
         result = dict(self._details)
@@ -163,7 +163,7 @@ class Fixture(object):
         """Prepare the Fixture for use.
 
         This should be overridden by most concrete fixtures. When overriding
-        be sure to include self.addCleanup calls to restore the fixture to 
+        be sure to include self.addCleanup calls to restore the fixture to
         an un-setUp state, so that a single Fixture instance can be reused.
 
         After setUp is called, the fixture will have one or more attributes
@@ -218,7 +218,7 @@ class FunctionFixture(Fixture):
 
     Typically used when an existing object or function interface exists but you
     wish to use it as a Fixture (e.g. because fixtures are in use in your test
-    suite and this will fit in better). 
+    suite and this will fit in better).
 
     To adapt an object with differently named setUp and cleanUp methods:
     fixture = FunctionFixture(object.install, object.__class__.remove)
