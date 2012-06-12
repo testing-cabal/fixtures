@@ -3,8 +3,14 @@ fixtures release notes
 ----------------------
 
 
-IN DEVELOPMENT
-~~~~~~~~~~~~~~
+NEXT
+~~~~
+
+
+0.3.9
+~~~~~
+
+New ``TempHomeDir`` fixture and more log output included in ``FakeLogger``.
 
 CHANGES:
 
