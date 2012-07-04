@@ -13,7 +13,6 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-import os
 import signal
 import time
 

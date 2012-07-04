@@ -21,7 +21,6 @@ import fixtures.tests._fixtures
 
 
 def test_suite():
-    result = unittest.TestSuite()
     standard_tests = unittest.TestSuite()
     loader = unittest.TestLoader()
     return load_tests(loader, standard_tests, None)

@@ -15,11 +15,10 @@
 
 import testtools
 
-import fixtures
 from fixtures import MonkeyPatch, TestWithFixtures
 
 reference = 23
-        
+
 class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
 
     def test_patch_and_restore(self):
@@ -36,7 +35,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
     def test_patch_missing_attribute(self):
         fixture = MonkeyPatch(
             'fixtures.tests._fixtures.test_monkeypatch.new_attr', True)
-        sentinel = object()
         self.assertFalse('new_attr' in globals())
         fixture.setUp()
         try:
@@ -61,7 +59,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         fixture = MonkeyPatch(
             'fixtures.tests._fixtures.test_monkeypatch.new_attr',
             MonkeyPatch.delete)
-        sentinel = object()
         self.assertFalse('new_attr' in globals())
         fixture.setUp()
         try:

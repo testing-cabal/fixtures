@@ -17,7 +17,6 @@ import sys
 
 import testtools
 
-import fixtures
 from fixtures import (
     PythonPathEntry,
     TempDir,
