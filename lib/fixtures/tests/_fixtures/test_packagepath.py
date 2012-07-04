@@ -13,8 +13,6 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-import sys
-
 import testtools
 
 import fixtures

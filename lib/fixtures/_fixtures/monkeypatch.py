@@ -17,8 +17,6 @@ __all__ = [
     'MonkeyPatch'
     ]
 
-import os
-
 from fixtures import Fixture
 
 

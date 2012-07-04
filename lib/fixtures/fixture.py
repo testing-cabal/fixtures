@@ -143,7 +143,7 @@ class Fixture(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        errors = self.cleanUp()
+        self.cleanUp()
         return False # propogate exceptions from the with body.
 
     def getDetails(self):
