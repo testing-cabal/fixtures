@@ -54,6 +54,7 @@ __all__ = [
     'PythonPackage',
     'PythonPathEntry',
     'TempDir',
+    'TempHomeDir',
     'TestWithFixtures',
     'Timeout',
     'TimeoutException',
