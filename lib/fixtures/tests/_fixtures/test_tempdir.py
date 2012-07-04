@@ -23,13 +23,14 @@ from fixtures import (
     NestedTempfile,
     TempDir,
     )
+from fixtures.tests.helpers import NotHasattr
+
 
 class TestTempDir(testtools.TestCase):
 
     def test_basic(self):
         fixture = TempDir()
-        sentinel = object()
-        self.assertEqual(sentinel, getattr(fixture, 'path', sentinel))
+        self.assertThat(fixture, NotHasattr('path'))
         fixture.setUp()
         try:
             path = fixture.path
