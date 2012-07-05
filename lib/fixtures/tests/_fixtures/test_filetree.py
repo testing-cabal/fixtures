@@ -13,7 +13,15 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+import os
+
 from testtools import TestCase
+from testtools.matchers import (
+    DirContains,
+    DirExists,
+    FileContains,
+    Not,
+    )
 
 from fixtures import FileTree
 from fixtures.tests.helpers import NotHasattr
@@ -24,3 +32,20 @@ class TestFileTree(TestCase):
     def test_no_path_at_start(self):
         fixture = FileTree([])
         self.assertThat(fixture, NotHasattr('path'))
+
+    def test_creates_directory(self):
+        fixture = FileTree([])
+        fixture.setUp()
+        try:
+            self.assertThat(fixture.path, DirExists())
+        finally:
+            fixture.cleanUp()
+            self.assertThat(fixture.path, Not(DirExists()))
+
+    def test_creates_files(self):
+        fixture = FileTree([('a', 'foo'), ('b', 'bar')])
+        with fixture:
+            path = fixture.path
+            self.assertThat(path, DirContains(['a', 'b']))
+            self.assertThat(os.path.join(path, 'a'), FileContains('foo'))
+            self.assertThat(os.path.join(path, 'b'), FileContains('bar'))
