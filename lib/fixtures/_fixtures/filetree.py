@@ -33,7 +33,15 @@ class FileTree(Fixture):
         super(FileTree, self).setUp()
         tempdir = self.useFixture(TempDir())
         self.path = path = tempdir.path
-        for filename, contents in self._shape:
-            f = open(os.path.join(path, filename), 'w')
-            f.write(contents)
-            f.close()
+        for description in self._shape:
+            try:
+                name, contents = description
+            except ValueError:
+                name = description[0]
+            name = os.path.join(path, name)
+            if name[-1] == '/':
+                os.mkdir(name)
+            else:
+                f = open(name, 'w')
+                f.write(contents)
+                f.close()
