@@ -45,14 +45,11 @@ class FileTree(Fixture):
             if isinstance(description, basestring):
                 name = description
             else:
-                try:
-                    name, contents = description
-                except ValueError:
-                    name = description[0]
+                name = description[0]
             name = os.path.join(path, name)
             if name[-1] == '/':
                 os.mkdir(name)
             else:
                 f = open(name, 'w')
-                f.write(contents)
+                f.write(description[1])
                 f.close()

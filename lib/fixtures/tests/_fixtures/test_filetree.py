@@ -30,10 +30,13 @@ from fixtures.tests.helpers import NotHasattr
 class TestFileTree(TestCase):
 
     def test_no_path_at_start(self):
+        # FileTree fixture doesn't create a path at the beginning.
         fixture = FileTree([])
         self.assertThat(fixture, NotHasattr('path'))
 
     def test_creates_directory(self):
+        # It creates a temporary directory once set up.  That directory is
+        # removed at cleanup.
         fixture = FileTree([])
         fixture.setUp()
         try:
@@ -43,6 +46,8 @@ class TestFileTree(TestCase):
             self.assertThat(fixture.path, Not(DirExists()))
 
     def test_creates_files(self):
+        # When given a list of file specifications, it creates those files
+        # underneath the temporary directory.
         fixture = FileTree([('a', 'foo'), ('b', 'bar')])
         with fixture:
             path = fixture.path
@@ -51,6 +56,7 @@ class TestFileTree(TestCase):
             self.assertThat(os.path.join(path, 'b'), FileContains('bar'))
 
     def test_creates_directories(self):
+        # When given directory specifications, it creates those directories.
         fixture = FileTree([('a/', None), ('b/',)])
         with fixture:
             path = fixture.path
@@ -59,6 +65,8 @@ class TestFileTree(TestCase):
             self.assertThat(os.path.join(path, 'b'), DirExists())
 
     def test_simpler_directory_syntax(self):
+        # Directory specifications don't have to be tuples. They can be single
+        # strings.
         fixture = FileTree(['a/'])
         with fixture:
             path = fixture.path
