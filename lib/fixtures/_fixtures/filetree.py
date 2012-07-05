@@ -24,8 +24,16 @@ from fixtures._fixtures.tempdir import TempDir
 
 
 class FileTree(Fixture):
+    """A structure of files and directories on disk."""
 
     def __init__(self, shape):
+        """Create a ``FileTree``.
+
+        :param shape: A list of descriptions of files and directories to make.
+            Files are described as ``("filename", contents)`` and directories
+            are written as ``"dirname/"``.  The trailing slash is necessary.
+            Directories can also be written as ``("dirname/",)``.
+        """
         super(FileTree, self).__init__()
         self._shape = shape
 
@@ -34,10 +42,13 @@ class FileTree(Fixture):
         tempdir = self.useFixture(TempDir())
         self.path = path = tempdir.path
         for description in self._shape:
-            try:
-                name, contents = description
-            except ValueError:
-                name = description[0]
+            if isinstance(description, basestring):
+                name = description
+            else:
+                try:
+                    name, contents = description
+                except ValueError:
+                    name = description[0]
             name = os.path.join(path, name)
             if name[-1] == '/':
                 os.mkdir(name)

@@ -57,3 +57,10 @@ class TestFileTree(TestCase):
             self.assertThat(path, DirContains(['a', 'b']))
             self.assertThat(os.path.join(path, 'a'), DirExists())
             self.assertThat(os.path.join(path, 'b'), DirExists())
+
+    def test_simpler_directory_syntax(self):
+        fixture = FileTree(['a/'])
+        with fixture:
+            path = fixture.path
+            self.assertThat(path, DirContains(['a']))
+            self.assertThat(os.path.join(path, 'a'), DirExists())
