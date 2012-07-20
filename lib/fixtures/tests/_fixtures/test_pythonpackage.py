@@ -18,10 +18,9 @@ import os.path
 import testtools
 from testtools.compat import _b
 
-import fixtures
-from fixtures import PythonPackage, TempDir, TestWithFixtures
+from fixtures import PythonPackage, TestWithFixtures
 
-        
+
 class TestPythonPackage(testtools.TestCase, TestWithFixtures):
 
     def test_has_tempdir(self):

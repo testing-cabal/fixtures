@@ -13,7 +13,6 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-import sys
 import types
 
 import testtools
@@ -102,7 +101,7 @@ class TestFixture(testtools.TestCase):
                 self.addCleanup(raise_exception2)
                 self.addCleanup(raise_exception1)
         fixture = FixtureWithException()
-        ctx = fixture.__enter__()
+        fixture.__enter__()
         exc = self.assertRaises(Exception, fixture.__exit__, None, None, None)
         self.assertEqual(('woo',), exc.args[0][1].args)
         self.assertEqual(('hoo',), exc.args[1][1].args)

@@ -29,6 +29,7 @@ __all__ = [
     'PythonPackage',
     'PythonPathEntry',
     'TempDir',
+    'TempHomeDir',
     'Timeout',
     'TimeoutException',
     ]
