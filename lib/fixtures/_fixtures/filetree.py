@@ -77,10 +77,10 @@ class FileTree(Fixture):
             Directories can also be written as ``("dirname/",)``.
         """
         super(FileTree, self).__init__()
-        self._shape = normalize_shape(shape)
+        self.shape = shape
 
     def setUp(self):
         super(FileTree, self).setUp()
         tempdir = self.useFixture(TempDir())
         self.path = tempdir.path
-        create_normal_shape(self.path, self._shape)
+        create_normal_shape(self.path, normalize_shape(self.shape))
