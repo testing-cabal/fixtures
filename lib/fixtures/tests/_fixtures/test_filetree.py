@@ -72,6 +72,7 @@ class TestFileTree(TestCase):
                 FileContains("The file 'a/b/foo.txt'."))
             self.assertThat(os.path.join(path, 'c', 'd', 'e'), DirExists())
 
+
 class TestNormalizeEntry(TestCase):
 
     def test_file_as_tuple(self):

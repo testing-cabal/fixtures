@@ -25,6 +25,19 @@ from fixtures._fixtures.tempdir import TempDir
 
 
 def normalize_entry(entry):
+    """Normalize a file shape entry.
+
+    'Normal' entries are either ("file", "content") or ("directory/", None).
+
+    Standalone strings get turned into 2-tuples, with files getting made-up
+    contents.  Singletons are treated the same.
+
+    If something that looks like a file has no content, or something that
+    looks like a directory has content, we raise an error, as we don't know
+    whether the developer really intends a file or really intends a directory.
+
+    :return: A list of 2-tuples containing paths and contents.
+    """
     if isinstance(entry, basestring):
         if entry[-1] == '/':
             return (entry, None)
@@ -49,15 +62,28 @@ def normalize_entry(entry):
 
 
 def normalize_shape(shape):
+    """Normalize a shape of a file tree to create.
+
+    Normalizes each entry and returns a sorted list of entries.
+    """
     normal_shape = []
     for entry in sorted(shape):
         normal_shape.append(normalize_entry(entry))
     return normal_shape
 
 
-def create_normal_shape(root, shape):
+def create_normal_shape(base_directory, shape):
+    """Create a file tree from 'shape' in 'base_directory'.
+
+    'shape' must be a list of 2-tuples of (name, contents).  If name ends with
+    '/', then contents must be None, as it will be created as a directory.
+    Otherwise, contents must be provided.
+
+    If either a file or directory is specified but the parent directory
+    doesn't exist, will create the parent directory.
+    """
     for name, contents in shape:
-        name = os.path.join(root, name)
+        name = os.path.join(base_directory, name)
         if name[-1] == '/':
             os.makedirs(name)
         else:
@@ -79,9 +105,13 @@ class FileTree(Fixture):
         """Create a ``FileTree``.
 
         :param shape: A list of descriptions of files and directories to make.
-            Files are described as ``("filename", contents)`` and directories
-            are written as ``"dirname/"``.  The trailing slash is necessary.
-            Directories can also be written as ``("dirname/",)``.
+            Generally directories are described as ``"directory/"`` and
+            files are described as ``("filename", contents)``.  Filenames can
+            also be specified without contents, in which case we'll make
+            something up.
+
+            Directories can also be specified as ``(directory, None)`` or
+            ``(directory,)``.
         """
         super(FileTree, self).__init__()
         self.shape = shape
