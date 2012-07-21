@@ -63,6 +63,14 @@ class TestFileTree(TestCase):
             self.assertThat(os.path.join(path, 'a'), DirContains(['b']))
             self.assertThat(os.path.join(path, 'a', 'b'), DirExists())
 
+    def test_not_even_creating_parents(self):
+        fixture = FileTree(['a/b/foo.txt', 'c/d/e/'])
+        with fixture:
+            path = fixture.path
+            self.assertThat(
+                os.path.join(path, 'a', 'b', 'foo.txt'),
+                FileContains("The file 'a/b/foo.txt'."))
+            self.assertThat(os.path.join(path, 'c', 'd', 'e'), DirExists())
 
 class TestNormalizeEntry(TestCase):
 
