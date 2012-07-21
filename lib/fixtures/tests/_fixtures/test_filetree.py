@@ -23,8 +23,12 @@ from testtools.matchers import (
     Not,
     )
 
-from fixtures import FileTree
+from fixtures import (
+    FileTree,
+    TempDir,
+    )
 from fixtures._fixtures.filetree import (
+    create_normal_shape,
     normalize_entry,
     normalize_shape,
     )
@@ -48,34 +52,6 @@ class TestFileTree(TestCase):
         finally:
             fixture.cleanUp()
             self.assertThat(fixture.path, Not(DirExists()))
-
-    def test_creates_files(self):
-        # When given a list of file specifications, it creates those files
-        # underneath the temporary directory.
-        fixture = FileTree([('a', 'foo'), ('b', 'bar')])
-        with fixture:
-            path = fixture.path
-            self.assertThat(path, DirContains(['a', 'b']))
-            self.assertThat(os.path.join(path, 'a'), FileContains('foo'))
-            self.assertThat(os.path.join(path, 'b'), FileContains('bar'))
-
-    def test_creates_directories(self):
-        # When given directory specifications, it creates those directories.
-        fixture = FileTree([('a/', None), ('b/',)])
-        with fixture:
-            path = fixture.path
-            self.assertThat(path, DirContains(['a', 'b']))
-            self.assertThat(os.path.join(path, 'a'), DirExists())
-            self.assertThat(os.path.join(path, 'b'), DirExists())
-
-    def test_simpler_directory_syntax(self):
-        # Directory specifications don't have to be tuples. They can be single
-        # strings.
-        fixture = FileTree(['a/'])
-        with fixture:
-            path = fixture.path
-            self.assertThat(path, DirContains(['a']))
-            self.assertThat(os.path.join(path, 'a'), DirExists())
 
     def test_out_of_order(self):
         # If a file or a subdirectory is listed before its parent directory,
@@ -164,3 +140,29 @@ class TestNormalizeShape(TestCase):
         # entries.
         entries = normalize_shape(['a/b/', 'a/'])
         self.assertEqual([('a/', None), ('a/b/', None)], entries)
+
+
+class TestCreateNormalShape(TestCase):
+
+    def test_empty(self):
+        tempdir = self.useFixture(TempDir()).path
+        create_normal_shape(tempdir, [])
+        self.assertThat(tempdir, DirContains([]))
+
+    def test_creates_files(self):
+        # When given a list of file specifications, it creates those files
+        # underneath the temporary directory.
+        path = self.useFixture(TempDir()).path
+        create_normal_shape(path, [('a', 'foo'), ('b', 'bar')])
+        self.assertThat(path, DirContains(['a', 'b']))
+        self.assertThat(os.path.join(path, 'a'), FileContains('foo'))
+        self.assertThat(os.path.join(path, 'b'), FileContains('bar'))
+
+    def test_creates_directories(self):
+        # When given directory specifications, it creates those directories.
+        path = self.useFixture(TempDir()).path
+        create_normal_shape(path, [('a/', None), ('b/', None)])
+        self.assertThat(path, DirContains(['a', 'b']))
+        self.assertThat(os.path.join(path, 'a'), DirExists())
+        self.assertThat(os.path.join(path, 'b'), DirExists())
+

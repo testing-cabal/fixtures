@@ -54,6 +54,17 @@ def normalize_shape(shape):
     return normal_shape
 
 
+def create_normal_shape(root, shape):
+    for name, contents in shape:
+        name = os.path.join(root, name)
+        if name[-1] == '/':
+            os.mkdir(name)
+        else:
+            f = open(name, 'w')
+            f.write(contents)
+            f.close()
+
+
 class FileTree(Fixture):
     """A structure of files and directories on disk."""
 
@@ -71,12 +82,5 @@ class FileTree(Fixture):
     def setUp(self):
         super(FileTree, self).setUp()
         tempdir = self.useFixture(TempDir())
-        self.path = path = tempdir.path
-        for name, contents in self._shape:
-            name = os.path.join(path, name)
-            if name[-1] == '/':
-                os.mkdir(name)
-            else:
-                f = open(name, 'w')
-                f.write(contents)
-                f.close()
+        self.path = tempdir.path
+        create_normal_shape(self.path, self._shape)
