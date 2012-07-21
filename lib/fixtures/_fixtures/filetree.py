@@ -30,10 +30,21 @@ def normalize_entry(entry):
         else:
             return (entry, "The file '%s'." % (entry,))
     else:
-        if entry[0][-1] == '/':
-            return (entry[0], None)
-        else:
+        if len(entry) == 1:
+            return normalize_entry(entry[0])
+        elif len(entry) == 2:
+            name, content = entry
+            is_dir = (name[-1] == '/')
+            if ((is_dir and content is not None)
+                or (not is_dir and content is None)):
+                raise ValueError(
+                    "Directories must end with '/' and have no content, "
+                    "files do not end with '/' and must have content, got %r"
+                    % (entry,))
             return entry
+        else:
+            raise ValueError(
+                "Invalid file or directory description: %r" % (entry,))
 
 
 def normalize_shape(shape):

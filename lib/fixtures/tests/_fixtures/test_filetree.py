@@ -112,11 +112,44 @@ class TestNormalizeEntry(TestCase):
         directory = normalize_entry('foo/')
         self.assertEqual(('foo/', None), directory)
 
+    def test_directories_with_content(self):
+        # If we're given a directory with content, we raise an error, since
+        # it's ambiguous and we don't want to guess.
+        bad_entry = ('dir/', "stuff")
+        e = self.assertRaises(ValueError, normalize_entry, bad_entry)
+        self.assertEqual(
+            "Directories must end with '/' and have no content, files do not "
+            "end with '/' and must have content, got %r" % (bad_entry,),
+            str(e))
+
     def test_filenames_as_strings(self):
         # If file names are just given as strings, then they are normalized to
         # tuples of filenames and made-up contents.
         entry = normalize_entry('foo')
         self.assertEqual(('foo', "The file 'foo'."), entry)
+
+    def test_filenames_as_singletons(self):
+        # A singleton tuple of a filename is normalized to a 2-tuple of
+        # the file name and made-up contents.
+        entry = normalize_entry(('foo',))
+        self.assertEqual(('foo', "The file 'foo'."), entry)
+
+    def test_filenames_without_content(self):
+        # If we're given a filename without content, we raise an error, since
+        # it's ambiguous and we don't want to guess.
+        bad_entry = ('filename', None)
+        e = self.assertRaises(ValueError, normalize_entry, bad_entry)
+        self.assertEqual(
+            "Directories must end with '/' and have no content, files do not "
+            "end with '/' and must have content, got %r" % (bad_entry,),
+            str(e))
+
+    def test_too_long_tuple(self):
+        bad_entry = ('foo', 'bar', 'baz')
+        e = self.assertRaises(ValueError, normalize_entry, bad_entry)
+        self.assertEqual(
+            "Invalid file or directory description: %r" % (bad_entry,),
+            str(e))
 
 
 class TestNormalizeShape(TestCase):
