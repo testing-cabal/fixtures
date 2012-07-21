@@ -23,19 +23,23 @@ from fixtures import Fixture
 from fixtures._fixtures.tempdir import TempDir
 
 
+def normalize_entry(entry):
+    if isinstance(entry, basestring):
+        if entry[-1] == '/':
+            return (entry, None)
+        else:
+            return (entry, "The file '%s'." % (entry,))
+    else:
+        if entry[0][-1] == '/':
+            return (entry[0], None)
+        else:
+            return entry
+
+
 def normalize_shape(shape):
     normal_shape = []
     for entry in sorted(shape):
-        if isinstance(entry, basestring):
-            if entry[-1] == '/':
-                normal_shape.append((entry, None))
-            else:
-                normal_shape.append((entry, "The file '%s'." % (entry,)))
-        else:
-            if entry[0][-1] == '/':
-                normal_shape.append((entry[0], None))
-            else:
-                normal_shape.append(entry)
+        normal_shape.append(normalize_entry(entry))
     return normal_shape
 
 

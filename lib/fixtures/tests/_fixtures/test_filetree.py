@@ -24,7 +24,10 @@ from testtools.matchers import (
     )
 
 from fixtures import FileTree
-from fixtures._fixtures.filetree import normalize_shape
+from fixtures._fixtures.filetree import (
+    normalize_entry,
+    normalize_shape,
+    )
 from fixtures.tests.helpers import NotHasattr
 
 
@@ -85,6 +88,37 @@ class TestFileTree(TestCase):
             self.assertThat(os.path.join(path, 'a', 'b'), DirExists())
 
 
+class TestNormalizeEntry(TestCase):
+
+    def test_file_as_tuple(self):
+        # A tuple of filenames and contents is already normalized.
+        entry = normalize_entry(('foo', 'foo contents'))
+        self.assertEqual(('foo', 'foo contents'), entry)
+
+    def test_directories_as_tuples(self):
+        # A tuple of directory name and None is already normalized.
+        directory = normalize_entry(('foo/', None))
+        self.assertEqual(('foo/', None), directory)
+
+    def test_directories_as_singletons(self):
+        # A singleton tuple of directory name is normalized to a 2-tuple of
+        # the directory name and None.
+        directory = normalize_entry(('foo/',))
+        self.assertEqual(('foo/', None), directory)
+
+    def test_directories_as_strings(self):
+        # If directories are just given as strings, then they are normalized
+        # to tuples of directory names and None.
+        directory = normalize_entry('foo/')
+        self.assertEqual(('foo/', None), directory)
+
+    def test_filenames_as_strings(self):
+        # If file names are just given as strings, then they are normalized to
+        # tuples of filenames and made-up contents.
+        entry = normalize_entry('foo')
+        self.assertEqual(('foo', "The file 'foo'."), entry)
+
+
 class TestNormalizeShape(TestCase):
 
     def test_empty(self):
@@ -92,36 +126,8 @@ class TestNormalizeShape(TestCase):
         empty = normalize_shape([])
         self.assertEqual([], empty)
 
-    def test_files_as_tuples(self):
-        # A list of tuples of filenames and contents is already normalized,
-        # well, once it's alpha-sorted.
-        files = normalize_shape(
-            [('foo', 'foo contents'), ('bar', 'bar contents')])
-        self.assertEqual(
-            [('bar', 'bar contents'), ('foo', 'foo contents')], files)
-
-    def test_directories_as_tuples(self):
-        # A list of tuples of directory names and None is already normalized,
-        # well, once it's alpha-sorted.
-        directories = normalize_shape([('foo/', None), ('bar/', None)])
-        self.assertEqual([('bar/', None), ('foo/', None)], directories)
-
-    def test_directories_as_singletons(self):
-        # A list of tuples of directory names and None is already normalized,
-        # well, once it's alpha-sorted.
-        directories = normalize_shape([('foo/',), ('bar/',)])
-        self.assertEqual([('bar/', None), ('foo/', None)], directories)
-
-    def test_directories_as_strings(self):
-        # If directories are just given as strings, then they are normalized
-        # to tuples of directory names and None.
-        directories = normalize_shape(['foo/', 'bar/'])
-        self.assertEqual([('bar/', None), ('foo/', None)], directories)
-
-    def test_filenames_as_strings(self):
-        # If file names are just given as strings, then they are normalized to
-        # tuples of filenames and made-up contents.
-        files = normalize_shape(['foo', 'bar'])
-        self.assertEqual(
-            [('bar', "The file 'bar'."), ('foo', "The file 'foo'.")], files)
-
+    def test_sorts_entries(self):
+        # The normal form a list of entries is the sorted list of normal
+        # entries.
+        entries = normalize_shape(['a/b/', 'a/'])
+        self.assertEqual([('a/', None), ('a/b/', None)], entries)
