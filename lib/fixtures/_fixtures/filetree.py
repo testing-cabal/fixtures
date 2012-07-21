@@ -23,6 +23,22 @@ from fixtures import Fixture
 from fixtures._fixtures.tempdir import TempDir
 
 
+def normalize_shape(shape):
+    normal_shape = []
+    for entry in sorted(shape):
+        if isinstance(entry, basestring):
+            if entry[-1] == '/':
+                normal_shape.append((entry, None))
+            else:
+                normal_shape.append((entry, "The file '%s'." % (entry,)))
+        else:
+            if entry[0][-1] == '/':
+                normal_shape.append((entry[0], None))
+            else:
+                normal_shape.append(entry)
+    return normal_shape
+
+
 class FileTree(Fixture):
     """A structure of files and directories on disk."""
 
@@ -35,21 +51,17 @@ class FileTree(Fixture):
             Directories can also be written as ``("dirname/",)``.
         """
         super(FileTree, self).__init__()
-        self._shape = shape
+        self._shape = normalize_shape(shape)
 
     def setUp(self):
         super(FileTree, self).setUp()
         tempdir = self.useFixture(TempDir())
         self.path = path = tempdir.path
-        for description in self._shape:
-            if isinstance(description, basestring):
-                name = description
-            else:
-                name = description[0]
+        for name, contents in self._shape:
             name = os.path.join(path, name)
             if name[-1] == '/':
                 os.mkdir(name)
             else:
                 f = open(name, 'w')
-                f.write(description[1])
+                f.write(contents)
                 f.close()
