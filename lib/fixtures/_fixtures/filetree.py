@@ -17,6 +17,7 @@ __all__ = [
     'FileTree',
     ]
 
+import errno
 import os
 
 from fixtures import Fixture
@@ -58,8 +59,14 @@ def create_normal_shape(root, shape):
     for name, contents in shape:
         name = os.path.join(root, name)
         if name[-1] == '/':
-            os.mkdir(name)
+            os.makedirs(name)
         else:
+            base_dir = os.path.dirname(name)
+            try:
+                os.makedirs(base_dir)
+            except OSError, e:
+                if e.errno != errno.EEXIST:
+                    raise
             f = open(name, 'w')
             f.write(contents)
             f.close()

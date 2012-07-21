@@ -166,3 +166,13 @@ class TestCreateNormalShape(TestCase):
         self.assertThat(os.path.join(path, 'a'), DirExists())
         self.assertThat(os.path.join(path, 'b'), DirExists())
 
+    def test_creates_parent_directories(self):
+        # If the parents of a file or directory don't exist, they get created
+        # too.
+        path = self.useFixture(TempDir()).path
+        create_normal_shape(path, [('a/b/', None), ('c/d.txt', 'text')])
+        self.assertThat(path, DirContains(['a', 'c']))
+        self.assertThat(os.path.join(path, 'a'), DirContains('b'))
+        self.assertThat(os.path.join(path, 'a', 'b'), DirExists())
+        self.assertThat(os.path.join(path, 'c'), DirExists())
+        self.assertThat(os.path.join(path, 'c', 'd.txt'), FileContains('text'))
