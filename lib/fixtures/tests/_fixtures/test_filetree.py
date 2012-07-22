@@ -26,7 +26,7 @@ from testtools.matchers import (
 from fixtures import (
     TempDir,
     )
-from fixtures._fixtures.filetree import (
+from fixtures._fixtures.tempdir import (
     create_normal_shape,
     normalize_entry,
     normalize_shape,
