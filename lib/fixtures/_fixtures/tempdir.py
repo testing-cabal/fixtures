@@ -45,7 +45,18 @@ class TempDir(fixtures.Fixture):
         self.path = tempfile.mkdtemp(dir=self.rootdir)
         self.addCleanup(shutil.rmtree, self.path, ignore_errors=True)
 
-    def make_tree(self, shape):
+    def make_tree(self, *shape):
+        """Make a tree of files and directories underneath this temp dir.
+
+        :param shape: A list of descriptions of files and directories to make.
+            Generally directories are described as ``"directory/"`` and
+            files are described as ``("filename", contents)``.  Filenames can
+            also be specified without contents, in which case we'll make
+            something up.
+
+            Directories can also be specified as ``(directory, None)`` or
+            ``(directory,)``.
+        """
         create_normal_shape(self.path, normalize_shape(shape))
 
 

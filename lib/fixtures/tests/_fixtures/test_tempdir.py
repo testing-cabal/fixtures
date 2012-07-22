@@ -92,7 +92,7 @@ class TestFileTree(testtools.TestCase):
         # that doesn't matter.  We'll create the directory first.
         fixture = TempDir()
         with fixture:
-            fixture.make_tree(['a/b/', 'a/'])
+            fixture.make_tree('a/b/', 'a/')
             path = fixture.path
             self.assertThat(path, DirContains(['a']))
             self.assertThat(os.path.join(path, 'a'), DirContains(['b']))
@@ -101,7 +101,7 @@ class TestFileTree(testtools.TestCase):
     def test_not_even_creating_parents(self):
         fixture = TempDir()
         with fixture:
-            fixture.make_tree(['a/b/foo.txt', 'c/d/e/'])
+            fixture.make_tree('a/b/foo.txt', 'c/d/e/')
             path = fixture.path
             self.assertThat(
                 os.path.join(path, 'a', 'b', 'foo.txt'),
