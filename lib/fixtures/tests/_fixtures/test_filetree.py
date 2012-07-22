@@ -20,7 +20,6 @@ from testtools.matchers import (
     DirContains,
     DirExists,
     FileContains,
-    Not,
     )
 
 from fixtures import (
@@ -31,26 +30,9 @@ from fixtures._fixtures.tempdir import (
     normalize_entry,
     normalize_shape,
     )
-from fixtures.tests.helpers import HasNoAttribute
 
 
 class TestFileTree(TestCase):
-
-    def test_no_path_at_start(self):
-        # FileTree fixture doesn't create a path at the beginning.
-        fixture = TempDir()
-        self.assertThat(fixture, HasNoAttribute('path'))
-
-    def test_creates_directory(self):
-        # It creates a temporary directory once set up.  That directory is
-        # removed at cleanup.
-        fixture = TempDir()
-        fixture.setUp()
-        try:
-            self.assertThat(fixture.path, DirExists())
-        finally:
-            fixture.cleanUp()
-            self.assertThat(fixture.path, Not(DirExists()))
 
     def test_out_of_order(self):
         # If a file or a subdirectory is listed before its parent directory,
