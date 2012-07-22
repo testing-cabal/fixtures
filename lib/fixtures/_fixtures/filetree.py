@@ -66,10 +66,7 @@ def normalize_shape(shape):
 
     Normalizes each entry and returns a sorted list of entries.
     """
-    normal_shape = []
-    for entry in sorted(shape):
-        normal_shape.append(normalize_entry(entry))
-    return normal_shape
+    return sorted(map(normalize_entry, shape))
 
 
 def create_normal_shape(base_directory, shape):
