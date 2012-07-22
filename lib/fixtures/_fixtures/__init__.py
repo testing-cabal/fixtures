@@ -21,7 +21,6 @@ __all__ = [
     'EnvironmentVariableFixture',
     'FakeLogger',
     'FakePopen',
-    'FileTree',
     'LoggerFixture',
     'MonkeyPatch',
     'NestedTempfile',
@@ -40,7 +39,6 @@ from fixtures._fixtures.environ import (
     EnvironmentVariable,
     EnvironmentVariableFixture,
     )
-from fixtures._fixtures.filetree import FileTree
 from fixtures._fixtures.logger import (
     FakeLogger,
     LoggerFixture,
