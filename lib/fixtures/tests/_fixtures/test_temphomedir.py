@@ -22,14 +22,14 @@ from fixtures import (
     TempDir,
     TempHomeDir,
     )
-from fixtures.tests.helpers import NotHasattr
+from fixtures.tests.helpers import HasNoAttribute
 
 
 class TestTempDir(testtools.TestCase):
 
     def test_basic(self):
         fixture = TempHomeDir()
-        self.assertThat(fixture, NotHasattr('path'))
+        self.assertThat(fixture, HasNoAttribute('path'))
         fixture.setUp()
         try:
             path = fixture.path

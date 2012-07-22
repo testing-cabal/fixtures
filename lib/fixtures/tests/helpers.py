@@ -36,14 +36,14 @@ class LoggingFixture(fixtures.Fixture):
         self.calls.append('reset' + self.suffix)
 
 
-class NotHasattr(object):
+class HasNoAttribute(object):
     """For asserting that an object does not have a particular attribute."""
 
     def __init__(self, attr_name):
         self._attr_name = attr_name
 
     def __str__(self):
-        return 'NotHasattr(%s)' % (self._attr_name,)
+        return 'HasNoAttribute(%s)' % (self._attr_name,)
 
     def match(self, obj):
         sentinel = object()

@@ -32,7 +32,7 @@ from fixtures._fixtures.filetree import (
     normalize_entry,
     normalize_shape,
     )
-from fixtures.tests.helpers import NotHasattr
+from fixtures.tests.helpers import HasNoAttribute
 
 
 class TestFileTree(TestCase):
@@ -40,7 +40,7 @@ class TestFileTree(TestCase):
     def test_no_path_at_start(self):
         # FileTree fixture doesn't create a path at the beginning.
         fixture = FileTree([])
-        self.assertThat(fixture, NotHasattr('path'))
+        self.assertThat(fixture, HasNoAttribute('path'))
 
     def test_creates_directory(self):
         # It creates a temporary directory once set up.  That directory is
