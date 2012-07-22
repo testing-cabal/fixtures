@@ -24,7 +24,6 @@ from testtools.matchers import (
     )
 
 from fixtures import (
-    FileTree,
     TempDir,
     )
 from fixtures._fixtures.filetree import (
@@ -39,13 +38,13 @@ class TestFileTree(TestCase):
 
     def test_no_path_at_start(self):
         # FileTree fixture doesn't create a path at the beginning.
-        fixture = FileTree([])
+        fixture = TempDir()
         self.assertThat(fixture, HasNoAttribute('path'))
 
     def test_creates_directory(self):
         # It creates a temporary directory once set up.  That directory is
         # removed at cleanup.
-        fixture = FileTree([])
+        fixture = TempDir()
         fixture.setUp()
         try:
             self.assertThat(fixture.path, DirExists())
@@ -56,16 +55,18 @@ class TestFileTree(TestCase):
     def test_out_of_order(self):
         # If a file or a subdirectory is listed before its parent directory,
         # that doesn't matter.  We'll create the directory first.
-        fixture = FileTree(['a/b/', 'a/'])
+        fixture = TempDir()
         with fixture:
+            fixture.make_tree(['a/b/', 'a/'])
             path = fixture.path
             self.assertThat(path, DirContains(['a']))
             self.assertThat(os.path.join(path, 'a'), DirContains(['b']))
             self.assertThat(os.path.join(path, 'a', 'b'), DirExists())
 
     def test_not_even_creating_parents(self):
-        fixture = FileTree(['a/b/foo.txt', 'c/d/e/'])
+        fixture = TempDir()
         with fixture:
+            fixture.make_tree(['a/b/foo.txt', 'c/d/e/'])
             path = fixture.path
             self.assertThat(
                 os.path.join(path, 'a', 'b', 'foo.txt'),
