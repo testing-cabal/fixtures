@@ -6,12 +6,6 @@ fixtures release notes
 NEXT
 ~~~~
 
-CHANGES:
-
-* New method ``make_tree`` on ``TempDir``.  Easily creates a structure of
-  files and directories underneath a temporary directory.
-  (Jonathan Lange)
-
 
 0.3.9
 ~~~~~

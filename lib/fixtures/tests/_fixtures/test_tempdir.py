@@ -1,6 +1,6 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
-# Copyright (c) 2010, 2012  Robert Collins <robertc@robertcollins.net>
+# Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
 # 
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
@@ -23,14 +23,14 @@ from fixtures import (
     NestedTempfile,
     TempDir,
     )
-from fixtures.tests.helpers import HasNoAttribute
 
 
 class TestTempDir(testtools.TestCase):
 
     def test_basic(self):
         fixture = TempDir()
-        self.assertThat(fixture, HasNoAttribute('path'))
+        sentinel = object()
+        self.assertEqual(sentinel, getattr(fixture, 'path', sentinel))
         fixture.setUp()
         try:
             path = fixture.path

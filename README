@@ -28,7 +28,7 @@ Dependencies
 * Python 2.4+
   This is the base language fixtures is written in and for.
 
-* testtools <https://launchpad.net/testtools> 0.9.13 or newer.
+* testtools <https://launchpad.net/testtools> 0.9.12 or newer.
   testtools provides helpful glue functions for the details API used to report
   information about a fixture (whether its used in a testing or production
   environment).
