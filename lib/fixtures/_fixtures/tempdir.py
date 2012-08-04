@@ -18,6 +18,7 @@ __all__ = [
     'TempDir',
     ]
 
+import os
 import shutil
 import tempfile
 
@@ -42,6 +43,15 @@ class TempDir(fixtures.Fixture):
         super(TempDir, self).setUp()
         self.path = tempfile.mkdtemp(dir=self.rootdir)
         self.addCleanup(shutil.rmtree, self.path, ignore_errors=True)
+
+    def abspath(self, *children):
+        """Return an absolute path, given one relative to this ``TempDir``.
+
+        WARNING: This does not do any checking of ``children`` to make sure
+        they aren't walking up the tree using path segments like '..' or
+        '/usr'.  Use at your own risk.
+        """
+        return os.path.abspath(os.path.join(self.path, *children))
 
 
 class NestedTempfile(fixtures.Fixture):
