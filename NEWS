@@ -8,7 +8,7 @@ NEXT
 
 CHANGES:
 
-* Add ``abspath`` method to ``TempDir`` to more readily get paths relative
+* Add ``join`` method to ``TempDir`` to more readily get paths relative
   to a temporary directory.  (Jonathan Lange)
 
 

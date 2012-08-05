@@ -44,7 +44,7 @@ class TempDir(fixtures.Fixture):
         self.path = tempfile.mkdtemp(dir=self.rootdir)
         self.addCleanup(shutil.rmtree, self.path, ignore_errors=True)
 
-    def abspath(self, *children):
+    def join(self, *children):
         """Return an absolute path, given one relative to this ``TempDir``.
 
         WARNING: This does not do any checking of ``children`` to make sure
