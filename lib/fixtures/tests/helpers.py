@@ -15,9 +15,6 @@
 
 import fixtures
 
-from testtools.matchers import Mismatch
-
-
 class LoggingFixture(fixtures.Fixture):
 
     def __init__(self, suffix='', calls=None):
@@ -34,21 +31,3 @@ class LoggingFixture(fixtures.Fixture):
 
     def reset(self):
         self.calls.append('reset' + self.suffix)
-
-
-class HasNoAttribute(object):
-    """For asserting that an object does not have a particular attribute."""
-
-    def __init__(self, attr_name):
-        self._attr_name = attr_name
-
-    def __str__(self):
-        return 'HasNoAttribute(%s)' % (self._attr_name,)
-
-    def match(self, obj):
-        sentinel = object()
-        value = getattr(obj, self._attr_name, sentinel)
-        if value is not sentinel:
-            return Mismatch(
-                "%s is an attribute of %r: %r" % (
-                    self._attr_name, obj, value))
