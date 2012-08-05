@@ -46,6 +46,27 @@ class TestTempDir(testtools.TestCase):
         with fixture:
             self.assertThat(fixture.path, StartsWith(root))
 
+    def test_join(self):
+        temp_dir = self.useFixture(TempDir())
+        root = temp_dir.path
+        relpath = 'foo/bar/baz'
+        self.assertEqual(
+            os.path.join(root, relpath), temp_dir.join(relpath))
+
+    def test_join_multiple_children(self):
+        temp_dir = self.useFixture(TempDir())
+        root = temp_dir.path
+        self.assertEqual(
+            os.path.join(root, 'foo', 'bar', 'baz'),
+            temp_dir.join('foo', 'bar', 'baz'))
+
+    def test_join_naughty_children(self):
+        temp_dir = self.useFixture(TempDir())
+        root = temp_dir.path
+        self.assertEqual(
+            os.path.abspath(os.path.join(root, '..', 'bar', 'baz')),
+            temp_dir.join('..', 'bar', 'baz'))
+
 
 class NestedTempfileTest(testtools.TestCase):
     """Tests for `NestedTempfile`."""
