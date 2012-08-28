@@ -11,6 +11,9 @@ CHANGES:
 * Add ``join`` method to ``TempDir`` to more readily get paths relative
   to a temporary directory.  (Jonathan Lange)
 
+* Factor out new ``CallMany`` class to isolate the cleanup logic.
+  (Robert Collins)
+
 
 0.3.9
 ~~~~~

@@ -28,6 +28,7 @@ def test_suite():
 
 def load_tests(loader, standard_tests, pattern):
     test_modules = [
+        'callmany',
         'fixture',
         'testcase',
         ]

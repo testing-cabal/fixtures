@@ -28,6 +28,8 @@ require_gather_details = skipIf(gather_details is None,
         "gather_details() is not available.")
 
 
+# Note: the cleanup related tests are strictly speaking redundant, IFF they are
+# replaced with contract tests for correct use of CallMany.
 class TestFixture(testtools.TestCase):
 
     def test_resetCallsSetUpCleanUp(self):

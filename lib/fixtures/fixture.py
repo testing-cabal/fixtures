@@ -29,11 +29,11 @@ from testtools.compat import (
     )
 from testtools.helpers import try_import
 
-class MultipleExceptions(Exception):
-    """Report multiple exc_info tuples in self.args."""
-
-MultipleExceptions = try_import(
-    "testtools.MultipleExceptions", MultipleExceptions)
+from callmany import (
+    CallMany,
+    # Deprecated, imported for compatibility.
+    MultipleExceptions,
+    )
 
 gather_details = try_import("testtools.testcase.gather_details")
 
@@ -74,7 +74,7 @@ class Fixture(object):
         :param kwargs: Keyword args for cleanup.
         :return: None
         """
-        self._cleanups.append((cleanup, args, kwargs))
+        self._cleanups.push(cleanup, *args, **kwargs)
 
     def addDetail(self, name, content_object):
         """Add a detail to the Fixture.
@@ -108,22 +108,10 @@ class Fixture(object):
         :return: A list of the exc_info() for each exception that occured if
             raise_first was False
         """
-        cleanups = reversed(self._cleanups)
-        self._clear_cleanups()
-        result = []
-        for cleanup, args, kwargs in cleanups:
-            try:
-                cleanup(*args, **kwargs)
-            except Exception:
-                result.append(sys.exc_info())
-        if result and raise_first:
-            if 1 == len(result):
-                error = result[0]
-                reraise(error[0], error[1], error[2])
-            else:
-                raise MultipleExceptions(*result)
-        if not raise_first:
-            return result
+        try:
+            return self._cleanups(raise_errors=raise_first)
+        finally:
+            self._clear_cleanups()
 
     def _clear_cleanups(self):
         """Clean the cleanup queue without running them.
@@ -134,7 +122,7 @@ class Fixture(object):
 
         This also clears the details dict.
         """
-        self._cleanups = []
+        self._cleanups = CallMany()
         self._details = {}
         self._detail_sources = []
 
@@ -143,7 +131,10 @@ class Fixture(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.cleanUp()
+        try:
+            self._cleanups()
+        finally:
+            self._clear_cleanups()
         return False # propogate exceptions from the with body.
 
     def getDetails(self):
