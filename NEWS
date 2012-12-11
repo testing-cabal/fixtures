@@ -6,6 +6,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+0.3.10
+~~~~~~
+
 New ``DetailStream`` fixture to add file-like object content to testtools
 details, cleanup logic factored out into a CallMany class.
 
