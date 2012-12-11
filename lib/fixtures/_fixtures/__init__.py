@@ -17,6 +17,7 @@
 """Included fixtures."""
 
 __all__ = [
+    'DetailStream',
     'EnvironmentVariable',
     'EnvironmentVariableFixture',
     'FakeLogger',
@@ -35,6 +36,7 @@ __all__ = [
     ]
 
 
+from fixtures._fixtures.detailstream import DetailStream
 from fixtures._fixtures.environ import (
     EnvironmentVariable,
     EnvironmentVariableFixture,
