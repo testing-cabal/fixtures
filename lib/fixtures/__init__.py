@@ -39,6 +39,7 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 __version__ = (0, 3, 9, 'final', 0)
 
 __all__ = [
+    'DetailStream',
     'EnvironmentVariable',
     'EnvironmentVariableFixture',
     'FakeLogger',
@@ -67,6 +68,7 @@ from fixtures.fixture import (
     MethodFixture,
     )
 from fixtures._fixtures import (
+    DetailStream,
     EnvironmentVariable,
     EnvironmentVariableFixture,
     FakeLogger,

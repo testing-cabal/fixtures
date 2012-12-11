@@ -14,12 +14,9 @@
 # limitations under that license.
 
 from logging import StreamHandler, getLogger, INFO, Formatter
-from cStringIO import StringIO
-
-from testtools.content import Content
-from testtools.content_type import UTF8_TEXT
 
 from fixtures import Fixture
+from fixtures._fixtures.detailstream import DetailStream
 
 __all__ = [
     'FakeLogger',
@@ -55,10 +52,8 @@ class FakeLogger(Fixture):
 
     def setUp(self):
         super(FakeLogger, self).setUp()
-        output = StringIO()
-        self.addDetail(
-            u"pythonlogging:'%s'" % self._name,
-            Content(UTF8_TEXT, lambda: [output.getvalue()]))
+        name = u"pythonlogging:'%s'" % self._name
+        output = self.useFixture(DetailStream(name)).stream
         self._output = output
         logger = getLogger(self._name)
         if self._level:

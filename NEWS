@@ -6,6 +6,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+New ``DetailStream`` fixture to add file-like object content to testtools
+details, cleanup logic factored out into a CallMany class.
+
 CHANGES:
 
 * Add ``join`` method to ``TempDir`` to more readily get paths relative
@@ -14,6 +17,9 @@ CHANGES:
 * Factor out new ``CallMany`` class to isolate the cleanup logic.
   (Robert Collins)
 
+* New ``DetailStream`` fixture to add file-like object content to testtools
+  details. This allows for easy capture of sys.stdout and sys.stderr for
+  example. (Clark Boylan)
 
 0.3.9
 ~~~~~
