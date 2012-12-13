@@ -27,6 +27,41 @@ __all__ = [
     ]
 
 
+class LogHandler(Fixture):
+    """Replace a logger's handlers."""
+
+    def __init__(self, handler, name="", level=None, nuke_handlers=True):
+        """Create a LogHandler fixture.
+
+        :param handler: The handler to replace other handlers with.
+            If nuke_handlers is False, then added as an extra handler.
+        :param name: The name of the logger to replace. Defaults to "".
+        :param level: The log level to set, defaults to not changing the level.
+        :param nuke_handlers: If True remove all existing handles (prevents
+            existing messages going to e.g. stdout). Defaults to True.
+        """
+        super(LogHandler, self).__init__()
+        self._handler = handler
+        self._name = name
+        self._level = level
+        self._nuke_handlers = nuke_handlers
+
+    def setUp(self):
+        super(LogHandler, self).setUp()
+        logger = getLogger(self._name)
+        if self._level:
+            self.addCleanup(logger.setLevel, logger.level)
+            logger.setLevel(self._level)
+        if self._nuke_handlers:
+            for handler in reversed(logger.handlers):
+                logger.removeHandler(handler)
+                self.addCleanup(logger.addHandler, handler)
+        try:
+            logger.addHandler(self._handler)
+        finally:
+            self.addCleanup(logger.removeHandler, self._handler)
+
+
 class FakeLogger(Fixture):
     """Replace a logger and capture its output."""
 
@@ -60,21 +95,12 @@ class FakeLogger(Fixture):
             u"pythonlogging:'%s'" % self._name,
             Content(UTF8_TEXT, lambda: [output.getvalue()]))
         self._output = output
-        logger = getLogger(self._name)
-        if self._level:
-            self.addCleanup(logger.setLevel, logger.level)
-            logger.setLevel(self._level)
-        if self._nuke_handlers:
-            for handler in reversed(logger.handlers):
-                logger.removeHandler(handler)
-                self.addCleanup(logger.addHandler, handler)
         handler = StreamHandler(output)
         if self._format:
             handler.setFormatter(Formatter(self._format))
-        try:
-            logger.addHandler(handler)
-        finally:
-            self.addCleanup(logger.removeHandler, handler)
+        self.useFixture(
+            LogHandler(handler, name=self._name, level=self._level,
+                       nuke_handlers=self._nuke_handlers))
 
     @property
     def output(self):
