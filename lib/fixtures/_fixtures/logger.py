@@ -13,7 +13,7 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-from logging import StreamHandler, getLogger, INFO, Formatter
+from logging import StreamHandler, getLogger, INFO, Formatter, Handler
 from cStringIO import StringIO
 
 from testtools.content import Content
@@ -82,3 +82,18 @@ class FakeLogger(Fixture):
 
 
 LoggerFixture = FakeLogger
+
+
+class MementoHandler(Handler):
+    """A handler class which stores logging records in a list.
+
+    From http://nessita.pastebin.com/mgc85uQT
+    """
+    def __init__(self, *args, **kwargs):
+        """Create the instance, and add a records attribute."""
+        Handler.__init__(self, *args, **kwargs)
+        self.records = []
+
+    def emit(self, record):
+        """Just add the record to self.records."""
+        self.records.append(record)
