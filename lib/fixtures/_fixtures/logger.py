@@ -13,7 +13,7 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-from logging import StreamHandler, getLogger, INFO, Formatter, Handler
+from logging import StreamHandler, getLogger, INFO, Formatter
 from cStringIO import StringIO
 
 from testtools.content import Content
@@ -109,45 +109,3 @@ class FakeLogger(Fixture):
 
 
 LoggerFixture = FakeLogger
-
-
-class MementoHandler(Handler):
-    """A handler class which stores logging records in a list.
-
-    From http://nessita.pastebin.com/mgc85uQT
-    """
-    def __init__(self, *args, **kwargs):
-        """Create the instance, and add a records attribute."""
-        Handler.__init__(self, *args, **kwargs)
-        self.records = []
-
-    def emit(self, record):
-        """Just add the dict of the record to self.records."""
-        # logging actually uses LogRecord.__dict__ regularly. Sheesh.
-        self.records.append(record.__dict__)
-
-
-class MementoLogger(Fixture):
-
-    def __init__(self, name="", level=INFO, nuke_handlers=True):
-        """Create a MementoLogger fixture.
-
-        :param name: The name of the logger to replace. Defaults to "".
-        :param level: The log level to set, defaults to INFO.
-        :param nuke_handlers: If True remove all existing handles (prevents
-            existing messages going to e.g. stdout). Defaults to True.
-        """
-        super(MementoLogger, self).__init__()
-        self._name = name
-        self._level = level
-        self._nuke_handlers = nuke_handlers
-
-    def setUp(self):
-        super(MementoLogger, self).setUp()
-        self._handler = MementoHandler()
-        self.useFixture(
-            LogHandler(self._handler, name=self._name, level=self._level,
-                       nuke_handlers=self._nuke_handlers))
-
-    def get_records(self):
-        return self._handler.records

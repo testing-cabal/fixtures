@@ -23,7 +23,6 @@ from fixtures import (
     LogHandler,
     TestWithFixtures,
     )
-from fixtures._fixtures.logger import MementoHandler
 
 
 class FakeLoggerTest(TestCase, TestWithFixtures):
@@ -95,27 +94,6 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
             self.assertEqual("some message\n", content.as_text())
             # A new one returns the new output:
             self.assertEqual("", fixture.getDetails()[detail_name].as_text())
-
-
-class TestMementoHandler(TestCase):
-
-    class FakeRecord(object):
-        def __init__(self, **kw):
-            self.__dict__.update(kw)
-
-    def test_initialy_no_records(self):
-        handler = MementoHandler()
-        self.assertEqual([], handler.records)
-
-    def test_emit_stored_in_records(self):
-        handler = MementoHandler()
-        marker = self.FakeRecord(foo='bar')
-        handler.emit(marker)
-        self.assertEqual([{'foo': 'bar'}], handler.records)
-
-    def test_is_log_handler(self):
-        handler = MementoHandler()
-        self.assertIsInstance(handler, logging.Handler)
 
 
 class LogHandlerTest(TestCase, TestWithFixtures):
