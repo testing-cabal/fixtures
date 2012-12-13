@@ -143,3 +143,37 @@ class LogHandlerTest(TestCase, TestWithFixtures):
         fixture = self.useFixture(LogHandler(self.CustomHandler()))
         logging.info("some message")
         self.assertEqual(["some message"], fixture.handler.msgs)
+
+    def test_replace_and_restore_handlers(self):
+        stream = StringIO()
+        logger = logging.getLogger()
+        logger.addHandler(logging.StreamHandler(stream))
+        logger.setLevel(logging.INFO)
+        logging.info("one")
+        fixture = LogHandler(self.CustomHandler())
+        with fixture:
+            logging.info("two")
+        logging.info("three")
+        self.assertEqual(["two"], fixture.handler.msgs)
+        self.assertEqual("one\nthree\n", stream.getvalue())
+
+    def test_preserving_existing_handlers(self):
+        stream = StringIO()
+        self.logger.addHandler(logging.StreamHandler(stream))
+        self.logger.setLevel(logging.INFO)
+        fixture = LogHandler(self.CustomHandler(), nuke_handlers=False)
+        with fixture:
+            logging.info("message")
+        self.assertEqual(["message"], fixture.handler.msgs)
+        self.assertEqual("message\n", stream.getvalue())
+
+    def test_logging_level_restored(self):
+        self.logger.setLevel(logging.DEBUG)
+        fixture = LogHandler(self.CustomHandler(), level=logging.WARNING)
+        with fixture:
+            # The fixture won't capture this, because the DEBUG level
+            # is lower than the WARNING one
+            logging.debug("debug message")
+            self.assertEqual(logging.WARNING, self.logger.level)
+        self.assertEqual([], fixture.handler.msgs)
+        self.assertEqual(logging.DEBUG, self.logger.level)
