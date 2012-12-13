@@ -41,7 +41,7 @@ class LogHandler(Fixture):
             existing messages going to e.g. stdout). Defaults to True.
         """
         super(LogHandler, self).__init__()
-        self._handler = handler
+        self.handler = handler
         self._name = name
         self._level = level
         self._nuke_handlers = nuke_handlers
@@ -57,9 +57,9 @@ class LogHandler(Fixture):
                 logger.removeHandler(handler)
                 self.addCleanup(logger.addHandler, handler)
         try:
-            logger.addHandler(self._handler)
+            logger.addHandler(self.handler)
         finally:
-            self.addCleanup(logger.removeHandler, self._handler)
+            self.addCleanup(logger.removeHandler, self.handler)
 
 
 class FakeLogger(Fixture):
