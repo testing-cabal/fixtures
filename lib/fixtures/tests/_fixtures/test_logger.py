@@ -16,10 +16,16 @@
 import logging
 
 from testtools import TestCase
+from testtools.matchers import (
+    ContainsDict,
+    Equals,
+    MatchesListwise,
+    )
 from cStringIO import StringIO
 
 from fixtures import (
     FakeLogger,
+    MementoLogger,
     TestWithFixtures,
     )
 from fixtures._fixtures.logger import MementoHandler
@@ -98,16 +104,41 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
 
 class TestMementoHandler(TestCase):
 
+    class FakeRecord(object):
+        def __init__(self, **kw):
+            self.__dict__.update(kw)
+
     def test_initialy_no_records(self):
         handler = MementoHandler()
         self.assertEqual([], handler.records)
 
     def test_emit_stored_in_records(self):
         handler = MementoHandler()
-        marker = object()
+        marker = self.FakeRecord(foo='bar')
         handler.emit(marker)
-        self.assertEqual([marker], handler.records)
+        self.assertEqual([{'foo': 'bar'}], handler.records)
 
     def test_is_log_handler(self):
         handler = MementoHandler()
         self.assertIsInstance(handler, logging.Handler)
+
+
+class MementoLoggerTest(TestCase, TestWithFixtures):
+
+    def setUp(self):
+        super(MementoLoggerTest, self).setUp()
+        self.logger = logging.getLogger()
+        self.addCleanup(self.removeHandlers, self.logger)
+
+    def removeHandlers(self, logger):
+        for handler in logger.handlers:
+            logger.removeHandler(handler)
+
+    def test_get_records_has_records(self):
+        fixture = self.useFixture(MementoLogger())
+        logging.info("some message")
+        self.assertThat(
+            fixture.get_records(),
+            MatchesListwise(
+                [ContainsDict({'msg': Equals("some message"),
+                               'levelname': Equals('INFO')})]))
