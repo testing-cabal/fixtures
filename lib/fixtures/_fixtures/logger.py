@@ -24,6 +24,7 @@ from fixtures import Fixture
 __all__ = [
     'FakeLogger',
     'LoggerFixture',
+    'LogHandler',
     ]
 
 

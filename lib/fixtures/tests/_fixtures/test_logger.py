@@ -16,16 +16,11 @@
 import logging
 
 from testtools import TestCase
-from testtools.matchers import (
-    ContainsDict,
-    Equals,
-    MatchesListwise,
-    )
 from cStringIO import StringIO
 
 from fixtures import (
     FakeLogger,
-    MementoLogger,
+    LogHandler,
     TestWithFixtures,
     )
 from fixtures._fixtures.logger import MementoHandler
@@ -123,10 +118,20 @@ class TestMementoHandler(TestCase):
         self.assertIsInstance(handler, logging.Handler)
 
 
-class MementoLoggerTest(TestCase, TestWithFixtures):
+class LogHandlerTest(TestCase, TestWithFixtures):
+
+    class CustomHandler(logging.Handler):
+
+        def __init__(self, *args, **kwargs):
+            """Create the instance, and add a records attribute."""
+            logging.Handler.__init__(self, *args, **kwargs)
+            self.msgs = []
+
+        def emit(self, record):
+            self.msgs.append(record.msg)
 
     def setUp(self):
-        super(MementoLoggerTest, self).setUp()
+        super(LogHandlerTest, self).setUp()
         self.logger = logging.getLogger()
         self.addCleanup(self.removeHandlers, self.logger)
 
@@ -134,11 +139,7 @@ class MementoLoggerTest(TestCase, TestWithFixtures):
         for handler in logger.handlers:
             logger.removeHandler(handler)
 
-    def test_get_records_has_records(self):
-        fixture = self.useFixture(MementoLogger())
+    def test_captures_logging(self):
+        fixture = self.useFixture(LogHandler(self.CustomHandler()))
         logging.info("some message")
-        self.assertThat(
-            fixture.get_records(),
-            MatchesListwise(
-                [ContainsDict({'msg': Equals("some message"),
-                               'levelname': Equals('INFO')})]))
+        self.assertEqual(["some message"], fixture.handler.msgs)
