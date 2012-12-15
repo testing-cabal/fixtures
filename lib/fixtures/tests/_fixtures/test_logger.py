@@ -18,7 +18,11 @@ import logging
 from testtools import TestCase
 from cStringIO import StringIO
 
-from fixtures import FakeLogger, TestWithFixtures
+from fixtures import (
+    FakeLogger,
+    LogHandler,
+    TestWithFixtures,
+    )
 
 
 class FakeLoggerTest(TestCase, TestWithFixtures):
@@ -90,3 +94,64 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
             self.assertEqual("some message\n", content.as_text())
             # A new one returns the new output:
             self.assertEqual("", fixture.getDetails()[detail_name].as_text())
+
+
+class LogHandlerTest(TestCase, TestWithFixtures):
+
+    class CustomHandler(logging.Handler):
+
+        def __init__(self, *args, **kwargs):
+            """Create the instance, and add a records attribute."""
+            logging.Handler.__init__(self, *args, **kwargs)
+            self.msgs = []
+
+        def emit(self, record):
+            self.msgs.append(record.msg)
+
+    def setUp(self):
+        super(LogHandlerTest, self).setUp()
+        self.logger = logging.getLogger()
+        self.addCleanup(self.removeHandlers, self.logger)
+
+    def removeHandlers(self, logger):
+        for handler in logger.handlers:
+            logger.removeHandler(handler)
+
+    def test_captures_logging(self):
+        fixture = self.useFixture(LogHandler(self.CustomHandler()))
+        logging.info("some message")
+        self.assertEqual(["some message"], fixture.handler.msgs)
+
+    def test_replace_and_restore_handlers(self):
+        stream = StringIO()
+        logger = logging.getLogger()
+        logger.addHandler(logging.StreamHandler(stream))
+        logger.setLevel(logging.INFO)
+        logging.info("one")
+        fixture = LogHandler(self.CustomHandler())
+        with fixture:
+            logging.info("two")
+        logging.info("three")
+        self.assertEqual(["two"], fixture.handler.msgs)
+        self.assertEqual("one\nthree\n", stream.getvalue())
+
+    def test_preserving_existing_handlers(self):
+        stream = StringIO()
+        self.logger.addHandler(logging.StreamHandler(stream))
+        self.logger.setLevel(logging.INFO)
+        fixture = LogHandler(self.CustomHandler(), nuke_handlers=False)
+        with fixture:
+            logging.info("message")
+        self.assertEqual(["message"], fixture.handler.msgs)
+        self.assertEqual("message\n", stream.getvalue())
+
+    def test_logging_level_restored(self):
+        self.logger.setLevel(logging.DEBUG)
+        fixture = LogHandler(self.CustomHandler(), level=logging.WARNING)
+        with fixture:
+            # The fixture won't capture this, because the DEBUG level
+            # is lower than the WARNING one
+            logging.debug("debug message")
+            self.assertEqual(logging.WARNING, self.logger.level)
+        self.assertEqual([], fixture.handler.msgs)
+        self.assertEqual(logging.DEBUG, self.logger.level)

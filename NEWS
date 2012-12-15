@@ -6,6 +6,12 @@ fixtures release notes
 NEXT
 ~~~~
 
+CHANGES
+-------
+
+* ``FakeLogger`` has been split out into a ``LogHandler`` fixture that can
+  inject arbitrary handlers, giving more flexability. (Jonathan Lange)
+
 0.3.10
 ~~~~~~
 

@@ -23,6 +23,7 @@ __all__ = [
     'FakeLogger',
     'FakePopen',
     'LoggerFixture',
+    'LogHandler',
     'MonkeyPatch',
     'NestedTempfile',
     'PackagePathEntry',
@@ -44,6 +45,7 @@ from fixtures._fixtures.environ import (
 from fixtures._fixtures.logger import (
     FakeLogger,
     LoggerFixture,
+    LogHandler,
     )
 from fixtures._fixtures.monkeypatch import MonkeyPatch
 from fixtures._fixtures.popen import (
