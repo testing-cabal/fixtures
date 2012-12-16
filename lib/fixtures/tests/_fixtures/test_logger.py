@@ -16,7 +16,7 @@
 import logging
 
 from testtools import TestCase
-from cStringIO import StringIO
+from testtools.compat import StringIO
 
 from fixtures import (
     FakeLogger,
@@ -89,11 +89,22 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
             # Output after getDetails is called is included.
             logging.info('some message')
             self.assertEqual("some message\n", content.as_text())
+        # The old content object returns the old usage after cleanUp (not
+        # strictly needed but convenient). Note that no guarantee is made that
+        # it will work after setUp is called again. [It does on Python 2.x, not
+        # on 3.x]
+        self.assertEqual("some message\n", content.as_text())
         with fixture:
-            # The old content object returns the old usage
-            self.assertEqual("some message\n", content.as_text())
-            # A new one returns the new output:
+            # A new one returns new output:
             self.assertEqual("", fixture.getDetails()[detail_name].as_text())
+        # The original content object may either fail, or return the old
+        # content (it must not have been reset..).
+        try:
+            self.assertEqual("some message\n", content.as_text())
+        except AssertionError:
+            raise
+        except:
+            pass
 
 
 class LogHandlerTest(TestCase, TestWithFixtures):

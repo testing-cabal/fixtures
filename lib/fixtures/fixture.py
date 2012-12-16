@@ -29,7 +29,7 @@ from testtools.compat import (
     )
 from testtools.helpers import try_import
 
-from callmany import (
+from fixtures.callmany import (
     CallMany,
     # Deprecated, imported for compatibility.
     MultipleExceptions,

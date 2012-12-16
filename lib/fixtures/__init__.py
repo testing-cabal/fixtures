@@ -39,6 +39,7 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 __version__ = (0, 3, 10, 'final', 0)
 
 __all__ = [
+    'ByteStream',
     'DetailStream',
     'EnvironmentVariable',
     'EnvironmentVariableFixture',
@@ -55,6 +56,7 @@ __all__ = [
     'PopenFixture',
     'PythonPackage',
     'PythonPathEntry',
+    'StringStream',
     'TempDir',
     'TempHomeDir',
     'TestWithFixtures',
@@ -69,6 +71,7 @@ from fixtures.fixture import (
     MethodFixture,
     )
 from fixtures._fixtures import (
+    ByteStream,
     DetailStream,
     EnvironmentVariable,
     EnvironmentVariableFixture,
@@ -82,6 +85,7 @@ from fixtures._fixtures import (
     PopenFixture,
     PythonPackage,
     PythonPathEntry,
+    StringStream,
     TempDir,
     TempHomeDir,
     Timeout,

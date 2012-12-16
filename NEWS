@@ -9,6 +9,12 @@ NEXT
 CHANGES
 -------
 
+* ``DetailStream`` was ambiguous about whether it handled bytes or characters,
+  which matters a lot for Python3. It now is deprecated with ByteStream and
+  StringStream replacing it. (Robert Collins)
+
+* Fixtures is now Python3 compatible. (Robert Collins)
+
 * ``FakeLogger`` has been split out into a ``LogHandler`` fixture that can
   inject arbitrary handlers, giving more flexability. (Jonathan Lange)
 

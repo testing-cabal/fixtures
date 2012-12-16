@@ -15,7 +15,6 @@
 
 def load_tests(loader, standard_tests, pattern):
     test_modules = [
-        'detailstream',
         'environ',
         'logger',
         'monkeypatch',
@@ -23,6 +22,7 @@ def load_tests(loader, standard_tests, pattern):
         'popen',
         'pythonpackage',
         'pythonpath',
+        'streams',
         'tempdir',
         'temphomedir',
         'timeout',

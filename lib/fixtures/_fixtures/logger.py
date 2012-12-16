@@ -15,8 +15,10 @@
 
 from logging import StreamHandler, getLogger, INFO, Formatter
 
+from testtools.compat import _u
+
 from fixtures import Fixture
-from fixtures._fixtures.detailstream import DetailStream
+from fixtures._fixtures.streams import StringStream
 
 __all__ = [
     'FakeLogger',
@@ -88,8 +90,8 @@ class FakeLogger(Fixture):
 
     def setUp(self):
         super(FakeLogger, self).setUp()
-        name = u"pythonlogging:'%s'" % self._name
-        output = self.useFixture(DetailStream(name)).stream
+        name = _u("pythonlogging:'%s'") % self._name
+        output = self.useFixture(StringStream(name)).stream
         self._output = output
         handler = StreamHandler(output)
         if self._format:
@@ -100,7 +102,8 @@ class FakeLogger(Fixture):
 
     @property
     def output(self):
-        return self._output.getvalue()
+        self._output.seek(0)
+        return self._output.read()
 
 
 LoggerFixture = FakeLogger
