@@ -266,16 +266,16 @@ In addition to the Fixture, FunctionFixture and MethodFixture classes fixtures
 includes a number of precanned fixtures. The API docs for fixtures will list
 the complete set of these, should the dcs be out of date or not to hand.
 
-DetailStream
-++++++++++++
+ByteStream
+++++++++++
 
-Trivial adapter to make a StringIO (though it may in future auto-spill to disk
+Trivial adapter to make a BytesIO (though it may in future auto-spill to disk
 for large content) and expose that as a detail object, for automatic inclusion
 in test failure descriptions. Very useful in combination with MonkeyPatch.
 
-  >>> fixture = fixtures.DetailStream('stdout')
+  >>> fixture = fixtures.StringStream('my-content')
   >>> fixture.setUp()
-  >>> with fixtures.MonkeyPatch('sys.stdout', fixture.stream):
+  >>> with fixtures.MonkeyPatch('something', fixture.stream):
   ...     pass
   >>> fixture.cleanUp()
 
@@ -348,6 +348,19 @@ Adds a single directory to sys.path. If the directory is already in the path,
 nothing happens, if it isn't then it is added on setUp and removed on cleanUp.
 
   >>> fixture = fixtures.PythonPathEntry('/foo/bar')
+
+StringStream
+++++++++++++
+
+Trivial adapter to make a StringIO (though it may in future auto-spill to disk
+for large content) and expose that as a detail object, for automatic inclusion
+in test failure descriptions. Very useful in combination with MonkeyPatch.
+
+  >>> fixture = fixtures.StringStream('stdout')
+  >>> fixture.setUp()
+  >>> with fixtures.MonkeyPatch('sys.stdout', fixture.stream):
+  ...     pass
+  >>> fixture.cleanUp()
 
 TempDir
 +++++++
