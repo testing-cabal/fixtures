@@ -18,6 +18,9 @@ CHANGES
 * ``FakeLogger`` has been split out into a ``LogHandler`` fixture that can
   inject arbitrary handlers, giving more flexability. (Jonathan Lange)
 
+* pydoc is recommended as a source of info about fixtures.
+  (Robert Collins, #812845)
+
 * The docs for fixtures have been updated to cover the full API.
   (Robert Collins, #1071649)
 

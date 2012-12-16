@@ -70,6 +70,9 @@ A Fixture represents some state. Each fixture has attributes on it that are
 specific to the fixture. For instance, a fixture representing a directory that
 can be used for temporary files might have a attribute 'path'.
 
+Most fixtures have complete ``pydoc`` documentation, so be sure to check
+``pydoc fixtures`` for usage information.
+
 Creating Fixtures
 =================
 
