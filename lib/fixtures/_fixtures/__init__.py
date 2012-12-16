@@ -17,6 +17,7 @@
 """Included fixtures."""
 
 __all__ = [
+    'ByteStream',
     'DetailStream',
     'EnvironmentVariable',
     'EnvironmentVariableFixture',
@@ -30,6 +31,7 @@ __all__ = [
     'PopenFixture',
     'PythonPackage',
     'PythonPathEntry',
+    'StringStream',
     'TempDir',
     'TempHomeDir',
     'Timeout',
@@ -37,7 +39,6 @@ __all__ = [
     ]
 
 
-from fixtures._fixtures.detailstream import DetailStream
 from fixtures._fixtures.environ import (
     EnvironmentVariable,
     EnvironmentVariableFixture,
@@ -55,6 +56,11 @@ from fixtures._fixtures.popen import (
 from fixtures._fixtures.packagepath import PackagePathEntry
 from fixtures._fixtures.pythonpackage import PythonPackage
 from fixtures._fixtures.pythonpath import PythonPathEntry
+from fixtures._fixtures.streams import (
+    ByteStream,
+    DetailStream,
+    StringStream,
+    )
 from fixtures._fixtures.tempdir import (
     NestedTempfile,
     TempDir,

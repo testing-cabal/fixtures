@@ -14,18 +14,33 @@
 # limitations under that license.
 
 from testtools import TestCase
+from testtools.compat import (
+    _b,
+    _u,
+    )
+from testtools.matchers import Contains
 
-from fixtures import DetailStream
+from fixtures import (
+    ByteStream,
+    DetailStream,
+    StringStream,
+    )
 
 
 class DetailStreamTest(TestCase):
+
+    def test_doc_mentions_deprecated(self):
+        self.assertThat(DetailStream.__doc__, Contains('Deprecated'))
+
+
+class TestByteStreams(TestCase):
 
     def test_empty_detail_stream(self):
         detail_name = 'test'
         fixture = DetailStream(detail_name)
         with fixture:
             content = fixture.getDetails()[detail_name]
-            self.assertEqual("", content.as_text())
+            self.assertEqual(_u(""), content.as_text())
 
     def test_stream_content_in_details(self):
         detail_name = 'test'
@@ -34,7 +49,7 @@ class DetailStreamTest(TestCase):
             stream = fixture.stream
             content = fixture.getDetails()[detail_name]
             # Output after getDetails is called is included.
-            stream.write("testing 1 2 3")
+            stream.write(_b("testing 1 2 3"))
             self.assertEqual("testing 1 2 3", content.as_text())
 
     def test_stream_content_reset(self):
@@ -43,12 +58,12 @@ class DetailStreamTest(TestCase):
         with fixture:
             stream = fixture.stream
             content = fixture.getDetails()[detail_name]
-            stream.write("testing 1 2 3")
+            stream.write(_b("testing 1 2 3"))
         with fixture:
             # The old content object returns the old usage
-            self.assertEqual("testing 1 2 3", content.as_text())
+            self.assertEqual(_u("testing 1 2 3"), content.as_text())
             content = fixture.getDetails()[detail_name]
             # A new fixture returns the new output:
             stream = fixture.stream
-            stream.write("1 2 3 testing")
-            self.assertEqual("1 2 3 testing", content.as_text())
+            stream.write(_b("1 2 3 testing"))
+            self.assertEqual(_u("1 2 3 testing"), content.as_text())
