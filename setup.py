@@ -3,10 +3,10 @@
 from distutils.core import setup
 import os.path
 
-description = file(os.path.join(os.path.dirname(__file__), 'README'), 'rb').read()
+description = open(os.path.join(os.path.dirname(__file__), 'README'), 'rb').read()
 
 setup(name="fixtures",
-      version="0.3.10",
+      version="0.3.11",
       description="Fixtures, reusable state for writing clean tests and more.",
       keywords="fixture fixtures unittest contextmanager",
       long_description=description,
