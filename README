@@ -25,7 +25,7 @@ compatible test cases easy and straight forward.
 Dependencies
 ============
 
-* Python 2.4+
+* Python 2.6+
   This is the base language fixtures is written in and for.
 
 * testtools <https://launchpad.net/testtools> 0.9.22 or newer.
@@ -35,7 +35,7 @@ Dependencies
 
 For use in a unit test suite using the included glue, one of:
 
-* Python 2.7
+* Python 2.7+
 
 * unittest2
 
@@ -86,6 +86,25 @@ a cleanup for when cleanUp is called and you're done::
 
 This will initialize frobnozzle when setUp is called, and when cleanUp is
 called get rid of the frobnozzle attribute.
+
+If your fixture has diagnostic data - for instance the log file of an
+application server, or log messages, it can expose that by creating a content
+object (``testtools.content.Content``) and calling ``addDetail``.
+
+  >>> from testtools.content import text_content
+  >>> class WithLog(fixtures.Fixture):
+  ...     def setUp(self):
+  ...         super(WithLog, self).setUp()
+  ...         self.addDetail('message', text_content('foo bar baz'))
+
+The method ``useFixture`` will use another fixture, call ``setUp`` on it, call
+``self.addCleanup(thefixture.cleanUp)``, attach any details from it and return
+the fixture. This allows simple composition of different fixtures.
+
+  >>> class ReusingFixture(fixtures.Fixture):
+  ...     def setUp(self):
+  ...         super(ReusingFixture, self).setUp()
+  ...         self.noddy = self.useFixture(NoddyFixture())
 
 There is a helper for adapting a function or function pair into Fixtures. it
 puts the result of the function in fn_result::
@@ -187,6 +206,14 @@ rather than choosing an arbitrary single exception to raise::
   ...    exc_info = sys.exc_info()
   >>> print (exc_info[1].args[0][0].__name__)
   ZeroDivisionError
+
+Fixtures often expose diagnostic details that can be useful for tracking down
+issues. The ``getDetails`` method will return a dict of all the attached
+details. Each detail object is an instance of ``testtools.content.Content``.
+
+  >>> with WithLog() as l:
+  ...     print(l.getDetails()['message'].as_text())
+  foo bar baz
 
 Shared Dependencies
 +++++++++++++++++++
