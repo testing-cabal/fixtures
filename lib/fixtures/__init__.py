@@ -36,7 +36,7 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 # established at this point, and setup.py will use a version of next-$(revno).
 # If the releaselevel is 'final', then the tarball will be major.minor.micro.
 # Otherwise it is major.minor.micro~$(revno).
-__version__ = (0, 3, 11, 'final', 0)
+__version__ = (0, 3, 12, 'final', 0)
 
 __all__ = [
     'ByteStream',

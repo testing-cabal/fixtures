@@ -68,6 +68,8 @@ def ByteStream(detail_name):
 def _string_stream_factory():
     lower = io.BytesIO()
     upper = io.TextIOWrapper(lower, encoding="utf8")
+    # See http://bugs.python.org/issue7955
+    upper._CHUNK_SIZE = 1
     # In theory, this is sufficient and correct, but on Python2,
     # upper.write(_b('foo")) will whinge louadly.
     if sys.version_info[0] < 3:
