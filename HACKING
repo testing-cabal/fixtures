@@ -35,3 +35,15 @@ The ``fixtures`` module should simply import classes and functions from
 more specific modules, rather than becoming large and bloated itself. For
 instance, TestWithFixtures lives in fixtures.testcase, and is imported in
 the fixtures __init__.py.
+
+Releasing
++++++++++
+
+1. Update the version number in __init__.py and setup.py and add a version to
+   NEWS.
+
+1. Upload to pypi, signed.
+
+1. commit, tag.
+
+1. Close bugs.

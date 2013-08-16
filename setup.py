@@ -6,7 +6,7 @@ import os.path
 description = open(os.path.join(os.path.dirname(__file__), 'README'), 'rt').read()
 
 setup(name="fixtures",
-      version="0.3.12",
+      version="0.3.13",
       description="Fixtures, reusable state for writing clean tests and more.",
       keywords="fixture fixtures unittest contextmanager",
       long_description=description,
