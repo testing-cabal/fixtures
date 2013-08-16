@@ -51,6 +51,19 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         proc = fixture(['foo'])
         self.assertEqual('stdout', proc.stdout)
 
+    def test_handles_all_2_7_args(self):
+        all_args = dict(
+            args="args", bufsize="bufsize", executable="executable",
+            stdin="stdin", stdout="stdout", stderr="stderr",
+            preexec_fn="preexec_fn", close_fds="close_fds", shell="shell",
+            cwd="cwd", env="env", universal_newlines="universal_newlines",
+            startupinfo="startupinfo", creationflags="creationflags")
+        def get_info(proc_args):
+            self.assertEqual(all_args, proc_args)
+            return {}
+        fixture = self.useFixture(FakePopen(get_info))
+        proc = fixture(**all_args)
+
 
 class TestFakeProcess(testtools.TestCase):
 

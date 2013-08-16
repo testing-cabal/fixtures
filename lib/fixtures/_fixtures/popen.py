@@ -60,13 +60,25 @@ class FakePopen(Fixture):
     :ivar procs: A list of the processes created by the fixture.
     """
 
+    _unpassed = object()
+
     def __init__(self, get_info=lambda _:{}):
         """Create a PopenFixture
 
         :param get_info: Optional callback to control the behaviour of the
             created process. This callback takes a kwargs dict for the Popen
             call, and should return a dict with any desired attributes.
-            e.g. return {'stdin': StringIO('foobar')}
+            Only parameters that are supplied to the Popen call are in the
+            dict, making it possible to detect the difference between 'passed
+            with a default value' and 'not passed at all'.
+
+            e.g. 
+            def get_info(proc_args):
+                self.assertEqual(subprocess.PIPE, proc_args['stdin'])
+                return {'stdin': StringIO('foobar')}
+
+            The default behaviour if no get_info is supplied is for the return
+            process to have returncode of None, empty streams and a random pid.
         """
         super(FakePopen, self).__init__()
         self.get_info = get_info
@@ -77,10 +89,21 @@ class FakePopen(Fixture):
         subprocess.Popen = self
         self.procs = []
 
-    def __call__(self, args, bufsize=0, executable=None, stdin=None,
-        stdout=None, stderr=None):
-        proc_args = dict(args=args, bufsize=bufsize, executable=executable,
-            stdin=stdin, stdout=stdout, stderr=stderr)
+    # The method has the correct signature so we error appropriately if called
+    # wrongly.
+    def __call__(self, args, bufsize=_unpassed, executable=_unpassed,
+        stdin=_unpassed, stdout=_unpassed, stderr=_unpassed,
+        preexec_fn=_unpassed, close_fds=_unpassed, shell=_unpassed,
+        cwd=_unpassed, env=_unpassed, universal_newlines=_unpassed,
+        startupinfo=_unpassed, creationflags=_unpassed):
+        proc_args = dict(args=args)
+        local = locals()
+        for param in [
+            "bufsize", "executable", "stdin", "stdout", "stderr",
+            "preexec_fn", "close_fds", "shell", "cwd", "env",
+            "universal_newlines", "startupinfo", "creationflags"]:
+            if local[param] is not FakePopen._unpassed:
+                proc_args[param] = local[param]
         proc_info = self.get_info(proc_args)
         result = FakeProcess(proc_args, proc_info)
         self.procs.append(result)

@@ -6,6 +6,15 @@ fixtures release notes
 NEXT
 ~~~~
 
+CHANGES
+-------
+
+* ``FakePopen`` now accepts all the parameters available in Python 2.7.
+  (Robert Collins)
+
+* ``FakePopen`` now only passes parameters to the get_info routine if the
+  caller supplied them. (Robert Collins)
+
 0.3.12
 ~~~~~~
 
