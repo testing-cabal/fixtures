@@ -173,7 +173,10 @@ cleanup, and return the fixture. This lets one write::
   >>> import unittest
 
 Note that we use testtools TestCase here as we need to guarantee a
-TestCase.addCleanup method.
+TestCase.addCleanup method in this doctest. Unittest2 - Python2.7 and above -
+also have ``addCleanup``. testtools has it's own implementation of
+``useFixture`` so there is no need to use ``fixtures.TestWithFixtures`` with
+``testtools.TestCase``.
 
   >>> class NoddyTest(testtools.TestCase, fixtures.TestWithFixtures):
   ...     def test_example(self):

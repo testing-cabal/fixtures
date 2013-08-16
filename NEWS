@@ -9,6 +9,9 @@ NEXT
 CHANGES
 -------
 
+* Documentation hopefully covers ``TestWithFixtures`` a little better.
+  (Robert Collins, #1102688)
+
 * ``FakePopen`` now accepts all the parameters available in Python 2.7.
   (Robert Collins)
 
