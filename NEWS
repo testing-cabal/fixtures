@@ -15,6 +15,9 @@ CHANGES
 * ``FakePopen`` now only passes parameters to the get_info routine if the
   caller supplied them. (Robert Collins)
 
+* ``setup.py`` now lists the ``testtools`` dependency which was missing.
+  (Robert Collins, #1103823)
+
 0.3.12
 ~~~~~~
 

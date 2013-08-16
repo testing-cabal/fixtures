@@ -27,4 +27,7 @@ setup(name="fixtures",
           'Topic :: Software Development :: Quality Assurance',
           'Topic :: Software Development :: Testing',
           ],
+      requires = [
+          'testtools',
+          ],
       )
