@@ -6,6 +6,12 @@ fixtures release notes
 NEXT
 ~~~~
 
+CHANGES
+-------
+
+* ``FakePopen`` can now override the returncode attribute.
+  (Robert Collins)
+
 0.3.13
 ~~~~~~
 

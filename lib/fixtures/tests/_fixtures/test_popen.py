@@ -64,6 +64,14 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         fixture = self.useFixture(FakePopen(get_info))
         proc = fixture(**all_args)
 
+    def test_custom_returncode(self):
+        def get_info(proc_args):
+            return dict(returncode=1)
+        proc = self.useFixture(FakePopen(get_info))(['foo'])
+        self.assertEqual(None, proc.returncode)
+        self.assertEqual(1, proc.wait())
+        self.assertEqual(1, proc.returncode)
+
 
 class TestFakeProcess(testtools.TestCase):
 
