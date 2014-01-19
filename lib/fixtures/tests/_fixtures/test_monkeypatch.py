@@ -19,6 +19,11 @@ from fixtures import MonkeyPatch, TestWithFixtures
 
 reference = 23
 
+class C(object):
+    @staticmethod
+    def foo(): pass
+def bar(): pass
+
 class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
 
     def test_patch_and_restore(self):
@@ -66,3 +71,13 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         finally:
             fixture.cleanUp()
             self.assertFalse('new_attr' in globals())
+
+    def test_patch_staticmethod(self):
+        oldfoo = C.foo
+        fixture = MonkeyPatch(
+            'fixtures.tests._fixtures.test_monkeypatch.C.foo',
+            bar)
+        with fixture:
+            pass
+        self.assertEqual(oldfoo, C.foo)
+
