@@ -48,6 +48,12 @@ class FakeProcess(object):
             err = ''
         return out, err
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.wait()
+
     def wait(self):
         if self.returncode is None:
             self.communicate()

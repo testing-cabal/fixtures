@@ -6,6 +6,12 @@ fixtures release notes
 NEXT
 ~~~~
 
+CHANGES
+-------
+
+* ``FakePopen`` now supports being called under a context manager (IE: with).
+  (Steve Kowalik)
+
 0.3.14
 ~~~~~~
 

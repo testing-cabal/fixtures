@@ -72,6 +72,11 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         self.assertEqual(1, proc.wait())
         self.assertEqual(1, proc.returncode)
 
+    def test_with_popen_custom(self):
+        fixture = self.useFixture(FakePopen())
+        with subprocess.Popen(['ls -lh']) as proc:
+            self.assertEqual(None, proc.returncode)
+
 
 class TestFakeProcess(testtools.TestCase):
 
