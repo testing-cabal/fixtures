@@ -54,6 +54,9 @@ class FakeProcess(object):
     def __exit__(self, exc_type, exc_value, traceback):
         self.wait()
 
+    def kill(self):
+        pass
+
     def wait(self):
         if self.returncode is None:
             self.communicate()
