@@ -9,6 +9,9 @@ NEXT
 CHANGES
 -------
 
+* ``FakePopen`` now supports being called under a context manager (IE: with).
+  (Steve Kowalik)
+
 * ``MonkeyPatch`` now preserves ``staticmethod`` functions.
   (Dan Kenigsberg)
 
