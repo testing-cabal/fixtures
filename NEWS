@@ -12,6 +12,8 @@ CHANGES
 * ``FakePopen`` now supports being called under a context manager (IE: with).
   (Steve Kowalik)
 * ``FakeProcess`` now supports kill(). (Steve Kowalik)
+* ``FakeProcess`` wait() now supports arguments added in Python 3.
+  (Steve Kowalik)
 
 0.3.14
 ~~~~~~

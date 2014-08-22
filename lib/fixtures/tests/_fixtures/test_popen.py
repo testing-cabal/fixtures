@@ -98,3 +98,7 @@ class TestFakeProcess(testtools.TestCase):
     def test_kill(self):
         proc = FakeProcess({}, {})
         self.assertIs(None, proc.kill())
+
+    def test_wait_with_timeout_and_endtime(self):
+        proc = FakeProcess({}, {})
+        self.assertEqual(0 , proc.wait(timeout=4, endtime=7))
