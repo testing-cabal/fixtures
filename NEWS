@@ -6,6 +6,12 @@ fixtures release notes
 NEXT
 ~~~~
 
+CHANGES
+-------
+
+* ``MonkeyPatch`` now preserves ``staticmethod`` functions.
+  (Dan Kenigsberg)
+
 0.3.14
 ~~~~~~
 
