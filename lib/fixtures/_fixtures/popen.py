@@ -57,7 +57,7 @@ class FakeProcess(object):
     def kill(self):
         pass
 
-    def wait(self):
+    def wait(self, timeout=None, endtime=None):
         if self.returncode is None:
             self.communicate()
         return self.returncode
