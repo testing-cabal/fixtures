@@ -6,6 +6,15 @@ fixtures release notes
 NEXT
 ~~~~
 
+0.3.16
+~~~~~~
+
+CHANGES
+-------
+
+* Fixed 0.3.15 on Python 2.6 - version info is a plain tuple there.
+  (Robert Collins)
+
 0.3.15
 ~~~~~~
 

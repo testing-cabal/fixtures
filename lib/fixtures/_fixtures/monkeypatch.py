@@ -66,7 +66,7 @@ class MonkeyPatch(Fixture):
             self.addCleanup(self._safe_delete, current, attribute)
         else:
             # Python 2's setattr transforms function into instancemethod
-            if (sys.version_info.major == 2 and
+            if (sys.version_info[0] == 2 and
                 isinstance(current, (type, types.ClassType)) and
                 isinstance(old_value, types.FunctionType)):
                     old_value = staticmethod(old_value)
