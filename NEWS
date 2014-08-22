@@ -12,6 +12,8 @@ CHANGES
 * ``FakePopen`` now supports being called under a context manager (IE: with).
   (Steve Kowalik)
 
+* ``FakeProcess`` now supports kill(). (Steve Kowalik)
+
 * ``MonkeyPatch`` now preserves ``staticmethod`` functions.
   (Dan Kenigsberg)
 

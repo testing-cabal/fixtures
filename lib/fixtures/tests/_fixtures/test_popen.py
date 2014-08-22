@@ -94,3 +94,7 @@ class TestFakeProcess(testtools.TestCase):
         proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
         self.assertEqual((_b('foo'), ''), proc.communicate())
         self.assertEqual(0, proc.returncode)
+
+    def test_kill(self):
+        proc = FakeProcess({}, {})
+        self.assertIs(None, proc.kill())
