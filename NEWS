@@ -6,6 +6,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+0.3.17
+~~~~~~
+
 * FakeLogger now supports the ``datefmt`` parameter.
   (Sean Dague)
 
