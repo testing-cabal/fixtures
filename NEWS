@@ -6,6 +6,10 @@ fixtures release notes
 NEXT
 ~~~~
 
+* Fixtures source code is now hosted on
+  `github <https://github.com/testing-cabal/fixtures>`_.
+  (Robert Collins)
+
 0.3.16
 ~~~~~~
 

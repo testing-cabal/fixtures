@@ -7,17 +7,14 @@ Code access
 Branch from the trunk (all patches should be for trunk unless there are
 exceptional circumstances)::
 
-  bzr branch lp:python-fixtures path-to-new-local-branch
+  git clone https://github.com/testing-cabal/fixtures path-to-new-local-repo
 
-Publish your branches whereever you like, I encourage Launchpad hosting though,
-as it can notify the community of new fixtures branches::
-
-  bzr push lp:~YOURUSERNAME/python-fixtures/YOURBRANCHNAME
+Publish your branches whereever you like and submit PR's on github.
 
 Copyright
 +++++++++
 
-Fixtures is Copyright (C) 2010 Robert Collins. I'd like to be able to
+Fixtures is Copyright (C) 2010-2014 Robert Collins. I'd like to be able to
 offer it up for stdlib inclusion once it has proved itself, so am asking for
 copyright assignment to me - or for your contributions to be under the BSD and
 Apache-2.0 licences that Fixtures is under (which permit inclusion in Python).

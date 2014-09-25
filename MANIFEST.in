@@ -1,4 +1,3 @@
-include .bzrignore
 include Apache-2.0
 include BSD
 include COPYING

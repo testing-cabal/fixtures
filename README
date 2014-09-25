@@ -28,6 +28,9 @@ Dependencies
 * Python 2.6+
   This is the base language fixtures is written in and for.
 
+* pbr
+  Used for version and release management of fixtures.
+
 * testtools <https://launchpad.net/testtools> 0.9.22 or newer.
   testtools provides helpful glue functions for the details API used to report
   information about a fixture (whether its used in a testing or production

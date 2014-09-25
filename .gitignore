@@ -6,3 +6,8 @@ dist
 .testrepository
 __pycache__
 fixtures.egg-info
+*.pyc
+.*.swp
+*~
+AUTHORS
+ChangeLog
