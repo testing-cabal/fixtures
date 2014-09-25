@@ -6,6 +6,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+* FakeLogger now supports the ``datefmt`` parameter.
+  (Sean Dague)
+
 * Fixtures source code is now hosted on
   `github <https://github.com/testing-cabal/fixtures>`_.
   (Robert Collins)

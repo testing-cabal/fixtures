@@ -14,6 +14,7 @@
 # limitations under that license.
 
 import logging
+import time
 
 from testtools import TestCase
 from testtools.compat import StringIO
@@ -80,6 +81,15 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
         self.useFixture(fixture)
         logging.info("message")
         self.assertEqual("test_logger\n", fixture.output)
+
+    def test_custom_datefmt(self):
+        fixture = FakeLogger(format="%(asctime)s %(module)s",
+                             datefmt="%Y")
+        self.useFixture(fixture)
+        logging.info("message")
+        self.assertEqual(
+            time.strftime("%Y test_logger\n", time.localtime()),
+            fixture.output)
 
     def test_logging_output_included_in_details(self):
         fixture = FakeLogger()

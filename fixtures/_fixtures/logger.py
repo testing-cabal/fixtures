@@ -65,13 +65,16 @@ class LogHandler(Fixture):
 class FakeLogger(Fixture):
     """Replace a logger and capture its output."""
 
-    def __init__(self, name="", level=INFO, format=None, nuke_handlers=True):
+    def __init__(self, name="", level=INFO, format=None,
+                 datefmt=None, nuke_handlers=True):
         """Create a FakeLogger fixture.
 
         :param name: The name of the logger to replace. Defaults to "".
         :param level: The log level to set, defaults to INFO.
         :param format: Logging format to use. Defaults to capturing supplied
             messages verbatim.
+        :param datefmt: Logging date format to use.
+            Mirrors the datefmt used in python loggging.
         :param nuke_handlers: If True remove all existing handles (prevents
             existing messages going to e.g. stdout). Defaults to True.
 
@@ -86,6 +89,7 @@ class FakeLogger(Fixture):
         self._name = name
         self._level = level
         self._format = format
+        self._datefmt = datefmt
         self._nuke_handlers = nuke_handlers
 
     def setUp(self):
@@ -95,7 +99,7 @@ class FakeLogger(Fixture):
         self._output = output
         handler = StreamHandler(output)
         if self._format:
-            handler.setFormatter(Formatter(self._format))
+            handler.setFormatter(Formatter(self._format, self._datefmt))
         self.useFixture(
             LogHandler(handler, name=self._name, level=self._level,
                        nuke_handlers=self._nuke_handlers))
