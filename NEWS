@@ -6,8 +6,16 @@ fixtures release notes
 NEXT
 ~~~~
 
+CHANGES
+-------
+
+* Fix incorrect entry_point. (Gabi Davar)
+
 0.3.17
 ~~~~~~
+
+CHANGES
+-------
 
 * FakeLogger now supports the ``datefmt`` parameter.
   (Sean Dague)
