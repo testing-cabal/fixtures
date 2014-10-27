@@ -42,7 +42,7 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 #_version = pbr.version.VersionInfo('fixtures').semantic_version()
 #__version__ = _version.version_tuple()
 #version = _version.release_string()
-__version__ = (0, 3, 17, 'final', 0)
+__version__ = (1, 0, 0, 'final', 0)
 
 
 __all__ = [
