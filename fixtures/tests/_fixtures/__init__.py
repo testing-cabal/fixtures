@@ -17,6 +17,7 @@ def load_tests(loader, standard_tests, pattern):
     test_modules = [
         'environ',
         'logger',
+        'mockpatch',
         'monkeypatch',
         'packagepath',
         'popen',
