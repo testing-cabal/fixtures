@@ -14,6 +14,7 @@
 # limitations under that license.
 
 import logging
+import sys
 import time
 
 from testtools import TestCase
@@ -24,6 +25,19 @@ from fixtures import (
     LogHandler,
     TestWithFixtures,
     )
+
+
+# A simple custom formatter that prepends Foo to all log messages, for
+# testing formatter overrides.
+class FooFormatter(logging.Formatter):
+    def format(self, record):
+        # custom formatters interface changes in python 3.2
+        if sys.version_info < (3, 2):
+            self._fmt = "Foo " + self._fmt
+        else:
+            self._style = logging.PercentStyle("Foo " + self._style._fmt)
+            self._fmt = self._style._fmt
+        return logging.Formatter.format(self, record)
 
 
 class FakeLoggerTest(TestCase, TestWithFixtures):
@@ -89,6 +103,16 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
         logging.info("message")
         self.assertEqual(
             time.strftime("%Y test_logger\n", time.localtime()),
+            fixture.output)
+
+    def test_custom_formatter(self):
+        fixture = FakeLogger(format="%(asctime)s %(module)s",
+                             formatter=FooFormatter,
+                             datefmt="%Y")
+        self.useFixture(fixture)
+        logging.info("message")
+        self.assertEqual(
+            time.strftime("Foo %Y test_logger\n", time.localtime()),
             fixture.output)
 
     def test_logging_output_included_in_details(self):

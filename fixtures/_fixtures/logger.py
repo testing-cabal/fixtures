@@ -66,7 +66,7 @@ class FakeLogger(Fixture):
     """Replace a logger and capture its output."""
 
     def __init__(self, name="", level=INFO, format=None,
-                 datefmt=None, nuke_handlers=True):
+                 datefmt=None, nuke_handlers=True, formatter=None):
         """Create a FakeLogger fixture.
 
         :param name: The name of the logger to replace. Defaults to "".
@@ -77,6 +77,8 @@ class FakeLogger(Fixture):
             Mirrors the datefmt used in python loggging.
         :param nuke_handlers: If True remove all existing handles (prevents
             existing messages going to e.g. stdout). Defaults to True.
+        :param formatter: a custom log formatter class. Use this if you want
+            to use a log Formatter other than the default one in python.
 
         Example:
 
@@ -91,6 +93,7 @@ class FakeLogger(Fixture):
         self._format = format
         self._datefmt = datefmt
         self._nuke_handlers = nuke_handlers
+        self._formatter = formatter
 
     def setUp(self):
         super(FakeLogger, self).setUp()
@@ -99,7 +102,8 @@ class FakeLogger(Fixture):
         self._output = output
         handler = StreamHandler(output)
         if self._format:
-            handler.setFormatter(Formatter(self._format, self._datefmt))
+            formatter = (self._formatter or Formatter)
+            handler.setFormatter(formatter(self._format, self._datefmt))
         self.useFixture(
             LogHandler(handler, name=self._name, level=self._level,
                        nuke_handlers=self._nuke_handlers))
