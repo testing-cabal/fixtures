@@ -36,6 +36,7 @@ __all__ = [
     'TempHomeDir',
     'Timeout',
     'TimeoutException',
+    'WarningsCapture',
     ]
 
 
@@ -71,4 +72,7 @@ from fixtures._fixtures.temphomedir import (
 from fixtures._fixtures.timeout import (
     Timeout,
     TimeoutException,
+    )
+from fixtures._fixtures.warnings import (
+    WarningsCapture,
     )

@@ -6,6 +6,8 @@ fixtures release notes
 NEXT
 ~~~~
 
+* Add warnings module fixture for capturing warnings. (Joshua Harlow)
+
 1.1.0
 ~~~~~
 
