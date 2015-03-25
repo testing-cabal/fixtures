@@ -1,7 +1,5 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
-# Copyright (C) 2011, Martin Pool <mbp@sourcefrog.net>
-# 
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
