@@ -69,6 +69,7 @@ __all__ = [
     'TestWithFixtures',
     'Timeout',
     'TimeoutException',
+    'WarningsCapture',
     '__version__',
     'version',
     ]
@@ -99,6 +100,7 @@ from fixtures._fixtures import (
     TempHomeDir,
     Timeout,
     TimeoutException,
+    WarningsCapture,
     )
 from fixtures.testcase import TestWithFixtures
 
