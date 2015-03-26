@@ -6,6 +6,8 @@ fixtures release notes
 NEXT
 ~~~~
 
+* FakeLogger now supports a custom formatter. (Sean Dague)
+
 1.0.0
 ~~~~~
 
