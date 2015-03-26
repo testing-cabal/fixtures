@@ -20,6 +20,7 @@ import testtools
 from testtools.testcase import (
     TestSkipped,
     )
+from testtools.matchers import raises
 
 import fixtures
 
@@ -57,10 +58,9 @@ class TestTimeout(testtools.TestCase, fixtures.TestWithFixtures):
         self.requireUnix()
         # This will normally kill the whole process, which would be
         # inconvenient.  Let's hook the alarm here so we can observe it.
-        self.got_alarm = False
+        class GotAlarm(Exception):pass
         def sigalrm_handler(signum, frame):
-            self.got_alarm = True
+            raise GotAlarm()
         old_handler = signal.signal(signal.SIGALRM, sigalrm_handler)
         self.addCleanup(signal.signal, signal.SIGALRM, old_handler)
-        sample_long_delay_with_harsh_timeout()
-        self.assertTrue(self.got_alarm)
+        self.assertThat(sample_long_delay_with_harsh_timeout, raises(GotAlarm))
