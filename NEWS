@@ -6,11 +6,16 @@ fixtures release notes
 NEXT
 ~~~~
 
+CHANGES
+-------
+
 * FakeLogger now supports a custom formatter. (Sean Dague)
 
 * Fixed test performance on Python 3.5. PEP 475 led to ``time.sleep()`` not
   being interrupted when a received signal handler eats the signal (rather
   than raising an exception). (Robert Collins)
+
+* ``tox.ini`` added, for folk that use tox. (Sean Dague)
 
 1.0.0
 ~~~~~
