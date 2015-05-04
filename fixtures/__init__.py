@@ -36,13 +36,10 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 # established at this point, and setup.py will use a version of next-$(revno).
 # If the releaselevel is 'final', then the tarball will be major.minor.micro.
 # Otherwise it is major.minor.micro~$(revno).
-
-# Uncomment when pbr 0.11 is released.
-#import pbr.version
-#_version = pbr.version.VersionInfo('fixtures').semantic_version()
-#__version__ = _version.version_tuple()
-#version = _version.release_string()
-__version__ = (1, 0, 0, 'final', 0)
+from pbr.version import VersionInfo
+_version = VersionInfo('fixtures')
+__version__ = _version.semantic_version().version_tuple()
+version = _version.release_string()
 
 
 __all__ = [

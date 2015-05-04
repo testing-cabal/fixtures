@@ -36,11 +36,11 @@ the fixtures __init__.py.
 Releasing
 +++++++++
 
-1. Update the version number in __init__.py and add a version to NEWS.
-
-1. Upload to pypi, signed.
+1. Add a version to NEWS.
 
 1. commit, tag.
+
+1. Upload to pypi, signed.
 
 1. Close bugs.
 
