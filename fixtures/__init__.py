@@ -38,7 +38,8 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 # Otherwise it is major.minor.micro~$(revno).
 from pbr.version import VersionInfo
 _version = VersionInfo('fixtures')
-__version__ = _version.semantic_version().version_tuple()
+__version_info__ = _version.semantic_version().version_tuple()
+__version__ = _version.release_string()
 version = _version.release_string()
 
 
