@@ -11,3 +11,5 @@ fixtures.egg-info
 *~
 AUTHORS
 ChangeLog
+.eggs
+build
