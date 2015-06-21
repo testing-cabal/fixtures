@@ -438,3 +438,10 @@ improved by chaining alarms.)
 
 *Note:* Currently supported only on Unix because it relies on the ``alarm``
 system call.
+
+Contributing
+============
+
+Fixtures has its project homepage on Launchpad
+<https://launchpad.net/python-fixtures>. Source code is hosted on GitHub
+<https://github.com/testing-cabal/fixtures>.
