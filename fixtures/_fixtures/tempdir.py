@@ -39,8 +39,7 @@ class TempDir(fixtures.Fixture):
         """
         self.rootdir = rootdir
 
-    def setUp(self):
-        super(TempDir, self).setUp()
+    def _setUp(self):
         self.path = tempfile.mkdtemp(dir=self.rootdir)
         self.addCleanup(shutil.rmtree, self.path, ignore_errors=True)
 
@@ -63,8 +62,7 @@ class NestedTempfile(fixtures.Fixture):
     down.
     """
 
-    def setUp(self):
-        super(NestedTempfile, self).setUp()
+    def _setUp(self):
         tempdir = self.useFixture(TempDir()).path
         patch = fixtures.MonkeyPatch("tempfile.tempdir", tempdir)
         self.useFixture(patch)

@@ -58,11 +58,13 @@ __all__ = [
     'MockPatchMultiple',
     'MockPatchObject',
     'MonkeyPatch',
+    'MultipleExceptions',
     'NestedTempfile',
     'PackagePathEntry',
     'PopenFixture',
     'PythonPackage',
     'PythonPathEntry',
+    'SetupError',
     'StringStream',
     'TempDir',
     'TempHomeDir',
@@ -79,6 +81,8 @@ from fixtures.fixture import (
     Fixture,
     FunctionFixture,
     MethodFixture,
+    MultipleExceptions,
+    SetupError,
     )
 from fixtures._fixtures import (
     ByteStream,

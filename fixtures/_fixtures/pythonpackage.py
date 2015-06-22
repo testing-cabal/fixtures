@@ -47,8 +47,7 @@ class PythonPackage(Fixture):
         self.modulelist = modulelist
         self.init = init
 
-    def setUp(self):
-        Fixture.setUp(self)
+    def _setUp(self):
         self.base = self.useFixture(TempDir()).path
         base = self.base
         root = os.path.join(base, self.packagename)

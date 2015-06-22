@@ -25,8 +25,7 @@ mock_default = extras.try_imports(
 
 
 class _Base(fixtures.Fixture):
-    def setUp(self):
-        super(_Base, self).setUp()
+    def _setUp(self):
         _p = self._get_p()
         self.addCleanup(_p.stop)
         self.mock = _p.start()

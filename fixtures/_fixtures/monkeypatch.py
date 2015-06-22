@@ -42,8 +42,7 @@ class MonkeyPatch(Fixture):
         self.name = name
         self.new_value = new_value
     
-    def setUp(self):
-        Fixture.setUp(self)
+    def _setUp(self):
         location, attribute = self.name.rsplit('.', 1)
         # Import, swallowing all errors as any element of location may be
         # a class or some such thing.

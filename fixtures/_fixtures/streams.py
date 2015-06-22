@@ -42,8 +42,7 @@ class Stream(Fixture):
         self._detail_name = detail_name
         self._stream_factory = stream_factory
 
-    def setUp(self):
-        super(Stream, self).setUp()
+    def _setUp(self):
         write_stream, read_stream = self._stream_factory()
         self.stream = write_stream
         self.addDetail(self._detail_name,

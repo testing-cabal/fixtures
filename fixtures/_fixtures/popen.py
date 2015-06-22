@@ -95,8 +95,7 @@ class FakePopen(Fixture):
         super(FakePopen, self).__init__()
         self.get_info = get_info
 
-    def setUp(self):
-        super(FakePopen, self).setUp()
+    def _setUp(self):
         self.addCleanup(setattr, subprocess, 'Popen', subprocess.Popen)
         subprocess.Popen = self
         self.procs = []

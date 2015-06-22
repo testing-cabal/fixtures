@@ -122,7 +122,7 @@ class TestFixture(testtools.TestCase):
     @require_gather_details
     def test_useFixture_details_captured_from_setUp(self):
         # Details added during fixture set-up are gathered even if setUp()
-        # fails with an exception.
+        # fails with an unknown exception.
         class SomethingBroke(Exception): pass
         class BrokenFixture(fixtures.Fixture):
             def setUp(self):
@@ -143,6 +143,24 @@ class TestFixture(testtools.TestCase):
             {"content": text_content("foobar")},
             simple_fixture.getDetails())
 
+    @require_gather_details
+    def test_useFixture_details_captured_from_setUp_MultipleExceptions(self):
+        # Details added during fixture set-up are gathered even if setUp()
+        # fails with (cleanly - with MultipleExceptions / SetupError).
+        class SomethingBroke(Exception): pass
+        class BrokenFixture(fixtures.Fixture):
+            def _setUp(self):
+                self.addDetail('content', text_content("foobar"))
+                raise SomethingBroke()
+        class SimpleFixture(fixtures.Fixture):
+            def _setUp(self):
+                self.useFixture(BrokenFixture())
+        simple = SimpleFixture()
+        e = self.assertRaises(fixtures.MultipleExceptions, simple.setUp)
+        self.assertEqual(
+            {"content": text_content("foobar")},
+            e.args[-1][1].args[0])
+
     def test_getDetails(self):
         fixture = fixtures.Fixture()
         with fixture:
@@ -162,7 +180,7 @@ class TestFixture(testtools.TestCase):
             self.assertEqual({}, parent.getDetails())
             # After cleanup the child details are still gone.
             child.addDetail('foo', 'content')
-        self.assertEqual({}, parent.getDetails())
+        self.assertRaises(TypeError, parent.getDetails)
 
     def test_duplicate_details_are_disambiguated(self):
         parent = fixtures.Fixture()
@@ -185,7 +203,59 @@ class TestFixture(testtools.TestCase):
             self.assertEqual({}, fixture.getDetails())
             fixture.addDetail('foo', 'content')
         # Cleanup clears the details too.
-        self.assertEqual({}, fixture.getDetails())
+        self.assertRaises(TypeError, fixture.getDetails)
+
+    def test_setUp_subclassed(self):
+        # Even though its no longer recommended, we need to be sure that
+        # overriding setUp and calling super().setUp still works.
+        class Subclass(fixtures.Fixture):
+            def setUp(self):
+                super(Subclass, self).setUp()
+                self.fred = 1
+                self.addCleanup(setattr, self, 'fred', 2)
+        with Subclass() as f:
+            self.assertEqual(1, f.fred)
+        self.assertEqual(2, f.fred)
+
+    def test__setUp(self):
+        # _setUp is called, and cleanups can be registered by it.
+        class Subclass(fixtures.Fixture):
+            def _setUp(self):
+                self.fred = 1
+                self.addCleanup(setattr, self, 'fred', 2)
+        with Subclass() as f:
+            self.assertEqual(1, f.fred)
+        self.assertEqual(2, f.fred)
+
+    def test__setUp_fails(self):
+        # when _setUp fails, the fixture is left ready-to-setUp, and any
+        # details added during _setUp are captured.
+        class Subclass(fixtures.Fixture):
+            def _setUp(self):
+                self.addDetail('log', text_content('stuff'))
+                1/0
+        f = Subclass()
+        e = self.assertRaises(fixtures.MultipleExceptions, f.setUp)
+        self.assertRaises(TypeError, f.cleanUp)
+        self.assertIsInstance(e.args[0][1], ZeroDivisionError)
+        self.assertIsInstance(e.args[1][1], fixtures.SetupError)
+        self.assertEqual('stuff', e.args[1][1].args[0]['log'].as_text())
+
+    def test__setUp_fails_cleanUp_fails(self):
+        # when _setUp fails, cleanups are called, and their failure is captured
+        # into the MultipleExceptions instance.
+        class Subclass(fixtures.Fixture):
+            def _setUp(self):
+                self.addDetail('log', text_content('stuff'))
+                self.addCleanup(lambda: 1/0)
+                raise Exception('fred')
+        f = Subclass()
+        e = self.assertRaises(fixtures.MultipleExceptions, f.setUp)
+        self.assertRaises(TypeError, f.cleanUp)
+        self.assertEqual(Exception, e.args[0][0])
+        self.assertEqual(ZeroDivisionError, e.args[1][0])
+        self.assertEqual(fixtures.SetupError, e.args[2][0])
+        self.assertEqual('stuff', e.args[2][1].args[0]['log'].as_text())
 
 
 class TestFunctionFixture(testtools.TestCase):

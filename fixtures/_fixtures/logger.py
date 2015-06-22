@@ -46,8 +46,7 @@ class LogHandler(Fixture):
         self._level = level
         self._nuke_handlers = nuke_handlers
 
-    def setUp(self):
-        super(LogHandler, self).setUp()
+    def _setUp(self):
         logger = getLogger(self._name)
         if self._level:
             self.addCleanup(logger.setLevel, logger.level)
@@ -95,8 +94,7 @@ class FakeLogger(Fixture):
         self._nuke_handlers = nuke_handlers
         self._formatter = formatter
 
-    def setUp(self):
-        super(FakeLogger, self).setUp()
+    def _setUp(self):
         name = _u("pythonlogging:'%s'") % self._name
         output = self.useFixture(StringStream(name)).stream
         self._output = output

@@ -34,8 +34,7 @@ class WarningsCapture(fixtures.Fixture):
     def _showwarning(self, *args, **kwargs):
         self.captures.append(warnings.WarningMessage(*args, **kwargs))
 
-    def setUp(self):
-        super(WarningsCapture, self).setUp()
+    def _setUp(self):
         patch = fixtures.MonkeyPatch("warnings.showwarning", self._showwarning)
         self.useFixture(patch)
         self.captures = []

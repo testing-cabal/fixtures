@@ -18,6 +18,7 @@ __all__ = [
     'FunctionFixture',
     'MethodFixture',
     'MultipleExceptions',
+    'SetupError',
     ]
 
 import itertools
@@ -47,6 +48,13 @@ def combine_details(source_details, target_details):
             new_name = '%s-%d' % (name, advance_iterator(disambiguator))
         name = new_name
         target_details[name] = content_object
+
+
+class SetupError(Exception):
+    """Setup failed.
+
+    args[0] will be a details dict.
+    """
 
 
 class Fixture(object):
@@ -97,6 +105,10 @@ class Fixture(object):
 
         This should not typically be overridden, see addCleanup instead.
 
+        cleanUp may be called once and only once after setUp() has been called.
+        The base implementation of setUp will automatically call cleanUp if
+        an exception occurs within setUp itself.
+
         :param raise_first: Deprecated parameter from before testtools gained
             MultipleExceptions. raise_first defaults to True. When True
             if a single exception is raised, it is reraised after all the
@@ -111,7 +123,7 @@ class Fixture(object):
         try:
             return self._cleanups(raise_errors=raise_first)
         finally:
-            self._clear_cleanups()
+            self._remove_state()
 
     def _clear_cleanups(self):
         """Clean the cleanup queue without running them.
@@ -126,6 +138,15 @@ class Fixture(object):
         self._details = {}
         self._detail_sources = []
 
+    def _remove_state(self):
+        """Remove the internal state.
+
+        Called from cleanUp to put the fixture back into a not-ready state.
+        """
+        self._cleanups = None
+        self._details = None
+        self._detail_sources = None
+
     def __enter__(self):
         self.setUp()
         return self
@@ -134,7 +155,7 @@ class Fixture(object):
         try:
             self._cleanups()
         finally:
-            self._clear_cleanups()
+            self._remove_state()
         return False # propogate exceptions from the with body.
 
     def getDetails(self):
@@ -153,16 +174,49 @@ class Fixture(object):
     def setUp(self):
         """Prepare the Fixture for use.
 
-        This should be overridden by most concrete fixtures. When overriding
+        This should not be overridden.
+        
+        Concrete fixtures should implement _setUp.
+
+        After setUp has completed, the fixture will have one or more attributes
+        which can be used (these depend totally on the concrete subclass).
+
+        :raises: MultipleExceptions if _setUp fails. The last exception
+            captured within the MultipleExceptions will be a SetupError
+            exception.
+        :return: None.
+
+        :changed in 1.3: The recommendation to override setUp has been
+            reversed - before 1.3, setUp() should be overridden, now it should
+            not be.
+        """
+        self._clear_cleanups()
+        try:
+            self._setUp()
+        except Exception:
+            err = sys.exc_info()
+            details = {}
+            if gather_details is not None:
+                # Materialise all details since we're about to cleanup.
+                gather_details(self.getDetails(), details)
+            else:
+                details = self.getDetails()
+            errors = [err] + self.cleanUp(raise_first=False)
+            try:
+                raise SetupError(details)
+            except SetupError as e:
+                errors.append(sys.exc_info())
+                raise MultipleExceptions(*errors)
+
+    def _setUp(self):
+        """Template method for subclasses to override.
+
+        Override this to customise the fixture. When overriding
         be sure to include self.addCleanup calls to restore the fixture to
         an un-setUp state, so that a single Fixture instance can be reused.
 
-        After setUp is called, the fixture will have one or more attributes
-        which can be used (these depend totally on the concrete subclass).
-
         :return: None.
         """
-        self._clear_cleanups()
 
     def reset(self):
         """Reset a setUp Fixture to the 'just setUp' state again.
@@ -183,15 +237,23 @@ class Fixture(object):
         """Use another fixture.
 
         The fixture will be setUp, and self.addCleanup(fixture.cleanUp) called.
+        If the fixture fails to set up, useFixture will attempt to gather its
+        details into this fixture's details to aid in debugging.
 
         :param fixture: The fixture to use.
         :return: The fixture, after setting it up and scheduling a cleanup for
            it.
+        :raises: Any errors raised by the fixture's setUp method.
         """
         try:
             fixture.setUp()
+        except MultipleExceptions as e:
+            if e.args[-1][0] is SetupError:
+                combine_details(e.args[-1][1].args[0], self._details)
+            raise
         except:
-            # The child failed to come up, capture any details it has (copying
+            # The child failed to come up and didn't raise MultipleExceptions
+            # which we can understand... capture any details it has (copying
             # the content, it may go away anytime).
             if gather_details is not None:
                 gather_details(fixture.getDetails(), self._details)
@@ -249,8 +311,7 @@ class FunctionFixture(Fixture):
         self.cleanup_fn = cleanup_fn
         self.reset_fn = reset_fn
 
-    def setUp(self):
-        super(FunctionFixture, self).setUp()
+    def _setUp(self):
         fn_result = self.setup_fn()
         self._maybe_cleanup(fn_result)
 
@@ -323,8 +384,7 @@ class MethodFixture(Fixture):
             reset = getattr(obj, 'reset', None)
         self._reset = reset
 
-    def setUp(self):
-        super(MethodFixture, self).setUp()
+    def _setUp(self):
         self._setup()
 
     def cleanUp(self):

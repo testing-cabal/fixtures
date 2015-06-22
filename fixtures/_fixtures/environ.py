@@ -40,8 +40,7 @@ class EnvironmentVariable(Fixture):
         self.varname = varname
         self.newvalue = newvalue
 
-    def setUp(self):
-        super(EnvironmentVariable, self).setUp()
+    def _setUp(self):
         varname = self.varname
         orig_value = os.environ.get(varname)
         if orig_value is not None:

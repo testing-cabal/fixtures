@@ -79,19 +79,20 @@ Most fixtures have complete ``pydoc`` documentation, so be sure to check
 Creating Fixtures
 =================
 
-Minimally, subclass Fixture, define setUp to initialize your state and schedule
+Minimally, subclass Fixture, define _setUp to initialize your state and schedule
 a cleanup for when cleanUp is called and you're done::
 
   >>> import unittest
   >>> import fixtures
   >>> class NoddyFixture(fixtures.Fixture):
-  ...     def setUp(self):
-  ...         super(NoddyFixture, self).setUp()
+  ...     def _setUp(self):
   ...         self.frobnozzle = 42
   ...         self.addCleanup(delattr, self, 'frobnozzle')
 
-This will initialize frobnozzle when setUp is called, and when cleanUp is
-called get rid of the frobnozzle attribute.
+This will initialize frobnozzle when ``setUp`` is called, and when ``cleanUp``
+is called get rid of the frobnozzle attribute. Prior to version 1.3.0 fixtures
+recommended overriding ``setUp``. This is still supported, but since it is
+harder to write leak-free fixtures in this fashion, it is not recommended.
 
 If your fixture has diagnostic data - for instance the log file of an
 application server, or log messages, it can expose that by creating a content
@@ -99,8 +100,7 @@ object (``testtools.content.Content``) and calling ``addDetail``.
 
   >>> from testtools.content import text_content
   >>> class WithLog(fixtures.Fixture):
-  ...     def setUp(self):
-  ...         super(WithLog, self).setUp()
+  ...     def _setUp(self):
   ...         self.addDetail('message', text_content('foo bar baz'))
 
 The method ``useFixture`` will use another fixture, call ``setUp`` on it, call
@@ -108,8 +108,7 @@ The method ``useFixture`` will use another fixture, call ``setUp`` on it, call
 the fixture. This allows simple composition of different fixtures.
 
   >>> class ReusingFixture(fixtures.Fixture):
-  ...     def setUp(self):
-  ...         super(ReusingFixture, self).setUp()
+  ...     def _setUp(self):
   ...         self.noddy = self.useFixture(NoddyFixture())
 
 There is a helper for adapting a function or function pair into Fixtures. it
@@ -154,9 +153,9 @@ The example above introduces some of the Fixture API. In order to be able to
 clean up after a fixture has been used, all fixtures define a ``cleanUp``
 method which should be called when a fixture is finished with.
 
-Because its nice to be able to build a particular set of related fixtures in
-advance of using them, fixtures also have define a ``setUp`` method which
-should be called before trying to use them.
+Because it's nice to be able to build a particular set of related fixtures in
+advance of using them, fixtures also have a ``setUp`` method which should be
+called before trying to use them.
 
 One common desire with fixtures that are expensive to create is to reuse them
 in many test cases; to support this the base Fixture also defines a ``reset``
@@ -203,8 +202,7 @@ rather than choosing an arbitrary single exception to raise::
   >>> import sys
   >>> from fixtures.fixture import MultipleExceptions
   >>> class BrokenFixture(fixtures.Fixture):
-  ...     def setUp(self):
-  ...         fixtures.Fixture.setUp(self)
+  ...     def _setUp(self):
   ...         self.addCleanup(lambda:1/0)
   ...         self.addCleanup(lambda:1/0)
   >>> fixture = BrokenFixture()
@@ -218,11 +216,24 @@ rather than choosing an arbitrary single exception to raise::
 
 Fixtures often expose diagnostic details that can be useful for tracking down
 issues. The ``getDetails`` method will return a dict of all the attached
-details. Each detail object is an instance of ``testtools.content.Content``.
+details, but can only be called before ``cleanUp`` is called. Each detail
+object is an instance of ``testtools.content.Content``.
 
   >>> with WithLog() as l:
   ...     print(l.getDetails()['message'].as_text())
   foo bar baz
+
+Errors in setUp
++++++++++++++++
+
+The examples above used ``_setUp`` rather than ``setUp`` because the base
+class implementation of ``setUp`` acts to reduce the chance of leaking
+external resources if an error is raised from ``_setUp``. Specifically,
+``setUp`` contains a try:/except: block which catches all exceptions, captures
+any registered detail objects, and calls ``self.cleanUp`` before propogating
+the error. As long as you take care to register any cleanups before calling
+the code that may fail, this will cause them to be cleaned up. The captured
+detail objects are provided to the args of the raised exception.
 
 Shared Dependencies
 +++++++++++++++++++

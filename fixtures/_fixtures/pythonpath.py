@@ -35,8 +35,7 @@ class PythonPathEntry(Fixture):
         """
         self.directory = directory
 
-    def setUp(self):
-        Fixture.setUp(self)
+    def _setUp(self):
         if self.directory in sys.path:
             return
         self.addCleanup(sys.path.remove, self.directory)

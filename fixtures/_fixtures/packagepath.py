@@ -39,8 +39,7 @@ class PackagePathEntry(Fixture):
         self.packagename = packagename
         self.directory = directory
 
-    def setUp(self):
-        Fixture.setUp(self)
+    def _setUp(self):
         path = sys.modules[self.packagename].__path__
         if self.directory in path:
             return

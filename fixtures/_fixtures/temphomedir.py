@@ -27,6 +27,6 @@ class TempHomeDir(TempDir):
     :ivar path: the path of the temporary directory.
     """
 
-    def setUp(self):
-        super(TempHomeDir, self).setUp()
+    def _setUp(self):
+        super(TempHomeDir, self)._setUp()
         self.useFixture(fixtures.EnvironmentVariable("HOME", self.path))

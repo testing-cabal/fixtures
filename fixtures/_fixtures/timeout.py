@@ -51,8 +51,7 @@ class Timeout(fixtures.Fixture):
     def signal_handler(self, signum, frame):
         raise TimeoutException()
 
-    def setUp(self):
-        super(Timeout, self).setUp()
+    def _setUp(self):
         if self.alarm_fn is None:
             return  # Can't run on Windows
         if self.gentle:
