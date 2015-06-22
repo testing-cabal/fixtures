@@ -300,7 +300,8 @@ Stock Fixtures
 
 In addition to the Fixture, FunctionFixture and MethodFixture classes fixtures
 includes a number of precanned fixtures. The API docs for fixtures will list
-the complete set of these, should the dcs be out of date or not to hand.
+the complete set of these, should the dcs be out of date or not to hand. For
+the complete feature set of each fixture please see the API docs.
 
 ByteStream
 ++++++++++
@@ -339,6 +340,34 @@ tests.
 
   >>> from testtools.compat import BytesIO
   >>> fixture = fixtures.FakePopen(lambda _:{'stdout': BytesIO('foobar')})
+
+MockPatchObject
++++++++++++++++
+
+Adapts ``mock.patch.object`` to be used as a Fixture.
+
+  >>> class Fred:
+  ...     value = 1
+  >>> fixture = fixtures.MockPatchObject(Fred, 'value', 2)
+  >>> with fixture:
+  ...     Fred().value
+  2
+  >>> Fred().value
+  1
+
+MockPatch
++++++++++
+
+Adapts ``mock.patch`` to be used as a Fixture.
+
+  >>> fixture = fixtures.MockPatch('subprocess.Popen.returncode', 3)
+
+MockPatchMultiple
++++++++++++++++++
+
+Adapts ``mock.patch.multiple`` to be used as a Fixture.
+
+  >>> fixture = fixtures.MockPatch('subprocess.Popen', returncode=3)
 
 MonkeyPatch
 +++++++++++

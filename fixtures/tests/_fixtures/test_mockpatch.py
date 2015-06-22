@@ -12,11 +12,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
 
+import extras
+mock = extras.try_imports(['unittest.mock', 'mock'], None)
 import testtools
 
 from fixtures import (

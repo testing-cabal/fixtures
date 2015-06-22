@@ -15,12 +15,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import extras
+
 import fixtures
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+mock = extras.try_imports(['unittest.mock', 'mock'], None)
+mock_default = extras.try_imports(
+    ['unittest.mock.DEFAULT', 'mock.DEFAULT'], None)
 
 
 class _Base(fixtures.Fixture):
@@ -34,7 +35,7 @@ class _Base(fixtures.Fixture):
 class MockPatchObject(_Base):
     """Deal with code around mock."""
 
-    def __init__(self, obj, attr, new=mock.DEFAULT, **kwargs):
+    def __init__(self, obj, attr, new=mock_default, **kwargs):
         super(MockPatchObject, self).__init__()
         self._get_p = lambda: mock.patch.object(obj, attr, new, **kwargs)
 
@@ -42,7 +43,7 @@ class MockPatchObject(_Base):
 class MockPatch(_Base):
     """Deal with code around mock.patch."""
 
-    def __init__(self, obj, new=mock.DEFAULT, **kwargs):
+    def __init__(self, obj, new=mock_default, **kwargs):
         super(MockPatch, self).__init__()
         self._get_p = lambda: mock.patch(obj, new, **kwargs)
 
@@ -52,7 +53,7 @@ class MockPatchMultiple(_Base):
 
     # Default value to trigger a MagicMock to be created for a named
     # attribute.
-    DEFAULT = mock.DEFAULT
+    DEFAULT = mock_default
 
     def __init__(self, obj, **kwargs):
         """Initialize the mocks
