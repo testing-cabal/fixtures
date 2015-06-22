@@ -6,6 +6,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+* Add MockPatch, MockPatchMultiple, MockPatchObject - adapters to mock.
+  (Julien Danjou, Robert Collins)
+
 1.2.0
 ~~~~~
 
