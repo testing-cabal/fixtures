@@ -175,7 +175,7 @@ class Fixture(object):
         """Prepare the Fixture for use.
 
         This should not be overridden.
-        
+
         Concrete fixtures should implement _setUp.
 
         After setUp has completed, the fixture will have one or more attributes
