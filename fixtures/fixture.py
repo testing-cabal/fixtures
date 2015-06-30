@@ -220,6 +220,9 @@ class Fixture(object):
         be sure to include self.addCleanup calls to restore the fixture to
         an un-setUp state, so that a single Fixture instance can be reused.
 
+        Fixtures will never have a body in _setUp - calling super() is
+        entirely at the discretion of subclasses.
+
         :return: None.
         """
 
