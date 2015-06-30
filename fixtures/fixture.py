@@ -24,6 +24,7 @@ __all__ = [
 import itertools
 import sys
 
+import six
 from testtools.compat import (
     advance_iterator,
     reraise,
@@ -174,9 +175,8 @@ class Fixture(object):
     def setUp(self):
         """Prepare the Fixture for use.
 
-        This should not be overridden.
-
-        Concrete fixtures should implement _setUp.
+        This should not be overridden. Concrete fixtures should implement
+        _setUp. Overriding of setUp is still supported, just not recommended.
 
         After setUp has completed, the fixture will have one or more attributes
         which can be used (these depend totally on the concrete subclass).
@@ -189,11 +189,13 @@ class Fixture(object):
         :changed in 1.3: The recommendation to override setUp has been
             reversed - before 1.3, setUp() should be overridden, now it should
             not be.
+        :changed in 1.3.1: BaseException is now caught, and only subclasses of
+            Exception are wrapped in MultipleExceptions.
         """
         self._clear_cleanups()
         try:
             self._setUp()
-        except Exception:
+        except:
             err = sys.exc_info()
             details = {}
             if gather_details is not None:
@@ -206,7 +208,10 @@ class Fixture(object):
                 raise SetupError(details)
             except SetupError as e:
                 errors.append(sys.exc_info())
+            if issubclass(err[0], Exception):
                 raise MultipleExceptions(*errors)
+            else:
+                six.reraise(*err)
 
     def _setUp(self):
         """Template method for subclasses to override.

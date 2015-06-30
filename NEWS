@@ -6,6 +6,10 @@ fixtures release notes
 NEXT
 ~~~~
 
+* ``Fixture.setUp`` now uses a bare except: and will thus catch BaseException.
+  Any non-Exception-subclass errors are raised verbatim after calling
+  ``cleanUp``, to avoid inappropriate masking in callers. (Robert Collins)
+
 1.3.0
 ~~~~~
 

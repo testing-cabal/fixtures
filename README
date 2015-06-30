@@ -235,6 +235,13 @@ the error. As long as you take care to register any cleanups before calling
 the code that may fail, this will cause them to be cleaned up. The captured
 detail objects are provided to the args of the raised exception.
 
+If the error that occured was a subclass of ``Exception`` then ``setUp`` will
+raise ``MultipleExceptions`` with the last element being a ``SetupError`` that
+contains the detail objects. Otherwise, to prevent causing normally
+uncatchable errors like KeyboardInterrupt being caught inappropriately in the
+calling layer, the original exception will be raised as-is and no diagnostic
+data other than that from the original exception will be available.
+
 Shared Dependencies
 +++++++++++++++++++
 

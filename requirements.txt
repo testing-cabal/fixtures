@@ -1,2 +1,3 @@
 pbr>=0.11
+six
 testtools>=0.9.22

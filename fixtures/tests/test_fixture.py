@@ -257,6 +257,21 @@ class TestFixture(testtools.TestCase):
         self.assertEqual(fixtures.SetupError, e.args[2][0])
         self.assertEqual('stuff', e.args[2][1].args[0]['log'].as_text())
 
+    def test_setup_failures_with_base_exception(self):
+        # when _setUp fails with a BaseException (or subclass thereof) that
+        # exception is propogated as is, but we still call cleanups etc.
+        class MyBase(BaseException):pass
+        log = []
+        class Subclass(fixtures.Fixture):
+            def _setUp(self):
+                self.addDetail('log', text_content('stuff'))
+                self.addCleanup(log.append, 'cleaned')
+                raise MyBase('fred')
+        f = Subclass()
+        e = self.assertRaises(MyBase, f.setUp)
+        self.assertRaises(TypeError, f.cleanUp)
+        self.assertEqual(['cleaned'], log)
+
 
 class TestFunctionFixture(testtools.TestCase):
 
