@@ -17,6 +17,7 @@ import logging
 import sys
 import time
 
+import testtools
 from testtools import TestCase
 from testtools.compat import StringIO
 
@@ -139,6 +140,11 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
             raise
         except:
             pass
+
+    def test_exceptionraised(self):
+        with FakeLogger():
+            with testtools.ExpectedException(TypeError):
+                logging.info("Some message", "wrongarg")
 
 
 class LogHandlerTest(TestCase, TestWithFixtures):

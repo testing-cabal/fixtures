@@ -13,6 +13,9 @@ NEXT
   backport has significant bugfixes over older but still supported CPython
   stdlib versions. (Robert Collins)
 
+* ``fixtures.FakeLogger`` now detects incorrectly formatted log messages.
+  (John Villalovos, #1503049)
+
 1.3.1
 ~~~~~
 
