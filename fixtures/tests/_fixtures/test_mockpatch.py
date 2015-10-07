@@ -14,7 +14,7 @@
 
 
 import extras
-mock = extras.try_imports(['unittest.mock', 'mock'], None)
+import mock # Yes, we only test the rolling backport
 import testtools
 
 from fixtures import (

@@ -9,6 +9,10 @@ NEXT
 * ``fixtures`` now has CI testing via Travis, no more manual work.
   (Robert Collins)
 
+* ``mock`` is used in preference to ``unittest.mock`` now, as the rolling
+  backport has significant bugfixes over older but still supported CPython
+  stdlib versions. (Robert Collins)
+
 1.3.1
 ~~~~~
 

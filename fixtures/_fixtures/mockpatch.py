@@ -19,9 +19,9 @@ import extras
 
 import fixtures
 
-mock = extras.try_imports(['unittest.mock', 'mock'], None)
+mock = extras.try_imports(['mock', 'unittest.mock'], None)
 mock_default = extras.try_imports(
-    ['unittest.mock.DEFAULT', 'mock.DEFAULT'], None)
+    ['mock.DEFAULT', 'unittest.mock.DEFAULT'], None)
 
 
 class _Base(fixtures.Fixture):
