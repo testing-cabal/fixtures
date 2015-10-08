@@ -40,7 +40,9 @@ Releasing
 
 1. commit, tag::
 
-       git push --tags origin master:master
+    git commit -am "Release X.Y.Z"
+    git tag -m "Release X.Y.Z" X.Y.Z
+    git push --tags origin master:master
 
 1. Upload to pypi, signed.
 
