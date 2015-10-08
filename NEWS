@@ -6,6 +6,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+* ``fixtures`` now has CI testing via Travis, no more manual work.
+  (Robert Collins)
+
 1.3.1
 ~~~~~
 
