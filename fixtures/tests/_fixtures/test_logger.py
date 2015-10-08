@@ -140,6 +140,13 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
         except:
             pass
 
+    def test_exceptionraised(self):
+        fixture = self.useFixture(FakeLogger())
+        self.assertRaises(TypeError,
+                          logging.info,
+                          "some message",
+                          "wrongarg")
+
 
 class LogHandlerTest(TestCase, TestWithFixtures):
 
