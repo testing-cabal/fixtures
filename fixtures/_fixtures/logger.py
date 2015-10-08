@@ -14,9 +14,9 @@
 # limitations under that license.
 
 from logging import StreamHandler, getLogger, INFO, Formatter
-import six
 import sys
 
+import six
 from testtools.compat import _u
 
 from fixtures import Fixture
