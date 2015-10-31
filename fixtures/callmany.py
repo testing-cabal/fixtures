@@ -67,7 +67,8 @@ class CallMany(object):
             re-raised after all the functions have run.  If multiple exceptions
             are raised, they are all wrapped into a MultipleExceptions object,
             and that is raised.
-            Thus, to cach a specific exception from a function run by __call__,
+
+            Thus, to catch a specific exception from a function run by __call__,
             you need to catch both the exception and MultipleExceptions, and
             then check within a MultipleExceptions instance for an occurance of
             the type you wish to catch.
@@ -96,5 +97,4 @@ class CallMany(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self()
-        return False # propogate exceptions from the with body.
-
+        return False  # propogate exceptions from the with body.
