@@ -97,4 +97,4 @@ class CallMany(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self()
-        return False  # propogate exceptions from the with body.
+        return False  # Propagate exceptions from the with body.
