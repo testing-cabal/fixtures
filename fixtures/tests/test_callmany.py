@@ -45,7 +45,7 @@ class TestCallMany(testtools.TestCase):
         self.assertEqual(('woo',), value.args)
         self.assertIsInstance(tb, types.TracebackType)
 
-    def test_exit_propogates_exceptions(self):
+    def test_exit_propagates_exceptions(self):
         call = CallMany()
         call.__enter__()
         self.assertEqual(False, call.__exit__(None, None, None))
