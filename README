@@ -56,7 +56,7 @@ Why Fixtures
 
 Standard Python unittest.py provides no obvious method for making and reusing
 state needed in a test case other than by adding a method on the test class.
-This scales poorly - complex helper functions propogating up a test class
+This scales poorly - complex helper functions propagating up a test class
 hierarchy is a regular pattern when this is done. Mocking while a great tool
 doesn't itself prevent this (and helpers to mock complex things can accumulate
 in the same way if placed on the test class).
@@ -230,7 +230,7 @@ The examples above used ``_setUp`` rather than ``setUp`` because the base
 class implementation of ``setUp`` acts to reduce the chance of leaking
 external resources if an error is raised from ``_setUp``. Specifically,
 ``setUp`` contains a try:/except: block which catches all exceptions, captures
-any registered detail objects, and calls ``self.cleanUp`` before propogating
+any registered detail objects, and calls ``self.cleanUp`` before propagating
 the error. As long as you take care to register any cleanups before calling
 the code that may fail, this will cause them to be cleaned up. The captured
 detail objects are provided to the args of the raised exception.

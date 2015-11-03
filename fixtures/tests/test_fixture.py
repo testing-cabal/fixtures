@@ -84,7 +84,7 @@ class TestFixture(testtools.TestCase):
         self.assertEqual(('woo',), value.args)
         self.assertIsInstance(tb, types.TracebackType)
 
-    def test_exit_propogates_exceptions(self):
+    def test_exit_propagates_exceptions(self):
         fixture = fixtures.Fixture()
         fixture.__enter__()
         self.assertEqual(False, fixture.__exit__(None, None, None))
@@ -259,7 +259,7 @@ class TestFixture(testtools.TestCase):
 
     def test_setup_failures_with_base_exception(self):
         # when _setUp fails with a BaseException (or subclass thereof) that
-        # exception is propogated as is, but we still call cleanups etc.
+        # exception is propagated as is, but we still call cleanups etc.
         class MyBase(BaseException):pass
         log = []
         class Subclass(fixtures.Fixture):

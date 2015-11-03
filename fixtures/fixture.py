@@ -156,7 +156,7 @@ class Fixture(object):
             self._cleanups()
         finally:
             self._remove_state()
-        return False  # propogate exceptions from the with body.
+        return False  # propagate exceptions from the with body.
 
     def getDetails(self):
         """Get the current details registered with the fixture.

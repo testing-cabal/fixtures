@@ -35,7 +35,7 @@ NEXT
 * Fixture.setUp should no longer be overridden in subclasses. Instead
   override _setUp. This permits the Fixture base class to detect failures
   during _setUp and trigger any registered cleanups, attach any details
-  to the failure exception and propogate that to callers. Overriding of
+  to the failure exception and propagate that to callers. Overriding of
   setUp is still supported: this adds a new interface for simpler
   implementation of the contract of a fixture.
   (Robert Collins, #1456361, #1456353)
