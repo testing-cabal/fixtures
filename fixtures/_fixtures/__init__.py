@@ -18,6 +18,7 @@
 
 __all__ = [
     'ByteStream',
+    'Deprecations',
     'DetailStream',
     'EnvironmentVariable',
     'EnvironmentVariableFixture',
@@ -43,6 +44,9 @@ __all__ = [
     ]
 
 
+from fixtures._fixtures.deprecations import (
+    Deprecations,
+    )
 from fixtures._fixtures.environ import (
     EnvironmentVariable,
     EnvironmentVariableFixture,

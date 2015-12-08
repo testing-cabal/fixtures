@@ -334,6 +334,16 @@ in test failure descriptions. Very useful in combination with MonkeyPatch.
   ...     pass
   >>> fixture.cleanUp()
 
+Deprecations
+++++++++++++
+
+Prevent code under test from calling deprecated functions.
+
+  >>> fixture = fixtures.Deprecations('my_module')
+  >>> fixture.setUp()
+  >>> warnings.warn('stop using me', DeprecationWarning)  # will raise
+  >>> fixture.cleanUp()
+
 EnvironmentVariable
 +++++++++++++++++++
 
@@ -385,7 +395,7 @@ MockPatchMultiple
 
 Adapts ``mock.patch.multiple`` to be used as a Fixture.
 
-  >>> fixture = fixtures.MockPatch('subprocess.Popen', returncode=3)
+  >>> fixture = fixtures.MockPatchMultiple('subprocess.Popen', returncode=3)
 
 MonkeyPatch
 +++++++++++
