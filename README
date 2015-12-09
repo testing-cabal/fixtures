@@ -339,6 +339,7 @@ Deprecations
 
 Prevent code under test from calling deprecated functions.
 
+  >>> import warnings
   >>> fixture = fixtures.Deprecations('my_module')
   >>> fixture.setUp()
   >>> warnings.warn('stop using me', DeprecationWarning)  # will raise
