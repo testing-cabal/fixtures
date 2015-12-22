@@ -22,9 +22,37 @@ import unittest
 from fixtures.fixture import gather_details
 
 
+def use_fixture(case, fixture):
+    """Use fixture on a test case.
+
+    :param case: An object that has ``addCleanup`` and optionally support for
+        details.
+    :param fixture: The fixture to use.
+    :return: The fixture, after setting it up and scheduling a cleanup for it.
+    """
+    use_details = (
+        gather_details is not None and
+        getattr(case, "addDetail", None) is not None)
+    try:
+        fixture.setUp()
+    except:
+        if use_details:
+            # Capture the details now, in case the fixture goes away.
+            gather_details(fixture.getDetails(), case.getDetails())
+        raise
+    else:
+        case.addCleanup(fixture.cleanUp)
+        if use_details:
+            # Capture the details from the fixture during test teardown;
+            # this will evaluate the details before tearing down the
+            # fixture.
+            case.addCleanup(gather_details, fixture, case)
+        return fixture
+
+
 class TestWithFixtures(unittest.TestCase):
     """A TestCase with a helper function to use fixtures.
-    
+
     Normally used as a mix-in class to add useFixture.
 
     Note that test classes such as testtools.TestCase which already have a
@@ -40,21 +68,4 @@ class TestWithFixtures(unittest.TestCase):
         :return: The fixture, after setting it up and scheduling a cleanup for
            it.
         """
-        use_details = (
-            gather_details is not None and
-            getattr(self, "addDetail", None) is not None)
-        try:
-            fixture.setUp()
-        except:
-            if use_details:
-                # Capture the details now, in case the fixture goes away.
-                gather_details(fixture.getDetails(), self.getDetails())
-            raise
-        else:
-            self.addCleanup(fixture.cleanUp)
-            if use_details:
-                # Capture the details from the fixture during test teardown;
-                # this will evaluate the details before tearing down the
-                # fixture.
-                self.addCleanup(gather_details, fixture, self)
-            return fixture
+        return use_fixture(self, fixture)
