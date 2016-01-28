@@ -14,6 +14,7 @@
 # limitations under that license.
 
 __all__ = [
+    'CompoundFixture',
     'Fixture',
     'FunctionFixture',
     'MethodFixture',
@@ -403,3 +404,19 @@ class MethodFixture(Fixture):
             super(MethodFixture, self).reset()
         else:
             self._reset()
+
+
+class CompoundFixture(Fixture):
+    """A fixture that combines many fixtures."""
+
+    def __init__(self, fixtures):
+        """Construct a fixture made of many fixtures.
+
+        :param fixtures: An iterable of fixtures.
+        """
+        super(CompoundFixture, self).__init__()
+        self._fixtures = fixtures
+
+    def _setUp(self):
+        for fixture in self._fixtures:
+            self.useFixture(fixture)

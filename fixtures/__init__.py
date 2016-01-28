@@ -44,6 +44,7 @@ version = _version.release_string()
 
 __all__ = [
     'ByteStream',
+    'CompoundFixture',
     'DetailStream',
     'EnvironmentVariable',
     'EnvironmentVariableFixture',
@@ -78,6 +79,7 @@ __all__ = [
 
 
 from fixtures.fixture import (
+    CompoundFixture,
     Fixture,
     FunctionFixture,
     MethodFixture,
