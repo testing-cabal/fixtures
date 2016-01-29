@@ -407,7 +407,10 @@ class MethodFixture(Fixture):
 
 
 class CompoundFixture(Fixture):
-    """A fixture that combines many fixtures."""
+    """A fixture that combines many fixtures.
+
+    :ivar fixtures: The list of fixtures that make up this one. (read only).
+    """
 
     def __init__(self, fixtures):
         """Construct a fixture made of many fixtures.
@@ -415,8 +418,8 @@ class CompoundFixture(Fixture):
         :param fixtures: An iterable of fixtures.
         """
         super(CompoundFixture, self).__init__()
-        self._fixtures = fixtures
+        self.fixtures = list(fixtures)
 
     def _setUp(self):
-        for fixture in self._fixtures:
+        for fixture in self.fixtures:
             self.useFixture(fixture)
