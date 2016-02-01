@@ -6,6 +6,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+* New class ``CompoundFixture`` added, allowing fixtures to be combined.
+  (Jonathan Lange)
+
 1.4
 ~~~
 
