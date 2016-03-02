@@ -6,6 +6,13 @@ fixtures release notes
 NEXT
 ~~~~
 
+1.2.1
+~~~~~
+
+* Cap the testtools dependency at 2.0.0: testtools 2.0.0 is incompatible
+  with fixtures 1.2, and due to pip's lack of a resolver this leads to
+  silently incompatible installs.
+
 1.2.0
 ~~~~~
 
