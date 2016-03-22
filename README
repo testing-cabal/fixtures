@@ -151,7 +151,7 @@ You can also combine existing fixtures using ``CompoundFixture``::
   >>> noddy_with_log = fixtures.CompoundFixture([NoddyFixture(),
   ...                                            WithLog()])
   >>> with noddy_with_log as x:
-  ...     print x.fixtures[0].frobnozzle
+  ...     print (x.fixtures[0].frobnozzle)
   42
 
 The Fixture API
