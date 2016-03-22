@@ -79,5 +79,5 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             bar)
         with fixture:
             pass
-        self.assertEqual(oldfoo, C.foo)
+        self.assertEqual(oldfoo, C().foo)
 

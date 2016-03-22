@@ -64,9 +64,13 @@ class MonkeyPatch(Fixture):
         if old_value is sentinel:
             self.addCleanup(self._safe_delete, current, attribute)
         else:
-            # Python 2's setattr transforms function into instancemethod
-            if (sys.version_info[0] == 2 and
-                isinstance(current, (type, types.ClassType)) and
+            if sys.version_info[0] == 2:
+                class_types = (type, types.ClassType)
+            else:
+                # All classes are <class 'type'> in Python 3
+                class_types = type
+            # setattr transforms function into instancemethod
+            if (isinstance(current, class_types) and
                 isinstance(old_value, types.FunctionType)):
                     old_value = staticmethod(old_value)
             self.addCleanup(setattr, current, attribute, old_value)
