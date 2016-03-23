@@ -9,6 +9,9 @@ NEXT
 * New class ``CompoundFixture`` added, allowing fixtures to be combined.
   (Jonathan Lange)
 
+* Support for Python 3.2 dropped (as pip and setuptools have).
+  (Robert Collins)
+
 1.4
 ~~~
 
