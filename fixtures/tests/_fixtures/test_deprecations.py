@@ -22,6 +22,11 @@ MODULE = 'fixtures'
 
 
 class TestDeprecations(testtools.TestCase):
+    def test_null_case(self):
+        # When the Deprecations fixture isn't used then deprecations are not
+        # errors. This shows that python works as required for these tests.
+        warnings.warn('message ignored', DeprecationWarning)
+
     def test_enabled_raises(self):
         # When the Deprecations fixture is active, calling deprecated function
         # is an error.
@@ -36,11 +41,11 @@ class TestDeprecations(testtools.TestCase):
         deprecations.ignore_deprecations()
         warnings.warn('message ignored', DeprecationWarning)
 
-    def test_expect_deprecations_here(self):
-        # While in the expect_deprecations_here() context, deprecations are not
+    def test_ignore_deprecations_here(self):
+        # While in the ignore_deprecations_here() context, deprecations are not
         # errors, and afterwards deprecations are errors.
         deprecations = self.useFixture(Deprecations(MODULE))
-        with deprecations.expect_deprecations_here():
+        with deprecations.ignore_deprecations_here():
             warnings.warn('message ignored', DeprecationWarning)
         self.assertRaises(
             DeprecationWarning,
@@ -51,23 +56,3 @@ class TestDeprecations(testtools.TestCase):
         # modules are ignored.
         self.useFixture(Deprecations('different_module'))
         warnings.warn('message ignored', DeprecationWarning)
-
-    def test_null_case(self):
-        # When the Deprecations fixture isn't used then deprecations are not
-        # errors. This shows that python works as expected.
-        warnings.warn('message ignored', DeprecationWarning)
-
-    def test_restore_warnings(self):
-        # When the test is done using the Deprecations fixture, the original
-        # warning settings are restored to whatever they were before.
-        warnings.filterwarnings('always', category=DeprecationWarning,
-                                module=r'^%s\.' % MODULE)
-
-        # Define a function so the warning always comes from the same line.
-        def f():
-            warnings.warn('deprecation warning', DeprecationWarning)
-
-        f()
-        with Deprecations(MODULE):
-            self.assertRaises(DeprecationWarning, f)
-        f()

@@ -74,18 +74,18 @@ class Deprecations(fixtures.Fixture):
                                 module=self._module_regex)
 
     @contextlib.contextmanager
-    def expect_deprecations_here(self):
-        """This section of code expects to call deprecated function.
+    def ignore_deprecations_here(self):
+        """This section of code ignores calls to deprecated functions.
 
-        If you've got a test that part of it is testing deprecated function
+        If you've got a test that part of it is testing deprecated functions
         then wrap the part in this context manager::
 
             with self.deprecations.expect_deprecations_here():
                 call_deprecated_function()
 
         """
+        self.cleanUp()
         try:
-            self.cleanUp()
             yield
         finally:
             self.setUp()
