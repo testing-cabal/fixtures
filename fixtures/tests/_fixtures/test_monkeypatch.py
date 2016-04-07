@@ -20,9 +20,20 @@ from fixtures import MonkeyPatch, TestWithFixtures
 reference = 23
 
 class C(object):
+    def foo(self): pass
     @staticmethod
-    def foo(): pass
-def bar(): pass
+    def foo_staticmethod(): pass
+    @classmethod
+    def foo_classmethod(cls): pass
+
+def fake(arg): pass
+def fake2(arg): pass
+def fake_no_args(): pass
+@staticmethod
+def fake_staticmethod(): pass
+@classmethod
+def fake_classmethod(cls): pass
+
 
 class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
 
@@ -72,14 +83,112 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             fixture.cleanUp()
             self.assertFalse('new_attr' in globals())
 
+    def _check_static_or_class_method(self, name, new_method):
+        oldmethod = getattr(C, name)
+        oldmethod_inst = getattr(C(), name)
+        fixture = MonkeyPatch(
+            'fixtures.tests._fixtures.test_monkeypatch.C.%s' % name,
+            new_method)
+        with fixture:
+            getattr(C, name)()
+            getattr(C(), name)()
+
+        restored_method = getattr(C, name)
+        restored_method_inst = getattr(C(), name)
+        self.assertEqual(oldmethod, restored_method)
+        self.assertEqual(oldmethod, restored_method_inst)
+        self.assertEqual(oldmethod_inst, restored_method)
+        self.assertEqual(oldmethod_inst, restored_method_inst)
+        restored_method()
+        restored_method_inst()
+
     def test_patch_staticmethod(self):
-        oldfoo = C.foo
+        self._check_static_or_class_method('foo_staticmethod', fake_no_args)
+
+    def test_patch_staticmethod_with_staticmethod(self):
+        self._check_static_or_class_method('foo_staticmethod',
+                fake_staticmethod)
+
+    def test_patch_classmethod(self):
+        self._check_static_or_class_method('foo_classmethod', fake)
+
+    def test_patch_classmethod_with_classmethod(self):
+        self._check_static_or_class_method('foo_classmethod', fake_classmethod)
+
+    def test_patch_instancemethod(self):
+        oldmethod = C.foo
+        oldmethod_inst = C().foo
         fixture = MonkeyPatch(
             'fixtures.tests._fixtures.test_monkeypatch.C.foo',
-            bar)
+            fake)
         with fixture:
-            C.foo()
             C().foo()
-        self.assertEqual(oldfoo, C.foo)
-        self.assertEqual(oldfoo, C().foo)
 
+        self.assertEqual(oldmethod, C.foo)
+        # The method address changes with each instantiation of C, and method
+        # equivalence just tests that. Compare the code objects instead.
+        self.assertEqual(oldmethod_inst.__code__, C().foo.__code__)
+
+    def test_double_patch_instancemethod(self):
+        oldmethod = C.foo
+        oldmethod_inst = C().foo
+        fixture1 = MonkeyPatch(
+            'fixtures.tests._fixtures.test_monkeypatch.C.foo',
+            fake)
+        fixture2 = MonkeyPatch(
+            'fixtures.tests._fixtures.test_monkeypatch.C.foo',
+            fake2)
+        with fixture1:
+            with fixture2:
+                C().foo()
+
+        self.assertEqual(oldmethod, C.foo)
+        # The method address changes with each instantiation of C, and method
+        # equivalence just tests that. Compare the code objects instead.
+        self.assertEqual(oldmethod_inst.__code__, C().foo.__code__)
+
+    def test_double_patch_staticmethod(self):
+        oldmethod = C.foo_staticmethod
+        oldmethod_inst = C().foo_staticmethod
+        fixture1 = MonkeyPatch(
+            'fixtures.tests._fixtures.test_monkeypatch.C.foo_staticmethod',
+            fake_no_args)
+        fixture2 = MonkeyPatch(
+            'fixtures.tests._fixtures.test_monkeypatch.C.foo_staticmethod',
+            fake_staticmethod)
+        with fixture1:
+            with fixture2:
+                C.foo_staticmethod()
+                C().foo_staticmethod()
+
+        restored_method = C.foo_staticmethod
+        restored_method_inst = C().foo_staticmethod
+        self.assertEqual(oldmethod, restored_method)
+        self.assertEqual(oldmethod, restored_method_inst)
+        self.assertEqual(oldmethod_inst, restored_method)
+        self.assertEqual(oldmethod_inst, restored_method_inst)
+        restored_method()
+        restored_method_inst()
+
+    def test_double_patch_classmethod(self):
+        oldmethod = C.foo_classmethod
+        oldmethod_inst = C().foo_classmethod
+        fixture1 = MonkeyPatch(
+            'fixtures.tests._fixtures.test_monkeypatch.C.foo_classmethod',
+            fake)
+        fixture2 = MonkeyPatch(
+            'fixtures.tests._fixtures.test_monkeypatch.C.foo_classmethod',
+            fake_classmethod)
+        with fixture1:
+            with fixture2:
+                C.foo_classmethod()
+                C().foo_classmethod()
+
+        restored_method = C.foo_classmethod
+        restored_method_inst = C().foo_classmethod
+        self.assertEqual(oldmethod, restored_method)
+        self.assertEqual(oldmethod, restored_method_inst)
+        self.assertEqual(oldmethod_inst, restored_method)
+        self.assertEqual(oldmethod_inst, restored_method_inst)
+        restored_method()
+        restored_method_inst()
