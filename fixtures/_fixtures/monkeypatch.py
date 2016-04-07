@@ -23,21 +23,44 @@ import types
 from fixtures import Fixture
 
 
-def _setattr(obj, name, value):
+def _setattr(obj, name, value, check_value=False):
     """Handle some corner cases when calling setattr.
 
-    setattr transforms a function into instancemethod, so where appropriate
-    value needs to be wrapped with staticmethod().
+    setattr transforms a function into instancemethod when set on a class, so
+    where appropriate value needs to be wrapped with staticmethod().
     """
     if sys.version_info[0] == 2:
         class_types = (type, types.ClassType)
     else:
         # All classes are <class 'type'> in Python 3
         class_types = type
-    if (isinstance(obj, class_types) and
-            isinstance(value, types.FunctionType)):
+
+    if not isinstance(obj, class_types):
+        # Nothing special to do here
+        setattr(obj, name, value)
+        return
+
+    # Check if 'name' is an instancemethod and if so convert 'value' to match.
+    # if check_value == True we check 'value' instead.
+    if not check_value:
+        attr_to_check = _getattr(obj, name, None)
+    else:
+        attr_to_check = value
+    if isinstance(attr_to_check, types.FunctionType):
         value = staticmethod(value)
     setattr(obj, name, value)
+
+
+def _getattr(obj, name, default=None):
+    """Handles an edge case when calling getattr.
+
+    The difference between an instancemethod(bound) and staticmethod(unbound)
+    is only apparent after class instantiation. This returns an attr with the
+    proper binding behavior.
+    """
+    if callable(obj):
+        return getattr(obj(), name, default)
+    return getattr(obj, name, default)
 
 
 class MonkeyPatch(Fixture):
@@ -81,7 +104,8 @@ class MonkeyPatch(Fixture):
         if old_value is sentinel:
             self.addCleanup(self._safe_delete, current, attribute)
         else:
-            self.addCleanup(_setattr, current, attribute, old_value)
+            self.addCleanup(_setattr, current, attribute, old_value,
+                    check_value=True)
 
     def _safe_delete(self, obj, attribute):
         """Delete obj.attribute handling the case where its missing."""
