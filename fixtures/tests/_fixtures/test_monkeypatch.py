@@ -78,6 +78,8 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             'fixtures.tests._fixtures.test_monkeypatch.C.foo',
             bar)
         with fixture:
-            pass
+            C.foo()
+            C().foo()
         self.assertEqual(oldfoo, C.foo)
+        self.assertEqual(oldfoo, C().foo)
 

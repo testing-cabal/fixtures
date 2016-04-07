@@ -6,6 +6,20 @@ fixtures release notes
 NEXT
 ~~~~
 
+2.0
+~~~
+
+* Monkeypatching of staticmethod's now works correctly on Python 2 and 3.
+  This is an API break as previously they were bound as instancemethods's
+  and thus any working patches need to have their first parameter (self)
+  dropped. (Andrew Laski)
+
+* New class ``CompoundFixture`` added, allowing fixtures to be combined.
+  (Jonathan Lange)
+
+* Support for Python 3.2 dropped (as pip and setuptools have).
+  (Robert Collins)
+
 1.4
 ~~~
 

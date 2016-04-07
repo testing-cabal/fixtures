@@ -25,7 +25,7 @@ compatible test cases easy and straight forward.
 Dependencies
 ============
 
-* Python 2.6+
+* Python 2.6+, or 3.3+
   This is the base language fixtures is written in and for.
 
 * pbr
@@ -145,6 +145,14 @@ fixture implementations to Fixture::
   ...        pass
   >>> server = MyServer()
   >>> fixture = fixtures.MethodFixture(server, server.start, server.stop)
+
+You can also combine existing fixtures using ``CompoundFixture``::
+
+  >>> noddy_with_log = fixtures.CompoundFixture([NoddyFixture(),
+  ...                                            WithLog()])
+  >>> with noddy_with_log as x:
+  ...     print (x.fixtures[0].frobnozzle)
+  42
 
 The Fixture API
 ===============
