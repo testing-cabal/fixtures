@@ -1,3 +1,4 @@
+funcsigs>=1.0.0
 pbr>=0.11
 six
 testtools>=0.9.22
