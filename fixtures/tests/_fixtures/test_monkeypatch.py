@@ -22,7 +22,9 @@ reference = 23
 class C(object):
     @staticmethod
     def foo(): pass
+    def baz(self): pass
 def bar(): pass
+def qux(arg): pass
 
 class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
 
@@ -74,6 +76,7 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
 
     def test_patch_staticmethod(self):
         oldfoo = C.foo
+        oldfoo_inst = C().foo
         fixture = MonkeyPatch(
             'fixtures.tests._fixtures.test_monkeypatch.C.foo',
             bar)
@@ -82,4 +85,18 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             C().foo()
         self.assertEqual(oldfoo, C.foo)
         self.assertEqual(oldfoo, C().foo)
+        self.assertEqual(oldfoo_inst, C.foo)
+        self.assertEqual(oldfoo_inst, C().foo)
 
+    def test_patch_instancemethod(self):
+        oldbaz = C.baz
+        oldbaz_inst = C().baz
+        fixture = MonkeyPatch(
+            'fixtures.tests._fixtures.test_monkeypatch.C.baz',
+            qux)
+        with fixture:
+            C().baz()
+        self.assertEqual(oldbaz, C.baz)
+        # The method address changes with each instantiation of C, and method
+        # equivalence just tests that. Compare the code objects instead.
+        self.assertEqual(oldbaz_inst.__code__, C().baz.__code__)

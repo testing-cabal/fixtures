@@ -17,26 +17,50 @@ __all__ = [
     'MonkeyPatch'
     ]
 
+import inspect
 import sys
 import types
 
 from fixtures import Fixture
 
 
-def _setattr(obj, name, value):
+def _setattr(obj, name, value, check_value=False):
     """Handle some corner cases when calling setattr.
 
-    setattr transforms a function into instancemethod, so where appropriate
-    value needs to be wrapped with staticmethod().
+    setattr transforms a function into instancemethod when set on a class, so
+    where appropriate value needs to be wrapped with staticmethod().
     """
     if sys.version_info[0] == 2:
         class_types = (type, types.ClassType)
+        py2 = True
     else:
         # All classes are <class 'type'> in Python 3
         class_types = type
-    if (isinstance(obj, class_types) and
-            isinstance(value, types.FunctionType)):
-        value = staticmethod(value)
+        py2 = False
+
+    if not isinstance(obj, class_types):
+        # Nothing special to do here
+        setattr(obj, name, value)
+        return
+
+    # Check if 'name' is an instancemethod and if so convert 'value' to match.
+    # if check_value == True we check 'value' instead.
+    if not check_value:
+        attr_to_check = getattr(obj, name, None)
+    else:
+        attr_to_check = value
+    if py2:
+        # Python2 distinguishes between instance and staticmethods on a class
+        # definition
+        if isinstance(attr_to_check, types.FunctionType):
+            value = staticmethod(value)
+    else:
+        # Python3 only distinguishes between instance and staticmethods on a
+        # constructed class. Assume standard naming conventions and check for
+        # 'self' as the first parameter.
+        args = inspect.getfullargspec(attr_to_check).args
+        if len(args) == 0 or 'self' not in args[0]:
+            value = staticmethod(value)
     setattr(obj, name, value)
 
 
@@ -81,7 +105,8 @@ class MonkeyPatch(Fixture):
         if old_value is sentinel:
             self.addCleanup(self._safe_delete, current, attribute)
         else:
-            self.addCleanup(_setattr, current, attribute, old_value)
+            self.addCleanup(_setattr, current, attribute, old_value,
+                    check_value=True)
 
     def _safe_delete(self, obj, attribute):
         """Delete obj.attribute handling the case where its missing."""
