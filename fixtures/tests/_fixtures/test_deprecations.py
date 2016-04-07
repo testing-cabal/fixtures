@@ -49,10 +49,24 @@ class TestDeprecations(testtools.TestCase):
             warnings.warn('message ignored', DeprecationWarning)
         self.assertRaises(
             DeprecationWarning,
-            lambda: warnings.warn('message ignored', DeprecationWarning))
+            lambda: warnings.warn('not ignored', DeprecationWarning))
 
     def test_other_module(self):
         # When the Deprecations fixture is active, deprecations from other
         # modules are ignored.
         self.useFixture(Deprecations('different_module'))
         warnings.warn('message ignored', DeprecationWarning)
+
+    def test_multiple_instances(self):
+        # When there are multiple Deprecations fixtures in use, one going out
+        # of scope doesn't mess up the other one.
+        self.useFixture(Deprecations(MODULE))
+
+        with Deprecations('different_module'):
+            self.assertRaises(
+                DeprecationWarning,
+                lambda: warnings.warn('not ignored', DeprecationWarning))
+
+        self.assertRaises(
+            DeprecationWarning,
+            lambda: warnings.warn('not ignored', DeprecationWarning))
