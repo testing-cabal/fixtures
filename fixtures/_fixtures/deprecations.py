@@ -1,18 +1,21 @@
-# Copyright 2015 IBM Corp.
+# Copyright (c) 2015 IBM Corp.
 #
-#    Licensed under the Apache License, Version 2.0 (the "License"); you may
-#    not use this file except in compliance with the License. You may obtain
-#    a copy of the License at
-#
-#         http://www.apache.org/licenses/LICENSE-2.0
-#
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#    License for the specific language governing permissions and limitations
-#    under the License.
+# Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
+# license at the users choice. A copy of both licenses are available in the
+# project source as Apache-2.0 and BSD. You may not use this file except in
+# compliance with one of these two licences.
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+# license you chose for the specific language governing permissions and
+# limitations under that license.
 
 from __future__ import absolute_import
+
+__all__ = [
+    'Deprecations',
+]
 
 import contextlib
 import re
@@ -22,7 +25,7 @@ import fixtures
 
 
 class Deprecations(fixtures.Fixture):
-    """Prevent calls to deprecated function.
+    """Prevent calls to deprecated functions.
 
     This fixture can be added to a testcase to ensure that the code under test
     isn't calling deprecated function. It sets Python's `warnings` module for
@@ -40,9 +43,8 @@ class Deprecations(fixtures.Fixture):
     It can also be useful to be able to test if your application is still using
     some function that's been newly deprecated.
 
-    :param str module: The name of the module. Deprecated function called from
-                       this module will be errors.
-
+    :param str module: The name of a Python module. DeprecationWarnings emitted
+                       from this module will cause an error to be raised.
     """
 
     def __init__(self, module):
@@ -60,7 +62,6 @@ class Deprecations(fixtures.Fixture):
 
         If you've got a test that you expect to call deprecated function and
         you don't want it to fail call this at the start of the test.
-
         """
         warnings.resetwarnings()
 
