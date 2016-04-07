@@ -30,10 +30,10 @@ class TestDeprecations(testtools.TestCase):
             DeprecationWarning,
             lambda: warnings.warn('message ignored', DeprecationWarning))
 
-    def test_expect_deprecations(self):
-        # When expect_deprecations in a test, deprecations are not an error.
+    def test_ignore_deprecations(self):
+        # When ignore_deprecations() in a test, deprecations are not an error.
         deprecations = self.useFixture(Deprecations(MODULE))
-        deprecations.expect_deprecations()
+        deprecations.ignore_deprecations()
         warnings.warn('message ignored', DeprecationWarning)
 
     def test_expect_deprecations_here(self):
@@ -56,3 +56,18 @@ class TestDeprecations(testtools.TestCase):
         # When the Deprecations fixture isn't used then deprecations are not
         # errors. This shows that python works as expected.
         warnings.warn('message ignored', DeprecationWarning)
+
+    def test_restore_warnings(self):
+        # When the test is done using the Deprecations fixture, the original
+        # warning settings are restored to whatever they were before.
+        warnings.filterwarnings('always', category=DeprecationWarning,
+                                module=r'^%s\.' % MODULE)
+
+        # Define a function so the warning always comes from the same line.
+        def f():
+            warnings.warn('deprecation warning', DeprecationWarning)
+
+        f()
+        with Deprecations(MODULE):
+            self.assertRaises(DeprecationWarning, f)
+        f()

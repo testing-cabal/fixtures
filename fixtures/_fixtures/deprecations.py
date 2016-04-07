@@ -49,21 +49,29 @@ class Deprecations(fixtures.Fixture):
 
     def __init__(self, module):
         super(Deprecations, self).__init__()
-        self._module = module
+        self._module_regex = '^%s' % re.escape(module + '.')
 
     def _setUp(self):
-        module_regex = '^%s' % re.escape(self._module + '.')
+        cw = warnings.catch_warnings()
+        cw.__enter__()
+        self.addCleanup(cw.__exit__)
         warnings.filterwarnings('error', category=DeprecationWarning,
-                                module=module_regex)
-        self.addCleanup(warnings.resetwarnings)
+                                module=self._module_regex)
 
-    def expect_deprecations(self):
+    def ignore_deprecations(self):
         """Indicate that this test expects to call deprecated function.
 
-        If you've got a test that you expect to call deprecated function and
-        you don't want it to fail call this at the start of the test.
+        Normally you'll want to protect all tests from calling deprecated
+        functions, then some function is deprecated and now tests are failing
+        due to the deprecation. This function can be used to indicate
+        that the test is going to call deprecated function and not to fail.
+        This can be used as a marker for either tests that are there to verify
+        deprecated functions continue to work and will be removed along with
+        the function, or as tests that need to be fixed to stop calling
+        deprecated functions.
         """
-        warnings.resetwarnings()
+        warnings.filterwarnings('ignore', category=DeprecationWarning,
+                                module=self._module_regex)
 
     @contextlib.contextmanager
     def expect_deprecations_here(self):
@@ -76,10 +84,8 @@ class Deprecations(fixtures.Fixture):
                 call_deprecated_function()
 
         """
-        warnings.resetwarnings()
-
-        yield
-
-        module_regex = '^%s' % re.escape(self._module + '.')
-        warnings.filterwarnings('error', category=DeprecationWarning,
-                                module=module_regex)
+        try:
+            self.cleanUp()
+            yield
+        finally:
+            self.setUp()
