@@ -43,6 +43,10 @@ class Deprecations(fixtures.Fixture):
     It can also be useful to be able to test if your application is still using
     some function that's been newly deprecated.
 
+    .. note:: This fixture uses :func:`warnings.catch_warnings`, as such the
+        note there applies: The fixture modifies global state and therefore is
+        not thread safe.
+
     :param str module: The name of a Python module. DeprecationWarnings emitted
                        from this module will cause an error to be raised.
     """
