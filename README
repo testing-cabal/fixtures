@@ -402,7 +402,7 @@ MockPatchMultiple
 
 Adapts ``mock.patch.multiple`` to be used as a Fixture.
 
-  >>> fixture = fixtures.MockPatchMultiple('subprocess.Popen', returncode=3)
+  >>> fixture = fixtures.MockPatch('subprocess.Popen', returncode=3)
 
 MonkeyPatch
 +++++++++++
