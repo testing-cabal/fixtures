@@ -17,27 +17,71 @@ __all__ = [
     'MonkeyPatch'
     ]
 
+import functools
 import sys
 import types
 
 from fixtures import Fixture
 
 
-def _setattr(obj, name, value):
-    """Handle some corner cases when calling setattr.
+class PartialUnBoundMethod(object):
+    """Emulates an unboundmethod, but works on bound methods.
 
-    setattr transforms a function into instancemethod, so where appropriate
-    value needs to be wrapped with staticmethod().
+    This wraps a function so that it acts like an unboundmethod on the calling
+    class. If the wrapped function is already bound to a class then the passed
+    parameters look like foo(boundcls_or_self, callingself, *args, **kwargs).
+
     """
+    def __init__(self, f):
+        self.f = f
+
+    def __get__(self, obj, objtype=None):
+        return functools.partial(self.f, obj)
+
+
+def _coerce_values(obj, name, new_value, sentinel):
+    """Handle value coercion for static and classmethods.
+
+    setattr transforms a function into an instancemethod when set on a class.
+    This checks if the attribute to be replaced is either and wraps new_value
+    if necessary. This also checks getattr(obj, name) and wraps it if necessary
+    since the staticmethod wrapper isn't preserved.
+    """
+    old_value = getattr(obj, name, sentinel)
+
     if sys.version_info[0] == 2:
         class_types = (type, types.ClassType)
     else:
         # All classes are <class 'type'> in Python 3
         class_types = type
-    if (isinstance(obj, class_types) and
-            isinstance(value, types.FunctionType)):
-        value = staticmethod(value)
-    setattr(obj, name, value)
+
+    if not isinstance(obj, class_types):
+        # Nothing special to do here
+        return (new_value, old_value)
+
+    # getattr() returns a function, this access pattern will return a
+    # staticmethod/classmethod if the name method is defined that way
+    old_attribute = obj.__dict__.get(name)
+    if old_attribute is not None:
+        old_value = old_attribute
+
+    # If new_value is not callable it is potentially wrapped with staticmethod
+    # or classmethod so grab the underlying function. If it has no underlying
+    # callable thing the following coercion can be skipped, just return.
+    if not callable(new_value):
+        if hasattr(new_value, '__func__'):
+            new_value = new_value.__func__
+        else:
+            return (new_value, old_value)
+
+    if isinstance(old_value, staticmethod):
+        new_value = staticmethod(new_value)
+    if isinstance(old_value, classmethod):
+        new_value = classmethod(functools.partial(new_value))
+    if isinstance(old_value, types.FunctionType):
+        new_value = PartialUnBoundMethod(new_value)
+
+    return (new_value, old_value)
 
 
 class MonkeyPatch(Fixture):
@@ -72,16 +116,17 @@ class MonkeyPatch(Fixture):
         for component in components[1:]:
             current = getattr(current, component)
         sentinel = object()
-        old_value = getattr(current, attribute, sentinel)
+        new_value, old_value = _coerce_values(current, attribute,
+                self.new_value, sentinel)
         if self.new_value is self.delete:
             if old_value is not sentinel:
                 delattr(current, attribute)
         else:
-            _setattr(current, attribute, self.new_value)
+            setattr(current, attribute, new_value)
         if old_value is sentinel:
             self.addCleanup(self._safe_delete, current, attribute)
         else:
-            self.addCleanup(_setattr, current, attribute, old_value)
+            self.addCleanup(setattr, current, attribute, old_value)
 
     def _safe_delete(self, obj, attribute):
         """Delete obj.attribute handling the case where its missing."""
