@@ -188,12 +188,12 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             'fixtures.tests._fixtures.test_monkeypatch.C.foo_cls',
             D.bar_cls_args)
         with fixture:
-            cls, tgtcls = C.foo_cls()
+            cls, target_class = C.foo_cls()
             self.expectThat(cls, Is(D))
-            self.expectThat(tgtcls, Is(C))
-            cls, tgtcls = C().foo_cls()
+            self.expectThat(target_class, Is(C))
+            cls, target_class = C().foo_cls()
             self.expectThat(cls, Is(D))
-            self.expectThat(tgtcls, Is(C))
+            self.expectThat(target_class, Is(C))
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
                 C, 'foo_cls')
 
@@ -310,6 +310,8 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         with fixture:
             INST_C.foo()
         self.assertEqual(oldmethod, INST_C.foo)
+        sentinel = object()
+        self.assertEqual(sentinel, INST_C.__dict__.get('foo', sentinel))
 
     def test_patch_unboundmethod_with_staticmethod(self):
         oldmethod = C.foo
@@ -317,9 +319,8 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             'fixtures.tests._fixtures.test_monkeypatch.C.foo',
             D.bar_static_args)
         with fixture:
-            c = C() 
-            tgtslf, arg = c.foo(1)
-            self.expectThat(tgtslf, Is(c))
+            target_self, arg = INST_C.foo(1)
+            self.expectThat(target_self, Is(INST_C))
             self.assertEqual(1, arg)
         self.assertEqual(oldmethod, C.foo)
 
@@ -330,9 +331,9 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D.bar_cls_args)
         with fixture:
             c = C()
-            cls, tgtslf, arg = c.foo(1)
+            cls, target_self, arg = c.foo(1)
             self.expectThat(cls, Is(D))
-            self.expectThat(tgtslf, Is(c))
+            self.expectThat(target_self, Is(c))
             self.assertEqual(1, arg)
         self.assertEqual(oldmethod, C.foo)
 
@@ -343,8 +344,8 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             fake)
         with fixture:
             c = C()
-            tgtslf, arg = c.foo(1)
-            self.expectThat(tgtslf, Is(c))
+            target_self, arg = c.foo(1)
+            self.expectThat(target_self, Is(c))
             self.assertTrue(1, arg)
         self.assertEqual(oldmethod, C.foo)
 
@@ -356,9 +357,9 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             d.bar_two_args)
         with fixture:
             c = C()
-            slf, tgtslf = c.foo()
+            slf, target_self = c.foo()
             self.expectThat(slf, Is(d))
-            self.expectThat(tgtslf, Is(c))
+            self.expectThat(target_self, Is(c))
         self.assertEqual(oldmethod, C.foo)
 
     def test_double_patch_instancemethod(self):
