@@ -404,6 +404,9 @@ Control the value of a named python attribute.
   ...     pass
   >>> fixture = fixtures.MonkeyPatch('__builtin__.open', fake_open)
 
+Note that there are some complexities when patching methods - please see the
+API documentation for details.
+
 NestedTempfile
 ++++++++++++++
 

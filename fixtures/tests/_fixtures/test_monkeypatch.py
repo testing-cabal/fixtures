@@ -310,6 +310,8 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         with fixture:
             INST_C.foo()
         self.assertEqual(oldmethod, INST_C.foo)
+        sentinel = object()
+        self.assertEqual(sentinel, INST_C.__dict__.get('foo', sentinel))
 
     def test_patch_unboundmethod_with_staticmethod(self):
         oldmethod = C.foo
@@ -317,9 +319,8 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             'fixtures.tests._fixtures.test_monkeypatch.C.foo',
             D.bar_static_args)
         with fixture:
-            c = C() 
-            tgtslf, arg = c.foo(1)
-            self.expectThat(tgtslf, Is(c))
+            tgtslf, arg = INST_C.foo(1)
+            self.expectThat(tgtslf, Is(INST_C))
             self.assertEqual(1, arg)
         self.assertEqual(oldmethod, C.foo)
 
