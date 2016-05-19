@@ -16,6 +16,7 @@
 import functools
 
 import testtools
+from testtools.matchers import Is
 
 from fixtures import MonkeyPatch, TestWithFixtures
 
@@ -38,7 +39,7 @@ class D(object):
         return cls
     @classmethod
     def bar_cls_args(cls, *args):
-        return tuple([cls] + [arg for arg in args])
+        return (cls,) + args
     @staticmethod
     def bar_static():
         pass
@@ -127,7 +128,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         with fixture:
             C.foo_static()
             C().foo_static()
-
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
                 C, 'foo_static')
 
@@ -140,7 +140,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         with fixture:
             C.foo_static()
             C().foo_static()
-
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
                 C, 'foo_static')
 
@@ -153,7 +152,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         with fixture:
             C.foo_static()
             C().foo_static()
-
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
                 C, 'foo_static')
 
@@ -166,7 +164,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         with fixture:
             C.foo_static()
             C().foo_static()
-
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
                 C, 'foo_static')
 
@@ -178,10 +175,9 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D.bar_static_args)
         with fixture:
             (cls,) = C.foo_cls()
-            self.assertTrue(issubclass(cls, C))
+            self.expectThat(cls, Is(C))
             (cls,) = C().foo_cls()
-            self.assertTrue(issubclass(cls, C))
-
+            self.expectThat(cls, Is(C))
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
                 C, 'foo_cls')
 
@@ -193,12 +189,11 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D.bar_cls_args)
         with fixture:
             cls, tgtcls = C.foo_cls()
-            self.assertTrue(issubclass(cls, D))
-            self.assertTrue(issubclass(tgtcls, C))
+            self.expectThat(cls, Is(D))
+            self.expectThat(tgtcls, Is(C))
             cls, tgtcls = C().foo_cls()
-            self.assertTrue(issubclass(cls, D))
-            self.assertTrue(issubclass(tgtcls, C))
-
+            self.expectThat(cls, Is(D))
+            self.expectThat(tgtcls, Is(C))
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
                 C, 'foo_cls')
 
@@ -210,28 +205,27 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             fake)
         with fixture:
             (cls,) = C.foo_cls()
-            self.assertTrue(issubclass(cls, C))
+            self.expectThat(cls, Is(C))
             (cls, arg) = C().foo_cls(1)
-            self.assertTrue(issubclass(cls, C))
+            self.expectThat(cls, Is(C))
             self.assertEqual(1, arg)
-
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
                 C, 'foo_cls')
 
     def test_patch_classmethod_with_boundmethod(self):
         oldmethod = C.foo_cls
         oldmethod_inst = C().foo_cls
+        d = D()
         fixture = MonkeyPatch(
             'fixtures.tests._fixtures.test_monkeypatch.C.foo_cls',
-            D().bar_two_args)
+            d.bar_two_args)
         with fixture:
             slf, cls = C.foo_cls()
-            self.assertTrue(isinstance(slf, D))
-            self.assertTrue(issubclass(cls, C))
+            self.expectThat(slf, Is(d))
+            self.expectThat(cls, Is(C))
             slf, cls = C().foo_cls()
-            self.assertTrue(isinstance(slf, D))
-            self.assertTrue(issubclass(cls, C))
-
+            self.expectThat(slf, Is(d))
+            self.expectThat(cls, Is(C))
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
                 C, 'foo_cls')
 
@@ -242,7 +236,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D.bar_static)
         with fixture:
             fake_no_args()
-
         self.assertEqual(oldmethod, fake_no_args)
 
     def test_patch_function_with_classmethod(self):
@@ -252,7 +245,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D.bar_cls)
         with fixture:
             fake_no_args()
-
         self.assertEqual(oldmethod, fake_no_args)
 
     def test_patch_function_with_function(self):
@@ -262,7 +254,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             fake_no_args2)
         with fixture:
             fake_no_args()
-
         self.assertEqual(oldmethod, fake_no_args)
 
     def test_patch_function_with_partial(self):
@@ -273,7 +264,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         with fixture:
             (ret,) = fake_no_args()
             self.assertEqual(1, ret)
-
         self.assertEqual(oldmethod, fake_no_args)
 
     def test_patch_function_with_boundmethod(self):
@@ -283,7 +273,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D().bar)
         with fixture:
             fake_no_args()
-
         self.assertEqual(oldmethod, fake_no_args)
 
     def test_patch_boundmethod_with_staticmethod(self):
@@ -293,7 +282,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D.bar_static)
         with fixture:
             INST_C.foo()
-
         self.assertEqual(oldmethod, INST_C.foo)
 
     def test_patch_boundmethod_with_classmethod(self):
@@ -303,7 +291,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D.bar_cls)
         with fixture:
             INST_C.foo()
-
         self.assertEqual(oldmethod, INST_C.foo)
 
     def test_patch_boundmethod_with_function(self):
@@ -313,7 +300,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             fake_no_args)
         with fixture:
             INST_C.foo()
-
         self.assertEqual(oldmethod, INST_C.foo)
 
     def test_patch_boundmethod_with_boundmethod(self):
@@ -323,7 +309,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D().bar)
         with fixture:
             INST_C.foo()
-
         self.assertEqual(oldmethod, INST_C.foo)
 
     def test_patch_unboundmethod_with_staticmethod(self):
@@ -332,10 +317,10 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             'fixtures.tests._fixtures.test_monkeypatch.C.foo',
             D.bar_static_args)
         with fixture:
-            tgtslf, arg = C().foo(1)
-            self.assertTrue(isinstance(tgtslf, C))
+            c = C() 
+            tgtslf, arg = c.foo(1)
+            self.expectThat(tgtslf, Is(c))
             self.assertEqual(1, arg)
-
         self.assertEqual(oldmethod, C.foo)
 
     def test_patch_unboundmethod_with_classmethod(self):
@@ -344,11 +329,11 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             'fixtures.tests._fixtures.test_monkeypatch.C.foo',
             D.bar_cls_args)
         with fixture:
-            cls, tgtslf, arg = C().foo(1)
-            self.assertTrue(issubclass(cls, D))
-            self.assertTrue(isinstance(tgtslf, C))
+            c = C()
+            cls, tgtslf, arg = c.foo(1)
+            self.expectThat(cls, Is(D))
+            self.expectThat(tgtslf, Is(c))
             self.assertEqual(1, arg)
-
         self.assertEqual(oldmethod, C.foo)
 
     def test_patch_unboundmethod_with_function(self):
@@ -357,22 +342,23 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             'fixtures.tests._fixtures.test_monkeypatch.C.foo',
             fake)
         with fixture:
-            tgtslf, arg = C().foo(1)
-            self.assertTrue(isinstance(tgtslf, C))
+            c = C()
+            tgtslf, arg = c.foo(1)
+            self.expectThat(tgtslf, Is(c))
             self.assertTrue(1, arg)
-
         self.assertEqual(oldmethod, C.foo)
 
     def test_patch_unboundmethod_with_boundmethod(self):
         oldmethod = C.foo
+        d = D()
         fixture = MonkeyPatch(
             'fixtures.tests._fixtures.test_monkeypatch.C.foo',
-            D().bar_two_args)
+            d.bar_two_args)
         with fixture:
-            slf, tgtslf = C().foo()
-            self.assertTrue(isinstance(slf, D))
-            self.assertTrue(isinstance(tgtslf, C))
-
+            c = C()
+            slf, tgtslf = c.foo()
+            self.expectThat(slf, Is(d))
+            self.expectThat(tgtslf, Is(c))
         self.assertEqual(oldmethod, C.foo)
 
     def test_double_patch_instancemethod(self):
@@ -387,7 +373,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         with fixture1:
             with fixture2:
                 C().foo()
-
         self.assertEqual(oldmethod, C.foo)
         # The method address changes with each instantiation of C, and method
         # equivalence just tests that. Compare the code objects instead.
@@ -406,9 +391,8 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             with fixture2:
                 C.foo_static()
                 C().foo_static()
-
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
-                C, 'foo_static')
+            C, 'foo_static')
 
     def test_double_patch_classmethod(self):
         oldmethod = C.foo_cls
@@ -423,9 +407,8 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             with fixture2:
                 C.foo_cls()
                 C().foo_cls()
-
         self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
-                C, 'foo_cls')
+            C, 'foo_cls')
 
     def test_patch_c_foo_with_instance_d_bar_self_referential(self):
         oldmethod = C.foo
@@ -435,7 +418,6 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             D().bar_self_referential)
         with fixture:
             C().foo()
-
         self.assertEqual(oldmethod, C.foo)
         # The method address changes with each instantiation of C, and method
         # equivalence just tests that. Compare the code objects instead.
