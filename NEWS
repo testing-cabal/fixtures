@@ -6,6 +6,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+3.0.0
+~~~~~
+
 * Monkeypatching of callables has been thoroughly overhauled: there were deep
   flaws in usability because staticmethod and classmethods are actually
   descriptors. (Andrew Laski, Robert Collins)
