@@ -40,6 +40,9 @@ class FakeProcess(object):
     def args(self):
         return self._args["args"]
 
+    def poll(self):
+        return self.returncode
+
     def communicate(self, input=None, timeout=None):
         self.returncode = self._returncode
         if self.stdout:
