@@ -76,6 +76,7 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         fixture = self.useFixture(FakePopen())
         with subprocess.Popen(['ls -lh']) as proc:
             self.assertEqual(None, proc.returncode)
+            self.assertEqual(['ls -lh'], proc.args)
 
 
 class TestFakeProcess(testtools.TestCase):
@@ -94,6 +95,20 @@ class TestFakeProcess(testtools.TestCase):
         proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
         self.assertEqual((_b('foo'), ''), proc.communicate())
         self.assertEqual(0, proc.returncode)
+
+    def test_communicate_with_input(self):
+        proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
+        self.assertEqual((_b('foo'), ''), proc.communicate(input=BytesIO()))
+
+    def test_communicate_with_timeout(self):
+        proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
+        self.assertEqual((_b('foo'), ''), proc.communicate(timeout=10))
+
+    def test_args(self):
+        proc = FakeProcess({"args": ["ls", "-lh"]}, {})
+        proc.returncode = 45
+        self.assertEqual(45, proc.wait())
+        self.assertEqual(proc.args, ["ls", "-lh"])
 
     def test_kill(self):
         proc = FakeProcess({}, {})

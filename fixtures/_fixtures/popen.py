@@ -36,7 +36,11 @@ class FakeProcess(object):
         self._returncode = info.get('returncode', 0)
         self.returncode = None
 
-    def communicate(self):
+    @property
+    def args(self):
+        return self._args["args"]
+
+    def communicate(self, input=None, timeout=None):
         self.returncode = self._returncode
         if self.stdout:
             out = self.stdout.getvalue()
