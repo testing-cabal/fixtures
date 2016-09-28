@@ -36,8 +36,23 @@ class FakeProcess(object):
         self._returncode = info.get('returncode', 0)
         self.returncode = None
 
-    def communicate(self):
+    @property
+    def args(self):
+        return self._args["args"]
+
+    def poll(self):
+        """Get the current value of FakeProcess.returncode.
+
+        The returncode is None before communicate() and/or wait() are called,
+        and it's set to the value provided by the 'info' dictionary otherwise
+        (or 0 in case 'info' doesn't specify a value).
+        """
+        return self.returncode
+
+    def communicate(self, input=None, timeout=None):
         self.returncode = self._returncode
+        if self.stdin and input:
+            self.stdin.write(input)
         if self.stdout:
             out = self.stdout.getvalue()
         else:
@@ -91,6 +106,11 @@ class FakePopen(Fixture):
 
             The default behaviour if no get_info is supplied is for the return
             process to have returncode of None, empty streams and a random pid.
+
+            After communicate() or wait() are called on the process object,
+            the returncode is set to whatever get_info returns (or 0 if
+            get_info is not supplied or doesn't return a dict with an explicit
+            'returncode' key).
         """
         super(FakePopen, self).__init__()
         self.get_info = get_info
