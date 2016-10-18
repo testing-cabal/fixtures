@@ -45,6 +45,8 @@ class FakeProcess(object):
 
     def communicate(self, input=None, timeout=None):
         self.returncode = self._returncode
+        if self.stdin and input:
+            self.stdin.write(input)
         if self.stdout:
             out = self.stdout.getvalue()
         else:

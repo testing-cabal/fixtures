@@ -98,7 +98,13 @@ class TestFakeProcess(testtools.TestCase):
 
     def test_communicate_with_input(self):
         proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
-        self.assertEqual((_b('foo'), ''), proc.communicate(input=BytesIO()))
+        self.assertEqual((_b('foo'), ''), proc.communicate(input=_b("bar")))
+
+    def test_communicate_with_input_and_stdin(self):
+        stdin = BytesIO()
+        proc = FakeProcess({}, {'stdin': stdin})
+        proc.communicate(input=_b("hello"))
+        self.assertEqual(_b("hello"), stdin.getvalue())
 
     def test_communicate_with_timeout(self):
         proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
