@@ -14,6 +14,7 @@ python:
 install:
  - pip install -U pip
  - pip install -U wheel setuptools pbr
+ - python -c "from pbr.util import cfg_to_args; import pprint; pprint.pprint(cfg_to_args('setup.cfg'))"
  - python -c "from pkg_resources import iter_entry_points; print('\n'.join(str(ep) for ep in iter_entry_points('egg_info.writers')))"
  - pip install -vvv -U .
 # - pip install -U .[docs,test]
