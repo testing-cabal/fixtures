@@ -14,8 +14,8 @@ python:
 install:
  - pip install -U pip
  - pip install -U wheel setuptools pbr
- - echo "$TRAVIS_PYTHON_VERSION"
  - pip install -U .[docs,test]
+ - if [ "$TRAVIS_PYTHON_VERSION" = "nightly" ]; then pip install -r requirements.txt mock docutils; fi
  - pip list
  - python --version
 
