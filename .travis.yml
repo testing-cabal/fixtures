@@ -14,8 +14,7 @@ python:
 install:
  - pip install -U pip
  - pip install -U wheel setuptools pbr
- - pip install -U .
- - pip install -U mock
+ - pip install -vvv -U .
 # - pip install -U .[docs,test]
  - pip list
  - python --version
