@@ -15,8 +15,8 @@ install:
  - pip install -U pip
  - pip install -U wheel setuptools pbr
  - pip install -U .[docs,test]
- - ls /home/travis/virtualenv/python3.7-dev/lib/python3.7/site-packages/fixtures-3.0.*.egg-info/
- - cat /home/travis/virtualenv/python3.7-dev/lib/python3.7/site-packages/fixtures-3.0.*.egg-info/requires.txt
+ - ls /home/travis/virtualenv/python*-dev/lib/python*/site-packages/
+ - cat /home/travis/virtualenv/python3.7-dev/lib/python3.7/site-packages/fixtures*/requires.txt
  - pip list
  - python --version
 
