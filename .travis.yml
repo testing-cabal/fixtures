@@ -14,16 +14,11 @@ python:
 install:
  - pip install -U pip
  - pip install -U wheel setuptools pbr
- - pip show -f setuptools
- - python -c "from setuptools.dist import Distribution; dist = Distribution(); print(dist.install_requires)"
- - python -c "from pkg_resources import iter_entry_points; print('\n'.join(str(ep) for ep in iter_entry_points('distutils.setup_keywords')))"
- - python -c "from pbr.util import cfg_to_args; import pprint; pprint.pprint(cfg_to_args('setup.cfg'))"
- - python -c "from pkg_resources import iter_entry_points; print('\n'.join(str(ep) for ep in iter_entry_points('egg_info.writers')))"
- - pip install -vvv -U .
-# - pip install -U .[docs,test]
+ - echo "$TRAVIS_PYTHON_VERSION"
+ - pip install -U .[docs,test]
  - pip list
  - python --version
 
 script:
  - make check
-# - rst2html.py README README.html
+ - rst2html.py README README.html
