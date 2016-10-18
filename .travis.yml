@@ -14,12 +14,12 @@ python:
 install:
  - pip install -U pip
  - pip install -U wheel setuptools pbr
- - pip install -U .[docs,test]
- - ls /home/travis/virtualenv/python*-dev/lib/python*/site-packages/
- - cat /home/travis/virtualenv/python3.7-dev/lib/python3.7/site-packages/fixtures*/requires.txt
+ - pip install -U .
+ - pip install -U mock
+# - pip install -U .[docs,test]
  - pip list
  - python --version
 
 script:
  - make check
- - rst2html.py README README.html
+# - rst2html.py README README.html
