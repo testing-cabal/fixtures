@@ -15,6 +15,7 @@ install:
  - pip install -U pip
  - pip install -U wheel setuptools pbr
  - pip install -U .[docs,test]
+ # XXX See https://bugs.launchpad.net/pbr/+bug/1634839
  - if [ "$TRAVIS_PYTHON_VERSION" = "nightly" ]; then pip install -r requirements.txt docutils; fi
  - pip list
  - python --version
