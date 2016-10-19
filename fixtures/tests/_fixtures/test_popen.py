@@ -123,6 +123,8 @@ class TestFakeProcess(testtools.TestCase):
     def test_poll(self):
         proc = FakeProcess({}, {})
         self.assertIs(None, proc.poll())
+        proc.communicate()
+        self.assertEqual(0, proc.poll())
 
     def test_poll_with_returncode(self):
         proc = FakeProcess({}, {})
