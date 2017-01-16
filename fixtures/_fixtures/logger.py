@@ -73,7 +73,8 @@ class FakeLogger(Fixture):
     """Replace a logger and capture its output."""
 
     def __init__(self, name="", level=INFO, format=None,
-                 datefmt=None, nuke_handlers=True, formatter=None):
+                 datefmt=None, nuke_handlers=True, formatter=None,
+                 only_on_error=False):
         """Create a FakeLogger fixture.
 
         :param name: The name of the logger to replace. Defaults to "".
@@ -86,6 +87,9 @@ class FakeLogger(Fixture):
             existing messages going to e.g. stdout). Defaults to True.
         :param formatter: a custom log formatter class. Use this if you want
             to use a log Formatter other than the default one in python.
+        :param only_on_error: Only attach the captured output to the TestResult
+            if the test fails. This can be important for some test suites where
+            the full debug logging needed is enormous.
 
         Example:
 
@@ -101,10 +105,12 @@ class FakeLogger(Fixture):
         self._datefmt = datefmt
         self._nuke_handlers = nuke_handlers
         self._formatter = formatter
+        self._only_on_error = only_on_error
 
     def _setUp(self):
         name = _u("pythonlogging:'%s'") % self._name
-        output = self.useFixture(StringStream(name)).stream
+        output = self.useFixture(
+            StringStream(name, only_on_error=self._only_on_error)).stream
         self._output = output
         handler = StreamHandlerRaiseException(output)
         if self._format:

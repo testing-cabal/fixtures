@@ -32,17 +32,25 @@ class Stream(Fixture):
     :attr stream: The file-like object.
     """
 
-    def __init__(self, detail_name, stream_factory):
+    def __init__(self, detail_name, stream_factory, only_on_error=False):
         """Create a ByteStream.
 
         :param detail_name: Use this as the name of the stream.
         :param stream_factory: Called to construct a pair of streams:
             (write_stream, content_stream).
+        :param only_on_error: Only attach the stream output if an error occurs.
         """
         self._detail_name = detail_name
         self._stream_factory = stream_factory
+        self._only_on_error = only_on_error
 
     def _setUp(self):
+        if self._only_on_error:
+            self.addOnException(self._add_stream_detail)
+        else:
+            self._add_stream_detail()
+
+    def _add_stream_detail(self):
         write_stream, read_stream = self._stream_factory()
         self.stream = write_stream
         self.addDetail(self._detail_name,
