@@ -272,6 +272,29 @@ class TestFixture(testtools.TestCase):
         self.assertRaises(TypeError, f.cleanUp)
         self.assertEqual(['cleaned'], log)
 
+    def test_change_details_in_used_fixture(self):
+        # XXX: This test errors with `'NoneType' object is not iterable`
+        #
+        # I want a way to have a fixture that manipulates the details that it
+        # uses, ideally without subclassing.
+        class A(fixtures.Fixture):
+            def _setUp(self):
+                self.addDetail('foo', text_content('foo'))
+
+        class B(fixtures.Fixture):
+            def _setUp(self):
+                self.addCleanup(self._post_process_details)
+                self.useFixture(A())
+            def _post_process_details(self):
+                foo = self.getDetails()['foo']
+                self.addDetail('bar', text_content(reversed(foo.as_text())))
+
+
+        with B() as b:
+            self.assertEqual(
+                {'foo': text_content('foo'),
+                 'bar': text_content('oof')}, b.getDetails())
+
 
 class TestFunctionFixture(testtools.TestCase):
 
