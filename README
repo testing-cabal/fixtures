@@ -3,12 +3,12 @@ fixtures: Fixtures with cleanups for testing and convenience.
 *************************************************************
 
   Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
-  
+
   Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
   license at the users choice. A copy of both licenses are available in the
   project source as Apache-2.0 and BSD. You may not use this file except in
   compliance with one of these two licences.
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -25,7 +25,7 @@ compatible test cases easy and straight forward.
 Dependencies
 ============
 
-* Python 2.6+, or 3.3+
+* Python 2.7 or 3.3+
   This is the base language fixtures is written in and for.
 
 * pbr
@@ -39,8 +39,6 @@ Dependencies
 For use in a unit test suite using the included glue, one of:
 
 * Python 2.7+
-
-* unittest2
 
 * bzrlib.tests
 
@@ -488,7 +486,7 @@ seconds.
 There are two possibilities, controlled by the 'gentle' argument: when gentle,
 an exception will be raised and the test (or other covered code) will fail.
 When not gentle, the entire process will be terminated, which is less clean,
-but more likely to break hangs where no Python code is running.  
+but more likely to break hangs where no Python code is running.
 
 *Caution:* Only one timeout can be active at any time across all threads in a
 single process.  Using more than one has undefined results.  (This could be
