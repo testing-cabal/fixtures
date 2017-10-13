@@ -16,8 +16,6 @@
 import doctest
 import unittest
 
-import fixtures.tests._fixtures
-
 
 def test_suite():
     standard_tests = unittest.TestSuite()

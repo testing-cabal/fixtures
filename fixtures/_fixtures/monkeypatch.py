@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -18,7 +18,6 @@ __all__ = [
     ]
 
 import functools
-import sys
 import types
 
 from fixtures import Fixture
@@ -32,12 +31,12 @@ if getattr(types, 'ClassType', None):
 
 def _coerce_values(obj, name, new_value, sentinel):
     """Return an adapted (new_value, old_value) for patching obj.name.
-    
+
     setattr transforms a function into an instancemethod when set on a class.
     This checks if the attribute to be replaced is a callable descriptor -
     staticmethod, classmethod, or types.FunctionType - and wraps new_value if
     necessary.
-    
+
     This also checks getattr(obj, name) and wraps it if necessary
     since the staticmethod wrapper isn't preserved.
 
@@ -130,7 +129,7 @@ class MonkeyPatch(Fixture):
         Fixture.__init__(self)
         self.name = name
         self.new_value = new_value
-    
+
     def _setUp(self):
         location, attribute = self.name.rsplit('.', 1)
         # Import, swallowing all errors as any element of location may be
