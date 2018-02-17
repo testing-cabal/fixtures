@@ -70,10 +70,10 @@ class CallMany(object):
 
             Thus, to catch a specific exception from a function run by __call__,
             you need to catch both the exception and MultipleExceptions, and
-            then check within a MultipleExceptions instance for an occurance of
+            then check within a MultipleExceptions instance for an occurrence of
             the type you wish to catch.
         :return: Either None or a list of the exc_info() for each exception
-            that occured if raise_errors was False.
+            that occurred if raise_errors was False.
         """
         cleanups = reversed(self._cleanups)
         self._cleanups = []

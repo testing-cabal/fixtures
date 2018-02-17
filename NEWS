@@ -349,7 +349,7 @@ CHANGES:
 0.3
 ~~~
 
-This release slightly breaks compatability in order to get the cleanUp API
+This release slightly breaks compatibility in order to get the cleanUp API
 really solid : it now will report correctly with testtools 0.9.7, and 
 generally does the right thing by default. Apologies to anyone affected by
 this churn, but I felt the cleanness of the API was worth it.
