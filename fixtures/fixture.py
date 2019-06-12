@@ -118,7 +118,7 @@ class Fixture(object):
             Thus, to catch a specific exception from cleanUp, you need to catch
             both the exception and MultipleExceptions, and then check within
             a MultipleExceptions instance for the type you're catching.
-        :return: A list of the exc_info() for each exception that occured if
+        :return: A list of the exc_info() for each exception that occurred if
             raise_first was False
         """
         try:

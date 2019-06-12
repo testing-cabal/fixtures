@@ -241,7 +241,7 @@ the error. As long as you take care to register any cleanups before calling
 the code that may fail, this will cause them to be cleaned up. The captured
 detail objects are provided to the args of the raised exception.
 
-If the error that occured was a subclass of ``Exception`` then ``setUp`` will
+If the error that occurred was a subclass of ``Exception`` then ``setUp`` will
 raise ``MultipleExceptions`` with the last element being a ``SetupError`` that
 contains the detail objects. Otherwise, to prevent causing normally
 uncatchable errors like KeyboardInterrupt being caught inappropriately in the
@@ -308,7 +308,7 @@ web server reset methods would look something like:
 
 (Their action on the callback from the tempdir would be to do whatever work
 was needed and set ``self._cleaned``.) This approach has the (perhaps)
-suprising effect that resetting the webserver may reset the DB - if the
+surprising effect that resetting the webserver may reset the DB - if the
 webserver were to be depending on ``tempdir.reset`` as a way to reset the
 webservers state.
 
