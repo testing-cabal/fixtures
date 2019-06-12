@@ -13,7 +13,6 @@
 #    under the License.
 
 
-import extras
 import mock # Yes, we only test the rolling backport
 import testtools
 

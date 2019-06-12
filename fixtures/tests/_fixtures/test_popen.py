@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2010, 2011, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -62,7 +62,7 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
             self.assertEqual(all_args, proc_args)
             return {}
         fixture = self.useFixture(FakePopen(get_info))
-        proc = fixture(**all_args)
+        fixture(**all_args)
 
     def test_custom_returncode(self):
         def get_info(proc_args):
@@ -73,7 +73,7 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         self.assertEqual(1, proc.returncode)
 
     def test_with_popen_custom(self):
-        fixture = self.useFixture(FakePopen())
+        self.useFixture(FakePopen())
         with subprocess.Popen(['ls -lh']) as proc:
             self.assertEqual(None, proc.returncode)
             self.assertEqual(['ls -lh'], proc.args)
