@@ -204,14 +204,18 @@ class Fixture(object):
             else:
                 details = self.getDetails()
             errors = [err] + self.cleanUp(raise_first=False)
-            try:
-                raise SetupError(details)
-            except SetupError:
-                errors.append(sys.exc_info())
-            if issubclass(err[0], Exception):
-                raise MultipleExceptions(*errors)
-            else:
-                six.reraise(*err)
+        else:
+            return
+
+        # If we got here it means we have handled an exception above.
+        try:
+            raise SetupError(details)
+        except SetupError:
+            errors.append(sys.exc_info())
+        if issubclass(err[0], Exception):
+            raise MultipleExceptions(*errors)
+        else:
+            six.reraise(*err)
 
     def _setUp(self):
         """Template method for subclasses to override.

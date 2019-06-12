@@ -240,6 +240,10 @@ class TestFixture(testtools.TestCase):
         self.assertIsInstance(e.args[0][1], ZeroDivisionError)
         self.assertIsInstance(e.args[1][1], fixtures.SetupError)
         self.assertEqual('stuff', e.args[1][1].args[0]['log'].as_text())
+        # The SetupError is not raised during the exception handling of the
+        # original _setUp exception. We use getattr since __context__ is
+        # there only for Python 3 exceptions.
+        self.assertIsNone(getattr(e.args[1][1], "__context__", None))
 
     def test__setUp_fails_cleanUp_fails(self):
         # when _setUp fails, cleanups are called, and their failure is captured
