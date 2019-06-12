@@ -32,21 +32,31 @@ class Stream(Fixture):
     :attr stream: The file-like object.
     """
 
-    def __init__(self, detail_name, stream_factory):
+    def __init__(self, detail_name, stream_factory, only_on_error=False):
         """Create a ByteStream.
 
         :param detail_name: Use this as the name of the stream.
         :param stream_factory: Called to construct a pair of streams:
             (write_stream, content_stream).
+        :param only_on_error: Only attach the stream output if an error occurs.
         """
         self._detail_name = detail_name
         self._stream_factory = stream_factory
+        self._only_on_error = only_on_error
 
     def _setUp(self):
         write_stream, read_stream = self._stream_factory()
         self.stream = write_stream
+        self._read_stream = read_stream
+        if self._only_on_error:
+            self.addOnException(self._add_stream_detail)
+        else:
+            self._add_stream_detail()
+
+    def _add_stream_detail(self):
         self.addDetail(self._detail_name,
-            testtools.content.content_from_stream(read_stream, seek_offset=0))
+            testtools.content.content_from_stream(
+                self._read_stream, seek_offset=0))
 
 
 def _byte_stream_factory():
@@ -54,14 +64,16 @@ def _byte_stream_factory():
     return (result, result)
 
 
-def ByteStream(detail_name):
+def ByteStream(detail_name, only_on_error=only_on_error):
     """Provide a file-like object that accepts bytes and expose as a detail.
 
     :param detail_name: The name of the detail.
+    :param only_on_error: Only attach the stream output if an error occurs.
     :return: A fixture which has an attribute `stream` containing the file-like
         object.
     """
-    return Stream(detail_name, _byte_stream_factory)
+    return Stream(
+        detail_name, _byte_stream_factory, only_on_error=only_on_error)
 
 
 def _string_stream_factory():
@@ -81,14 +93,16 @@ def _string_stream_factory():
     return upper, lower
 
 
-def StringStream(detail_name):
+def StringStream(detail_name, only_on_error=False):
     """Provide a file-like object that accepts strings and expose as a detail.
 
     :param detail_name: The name of the detail.
+    :param only_on_error: Only attach the stream output if an error occurs.
     :return: A fixture which has an attribute `stream` containing the file-like
         object.
     """
-    return Stream(detail_name, _string_stream_factory)
+    return Stream(
+        detail_name, _string_stream_factory, only_on_error=only_on_error)
 
 
 def DetailStream(detail_name):
