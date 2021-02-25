@@ -15,13 +15,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import extras
-
 import fixtures
 
-mock = extras.try_imports(['mock', 'unittest.mock'], None)
-mock_default = extras.try_imports(
-    ['mock.DEFAULT', 'unittest.mock.DEFAULT'], None)
+# TODO(stephenfin): Make this configurable
+try:
+    import mock
+except ImportError:
+    import unittest.mock as mock
+
+mock_default = mock.DEFAULT
 
 
 class _Base(fixtures.Fixture):
