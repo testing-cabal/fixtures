@@ -15,7 +15,7 @@
 
 __all__ = [
     'MonkeyPatch'
-    ]
+]
 
 import functools
 import types
@@ -24,9 +24,6 @@ from fixtures import Fixture
 
 
 _class_types = (type, )
-if getattr(types, 'ClassType', None):
-    # Python 2 has multiple types of classes.
-    _class_types = _class_types + (types.ClassType,)
 
 
 def _coerce_values(obj, name, new_value, sentinel):

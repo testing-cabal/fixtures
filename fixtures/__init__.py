@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2010, 2011, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -29,7 +29,7 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 # the version number: major, minor, micro, releaselevel, and serial. All
 # values except releaselevel are integers; the release level is 'alpha',
 # 'beta', 'candidate', or 'final'. The version_info value corresponding to the
-# Python version 2.0 is (2, 0, 0, 'final', 0)."  Additionally we use a
+# Python version 3.9 is (3, 9, 0, 'final', 0)."  Additionally we use a
 # releaselevel of 'dev' for unreleased under-development code.
 #
 # If the releaselevel is 'alpha' then the major/minor/micro components are not

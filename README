@@ -358,7 +358,7 @@ FakePopen
 Pretend to run an external command rather than needing it to be present to run
 tests.
 
-  >>> from testtools.compat import BytesIO
+  >>> from io import BytesIO
   >>> fixture = fixtures.FakePopen(lambda _:{'stdout': BytesIO('foobar')})
 
 MockPatchObject

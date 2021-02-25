@@ -13,13 +13,10 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+import io
 import subprocess
 
 import testtools
-from testtools.compat import (
-    _b,
-    BytesIO,
-    )
 
 from fixtures import FakePopen, TestWithFixtures
 from fixtures._fixtures.popen import FakeProcess
@@ -92,23 +89,23 @@ class TestFakeProcess(testtools.TestCase):
         self.assertEqual(0, proc.returncode)
 
     def test_communicate_with_out(self):
-        proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
-        self.assertEqual((_b('foo'), ''), proc.communicate())
+        proc = FakeProcess({}, {'stdout': io.BytesIO(b'foo')})
+        self.assertEqual((b'foo', ''), proc.communicate())
         self.assertEqual(0, proc.returncode)
 
     def test_communicate_with_input(self):
-        proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
-        self.assertEqual((_b('foo'), ''), proc.communicate(input=_b("bar")))
+        proc = FakeProcess({}, {'stdout': io.BytesIO(b'foo')})
+        self.assertEqual((b'foo', ''), proc.communicate(input=b'bar'))
 
     def test_communicate_with_input_and_stdin(self):
-        stdin = BytesIO()
+        stdin = io.BytesIO()
         proc = FakeProcess({}, {'stdin': stdin})
-        proc.communicate(input=_b("hello"))
-        self.assertEqual(_b("hello"), stdin.getvalue())
+        proc.communicate(input=b'hello')
+        self.assertEqual(b'hello', stdin.getvalue())
 
     def test_communicate_with_timeout(self):
-        proc = FakeProcess({}, {'stdout': BytesIO(_b('foo'))})
-        self.assertEqual((_b('foo'), ''), proc.communicate(timeout=10))
+        proc = FakeProcess({}, {'stdout': io.BytesIO(b'foo')})
+        self.assertEqual((b'foo', ''), proc.communicate(timeout=10))
 
     def test_args(self):
         proc = FakeProcess({"args": ["ls", "-lh"]}, {})
@@ -133,4 +130,4 @@ class TestFakeProcess(testtools.TestCase):
 
     def test_wait_with_timeout_and_endtime(self):
         proc = FakeProcess({}, {})
-        self.assertEqual(0 , proc.wait(timeout=4, endtime=7))
+        self.assertEqual(0, proc.wait(timeout=4, endtime=7))

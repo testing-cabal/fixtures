@@ -25,10 +25,6 @@ __all__ = [
 import itertools
 import sys
 
-import six
-from testtools.compat import (
-    advance_iterator,
-    )
 from testtools.helpers import try_import
 
 from fixtures.callmany import (
@@ -46,7 +42,7 @@ def combine_details(source_details, target_details):
         new_name = name
         disambiguator = itertools.count(1)
         while new_name in target_details:
-            new_name = '%s-%d' % (name, advance_iterator(disambiguator))
+            new_name = '%s-%d' % (name, next(disambiguator))
         name = new_name
         target_details[name] = content_object
 
@@ -211,7 +207,7 @@ class Fixture(object):
             if issubclass(err[0], Exception):
                 raise MultipleExceptions(*errors)
             else:
-                six.reraise(*err)
+                raise err[1].with_traceback(err[2])
 
     def _setUp(self):
         """Template method for subclasses to override.

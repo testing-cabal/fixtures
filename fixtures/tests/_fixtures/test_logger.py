@@ -13,13 +13,12 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+import io
 import logging
-import sys
 import time
 
 import testtools
 from testtools import TestCase
-from testtools.compat import StringIO
 
 from fixtures import (
     FakeLogger,
@@ -32,12 +31,8 @@ from fixtures import (
 # testing formatter overrides.
 class FooFormatter(logging.Formatter):
     def format(self, record):
-        # custom formatters interface changes in python 3.2
-        if sys.version_info < (3, 2):
-            self._fmt = "Foo " + self._fmt
-        else:
-            self._style = logging.PercentStyle("Foo " + self._style._fmt)
-            self._fmt = self._style._fmt
+        self._style = logging.PercentStyle("Foo " + self._style._fmt)
+        self._fmt = self._style._fmt
         return logging.Formatter.format(self, record)
 
 
@@ -58,7 +53,7 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
         self.assertEqual("some message\n", fixture.output)
 
     def test_replace_and_restore_handlers(self):
-        stream = StringIO()
+        stream = io.StringIO()
         logger = logging.getLogger()
         logger.addHandler(logging.StreamHandler(stream))
         logger.setLevel(logging.INFO)
@@ -71,7 +66,7 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
         self.assertEqual("one\nthree\n", stream.getvalue())
 
     def test_preserving_existing_handlers(self):
-        stream = StringIO()
+        stream = io.StringIO()
         self.logger.addHandler(logging.StreamHandler(stream))
         self.logger.setLevel(logging.INFO)
         fixture = FakeLogger(nuke_handlers=False)
@@ -174,7 +169,7 @@ class LogHandlerTest(TestCase, TestWithFixtures):
         self.assertEqual(["some message"], fixture.handler.msgs)
 
     def test_replace_and_restore_handlers(self):
-        stream = StringIO()
+        stream = io.StringIO()
         logger = logging.getLogger()
         logger.addHandler(logging.StreamHandler(stream))
         logger.setLevel(logging.INFO)
@@ -187,7 +182,7 @@ class LogHandlerTest(TestCase, TestWithFixtures):
         self.assertEqual("one\nthree\n", stream.getvalue())
 
     def test_preserving_existing_handlers(self):
-        stream = StringIO()
+        stream = io.StringIO()
         self.logger.addHandler(logging.StreamHandler(stream))
         self.logger.setLevel(logging.INFO)
         fixture = LogHandler(self.CustomHandler(), nuke_handlers=False)
