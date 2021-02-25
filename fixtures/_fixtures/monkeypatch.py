@@ -83,9 +83,11 @@ def _coerce_values(obj, name, new_value, sentinel):
             # bound state rather than having it bound to the new object
             # it has been patched onto.
             captured_method = new_value
+
             @functools.wraps(old_value)
             def avoid_get(*args, **kwargs):
                 return captured_method(*args, **kwargs)
+
             new_value = avoid_get
 
     return (new_value, old_value)
@@ -138,18 +140,21 @@ class MonkeyPatch(Fixture):
             __import__(location, {}, {})
         except ImportError:
             pass
+
         components = location.split('.')
         current = __import__(components[0], {}, {})
         for component in components[1:]:
             current = getattr(current, component)
         sentinel = object()
-        new_value, old_value = _coerce_values(current, attribute,
-                self.new_value, sentinel)
+        new_value, old_value = _coerce_values(
+            current, attribute, self.new_value, sentinel)
+
         if self.new_value is self.delete:
             if old_value is not sentinel:
                 delattr(current, attribute)
         else:
             setattr(current, attribute, new_value)
+
         if old_value is sentinel:
             self.addCleanup(self._safe_delete, current, attribute)
         else:
