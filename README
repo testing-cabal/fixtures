@@ -25,7 +25,7 @@ compatible test cases easy and straight forward.
 Dependencies
 ============
 
-* Python 2.7 or 3.4+
+* Python 3.6+
   This is the base language fixtures is written in and for.
 
 * pbr
@@ -37,8 +37,6 @@ Dependencies
   environment).
 
 For use in a unit test suite using the included glue, one of:
-
-* Python 2.7+
 
 * bzrlib.tests
 
@@ -180,10 +178,8 @@ cleanup, and return the fixture. This lets one write::
   >>> import testtools
   >>> import unittest
 
-Note that we use testtools TestCase here as we need to guarantee a
-TestCase.addCleanup method in this doctest. Unittest2 - Python2.7 and above -
-also have ``addCleanup``. testtools has it's own implementation of
-``useFixture`` so there is no need to use ``fixtures.TestWithFixtures`` with
+Note that we use ``testtools.TestCase``. testtools has it's own implementation
+of ``useFixture`` so there is no need to use ``fixtures.TestWithFixtures`` with
 ``testtools.TestCase``.
 
   >>> class NoddyTest(testtools.TestCase, fixtures.TestWithFixtures):
@@ -396,7 +392,7 @@ Adapts ``mock.patch.multiple`` to be used as a Fixture.
 MonkeyPatch
 +++++++++++
 
-Control the value of a named python attribute.
+Control the value of a named Python attribute.
 
   >>> def fake_open(path, mode):
   ...     pass
@@ -418,7 +414,7 @@ temporary file creation where an explicit containing directory was provided.
 PackagePathEntry
 ++++++++++++++++
 
-Adds a single directory to the path for an existing python package. This adds
+Adds a single directory to the path for an existing Python package. This adds
 to the package.__path__ list. If the directory is already in the path, nothing
 happens, if it isn't then it is added on setUp and removed on cleanUp.
 
@@ -498,6 +494,5 @@ system call.
 Contributing
 ============
 
-Fixtures has its project homepage on Launchpad
-<https://launchpad.net/python-fixtures>. Source code is hosted on GitHub
+Fixtures has its project homepage on GitHub
 <https://github.com/testing-cabal/fixtures>.
