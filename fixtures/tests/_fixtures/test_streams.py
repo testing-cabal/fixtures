@@ -14,10 +14,6 @@
 # limitations under that license.
 
 from testtools import TestCase
-from testtools.compat import (
-    _b,
-    _u,
-    )
 from testtools.matchers import Contains
 
 from fixtures import (
@@ -40,7 +36,7 @@ class TestByteStreams(TestCase):
         fixture = ByteStream(detail_name)
         with fixture:
             content = fixture.getDetails()[detail_name]
-            self.assertEqual(_u(""), content.as_text())
+            self.assertEqual("", content.as_text())
 
     def test_stream_content_in_details(self):
         detail_name = 'test'
@@ -49,7 +45,7 @@ class TestByteStreams(TestCase):
             stream = fixture.stream
             content = fixture.getDetails()[detail_name]
             # Output after getDetails is called is included.
-            stream.write(_b("testing 1 2 3"))
+            stream.write(b"testing 1 2 3")
             self.assertEqual("testing 1 2 3", content.as_text())
 
     def test_stream_content_reset(self):
@@ -58,15 +54,15 @@ class TestByteStreams(TestCase):
         with fixture:
             stream = fixture.stream
             content = fixture.getDetails()[detail_name]
-            stream.write(_b("testing 1 2 3"))
+            stream.write(b"testing 1 2 3")
         with fixture:
             # The old content object returns the old usage
-            self.assertEqual(_u("testing 1 2 3"), content.as_text())
+            self.assertEqual("testing 1 2 3", content.as_text())
             content = fixture.getDetails()[detail_name]
             # A new fixture returns the new output:
             stream = fixture.stream
-            stream.write(_b("1 2 3 testing"))
-            self.assertEqual(_u("1 2 3 testing"), content.as_text())
+            stream.write(b"1 2 3 testing")
+            self.assertEqual("1 2 3 testing", content.as_text())
 
 
 class TestStringStreams(TestCase):
@@ -76,7 +72,7 @@ class TestStringStreams(TestCase):
         fixture = StringStream(detail_name)
         with fixture:
             content = fixture.getDetails()[detail_name]
-            self.assertEqual(_u(""), content.as_text())
+            self.assertEqual("", content.as_text())
 
     def test_stream_content_in_details(self):
         detail_name = 'test'
@@ -85,7 +81,7 @@ class TestStringStreams(TestCase):
             stream = fixture.stream
             content = fixture.getDetails()[detail_name]
             # Output after getDetails is called is included.
-            stream.write(_u("testing 1 2 3"))
+            stream.write("testing 1 2 3")
             self.assertEqual("testing 1 2 3", content.as_text())
 
     def test_stream_content_reset(self):
@@ -94,12 +90,12 @@ class TestStringStreams(TestCase):
         with fixture:
             stream = fixture.stream
             content = fixture.getDetails()[detail_name]
-            stream.write(_u("testing 1 2 3"))
+            stream.write("testing 1 2 3")
         with fixture:
             # The old content object returns the old usage
-            self.assertEqual(_u("testing 1 2 3"), content.as_text())
+            self.assertEqual("testing 1 2 3", content.as_text())
             content = fixture.getDetails()[detail_name]
             # A new fixture returns the new output:
             stream = fixture.stream
-            stream.write(_u("1 2 3 testing"))
-            self.assertEqual(_u("1 2 3 testing"), content.as_text())
+            stream.write("1 2 3 testing")
+            self.assertEqual("1 2 3 testing", content.as_text())

@@ -19,9 +19,6 @@ __all__ = [
 
 import sys
 
-from testtools.compat import (
-    reraise,
-    )
 from testtools.helpers import try_import
 
 
@@ -86,7 +83,7 @@ class CallMany(object):
         if result and raise_errors:
             if 1 == len(result):
                 error = result[0]
-                reraise(error[0], error[1], error[2])
+                raise error[1].with_traceback(error[2])
             else:
                 raise MultipleExceptions(*result)
         if not raise_errors:

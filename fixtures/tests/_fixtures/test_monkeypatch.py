@@ -14,6 +14,7 @@
 # limitations under that license.
 
 import functools
+import sys
 
 import testtools
 from testtools.matchers import Is
@@ -32,7 +33,7 @@ class C(object):
 
 class D(object):
     def bar(self): pass
-    def bar_two_args(self, arg):
+    def bar_two_args(self, arg=None):
         return (self, arg)
     @classmethod
     def bar_cls(cls):
@@ -188,14 +189,27 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             'fixtures.tests._fixtures.test_monkeypatch.C.foo_cls',
             D.bar_cls_args)
         with fixture:
-            cls, target_class = C.foo_cls()
-            self.expectThat(cls, Is(D))
-            self.expectThat(target_class, Is(C))
-            cls, target_class = C().foo_cls()
-            self.expectThat(cls, Is(D))
-            self.expectThat(target_class, Is(C))
-        self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
-                C, 'foo_cls')
+            # Python 3.9 changes the behavior of the classmethod decorator so
+            # that it now honours the descriptor binding protocol [1].
+            # This means we're now going to call the monkeypatched classmethod
+            # the way we would have if it hadn't been monkeypatched: simply
+            # with the class
+            #
+            # https://bugs.python.org/issue19072
+            if sys.version_info >= (3, 9):
+                cls, = C.foo_cls()
+                self.expectThat(cls, Is(D))
+                cls, = C().foo_cls()
+                self.expectThat(cls, Is(D))
+            else:
+                cls, target_class = C.foo_cls()
+                self.expectThat(cls, Is(D))
+                self.expectThat(target_class, Is(C))
+                cls, target_class = C().foo_cls()
+                self.expectThat(cls, Is(D))
+                self.expectThat(target_class, Is(C))
+        self._check_restored_static_or_class_method(
+            oldmethod, oldmethod_inst, C, 'foo_cls')
 
     def test_patch_classmethod_with_function(self):
         oldmethod = C.foo_cls
@@ -222,12 +236,20 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         with fixture:
             slf, cls = C.foo_cls()
             self.expectThat(slf, Is(d))
-            self.expectThat(cls, Is(C))
+            # See note in test_patch_classmethod_with_classmethod on changes in
+            # Python 3.9
+            if sys.version_info >= (3, 9):
+                self.expectThat(cls, Is(None))
+            else:
+                self.expectThat(cls, Is(C))
             slf, cls = C().foo_cls()
             self.expectThat(slf, Is(d))
-            self.expectThat(cls, Is(C))
-        self._check_restored_static_or_class_method(oldmethod, oldmethod_inst,
-                C, 'foo_cls')
+            if sys.version_info >= (3, 9):
+                self.expectThat(cls, Is(None))
+            else:
+                self.expectThat(cls, Is(C))
+        self._check_restored_static_or_class_method(
+            oldmethod, oldmethod_inst, C, 'foo_cls')
 
     def test_patch_function_with_staticmethod(self):
         oldmethod = fake_no_args

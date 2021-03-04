@@ -16,9 +16,6 @@
 from logging import StreamHandler, getLogger, INFO, Formatter
 import sys
 
-import six
-from testtools.compat import _u
-
 from fixtures import Fixture
 from fixtures._fixtures.streams import StringStream
 
@@ -66,7 +63,8 @@ class LogHandler(Fixture):
 class StreamHandlerRaiseException(StreamHandler):
     """Handler class that will raise an exception on formatting errors."""
     def handleError(self, record):
-        six.reraise(*sys.exc_info())
+        _, value, tb = sys.exc_info()
+        raise value.with_traceback(tb)
 
 
 class FakeLogger(Fixture):
@@ -103,7 +101,7 @@ class FakeLogger(Fixture):
         self._formatter = formatter
 
     def _setUp(self):
-        name = _u("pythonlogging:'%s'") % self._name
+        name = "pythonlogging:'%s'" % self._name
         output = self.useFixture(StringStream(name)).stream
         self._output = output
         handler = StreamHandlerRaiseException(output)

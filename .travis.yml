@@ -1,22 +1,21 @@
-sudo: false
+---
 language: python
 
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
   - "3.6"
-  - "pypy"
+  - "3.7"
+  - "3.8"
+  - "3.9"
   - "pypy3"
   - "nightly"
 
 install:
- - pip install -U pip
- - pip install -U wheel setuptools pbr
- - pip install -U .[docs,test]
- - pip list
- - python --version
+  - pip install -U pip
+  - pip install -U wheel setuptools pbr
+  - pip install -U .[docs,test]
+  - pip list
+  - python --version
 
 script:
- - make check
- - rst2html.py README README.html
+  - make check
+  - rst2html.py README README.html
