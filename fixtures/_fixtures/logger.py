@@ -117,5 +117,8 @@ class FakeLogger(Fixture):
         self._output.seek(0)
         return self._output.read()
 
+    def reset_output(self):
+        self._output.truncate(0)
+
 
 LoggerFixture = FakeLogger
