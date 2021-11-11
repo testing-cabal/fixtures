@@ -6,7 +6,15 @@ NEXT
 ~~~~
 
 * Dropped support for Python 2.7, Python 3.4 and Python 3.5 (EOL)
+
 * Added support for Python 3.7, Python 3.8, and Python 3.9
+
+* The mock library used by the ``MockPatchObject``, ``MockPatch``, and
+  ``MockPatchMultiple`` fixtures is now configurable using the
+  ``FIXTURES_MOCK_LIBRARY`` environment variable. Three values are accepted:
+  ``unittest`` (use ``unittest.mock``), ``mock`` (use the ``mock`` library),
+  and ``any`` (prefer ``mock``, but fallback to ``unittest.mock`` if not
+  present)
 
 3.0.0
 ~~~~~

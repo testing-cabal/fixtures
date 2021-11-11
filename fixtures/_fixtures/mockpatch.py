@@ -15,13 +15,24 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import os
+
 import fixtures
 
-# TODO(stephenfin): Make this configurable
-try:
+FIXTURES_MOCK_LIBRARY = os.getenv('FIXTURES_MOCK_LIBRARY', 'any').lower()
+if FIXTURES_MOCK_LIBRARY not in ('any', 'mock', 'unittest'):  # ignore invalid
+    FIXTURES_MOCK_LIBRARY = 'any'
+
+
+if FIXTURES_MOCK_LIBRARY == 'mock':
     import mock
-except ImportError:
+elif FIXTURES_MOCK_LIBRARY == 'unittest':
     import unittest.mock as mock
+else:
+    try:
+        import mock
+    except ImportError:
+        import unittest.mock as mock
 
 mock_default = mock.DEFAULT
 
