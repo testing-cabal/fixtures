@@ -73,6 +73,7 @@ __all__ = [
     'Timeout',
     'TimeoutException',
     'WarningsCapture',
+    'WarningsFilter',
     '__version__',
     'version',
     ]
@@ -110,6 +111,7 @@ from fixtures._fixtures import (
     Timeout,
     TimeoutException,
     WarningsCapture,
+    WarningsFilter,
     )
 from fixtures.testcase import TestWithFixtures
 

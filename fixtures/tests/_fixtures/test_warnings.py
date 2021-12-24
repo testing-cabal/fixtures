@@ -18,7 +18,7 @@ import testtools
 import fixtures
 
 
-class TestWarnings(testtools.TestCase, fixtures.TestWithFixtures):
+class TestWarningsCapture(testtools.TestCase, fixtures.TestWithFixtures):
 
     def test_capture_reuse(self):
         w = fixtures.WarningsCapture()
@@ -47,3 +47,28 @@ class TestWarnings(testtools.TestCase, fixtures.TestWithFixtures):
         for i, category in enumerate(categories):
             c = w.captures[i]
             self.assertEqual(category, c.category)
+
+
+class TestWarningsFilter(testtools.TestCase, fixtures.TestWithFixtures):
+
+    def test_filter(self):
+        fixture = fixtures.WarningFilter(
+            [
+                {
+                    'action': 'ignore',
+                    'category': 'DeprecationWarning',
+                },
+                {
+                    'action': 'once',
+                    'category': 'UserWarning',
+                },
+            ],
+        )
+        self.useFixture(fixture)
+        with warnings.catch_warnings(record=True) as w:
+            warnings.warn('deprecated', DeprecationWarning)
+            warnings.warn('user', UserWarning)
+
+        # only the user warning should be present, and it should only have been
+        # raised once
+        self.assertEqual(1, len(w))
