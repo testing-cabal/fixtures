@@ -18,7 +18,7 @@ import testtools
 import fixtures
 
 
-class TestWarnings(testtools.TestCase, fixtures.TestWithFixtures):
+class TestWarningsCapture(testtools.TestCase, fixtures.TestWithFixtures):
 
     def test_capture_reuse(self):
         # DeprecationWarnings are hidden by default in Python 3.2+, enable them
@@ -59,3 +59,60 @@ class TestWarnings(testtools.TestCase, fixtures.TestWithFixtures):
         for i, category in enumerate(categories):
             c = w.captures[i]
             self.assertEqual(category, c.category)
+
+
+class TestWarningsFilter(testtools.TestCase, fixtures.TestWithFixtures):
+
+    def test_filter(self):
+        fixture = fixtures.WarningsFilter(
+            [
+                {
+                    'action': 'ignore',
+                    'category': DeprecationWarning,
+                },
+                {
+                    'action': 'once',
+                    'category': UserWarning,
+                },
+            ],
+        )
+        self.useFixture(fixture)
+        with warnings.catch_warnings(record=True) as w:
+            warnings.warn('deprecated', DeprecationWarning)
+            warnings.warn('user', UserWarning)
+
+        # only the user warning should be present, and it should only have been
+        # raised once
+        self.assertEqual(1, len(w))
+
+    def test_filters_restored(self):
+
+        class CustomWarning(Warning):
+            pass
+
+        fixture = fixtures.WarningsFilter(
+            [
+                {
+                    'action': 'once',
+                    'category': CustomWarning,
+                },
+            ],
+        )
+
+        # we copy the filter values rather than a reference to the containing
+        # list since that can change
+        old_filters = warnings.filters[:]
+
+        # NOTE: we intentionally do not use 'self.useFixture' since we want to
+        # teardown the fixture manually here before we exit this test method
+        fixture.setUp()
+
+        new_filters = warnings.filters[:]
+        self.assertEqual(len(old_filters) + 1, len(new_filters))
+        self.assertNotEqual(old_filters, new_filters)
+
+        fixture.cleanUp()
+
+        new_filters = warnings.filters[:]
+        self.assertEqual(len(old_filters), len(new_filters))
+        self.assertEqual(old_filters, new_filters)

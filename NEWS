@@ -5,6 +5,10 @@ fixtures release notes
 NEXT
 ~~~~
 
+* Add a new ``WarningsFilter`` filter, allowing users to filter warnings as
+  part of their tests, before restoring said filters.
+  (Stephen Finucane)
+
 4.0.0
 ~~~~~
 

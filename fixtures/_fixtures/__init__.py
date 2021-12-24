@@ -40,7 +40,8 @@ __all__ = [
     'Timeout',
     'TimeoutException',
     'WarningsCapture',
-    ]
+    'WarningsFilter',
+]
 
 
 from fixtures._fixtures.environ import (
@@ -83,4 +84,5 @@ from fixtures._fixtures.timeout import (
     )
 from fixtures._fixtures.warnings import (
     WarningsCapture,
+    WarningsFilter,
     )
