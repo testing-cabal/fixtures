@@ -23,8 +23,6 @@ try:
 except ImportError:
     import unittest.mock as mock
 
-mock_default = mock.DEFAULT
-
 
 class _Base(fixtures.Fixture):
     def _setUp(self):
@@ -36,16 +34,20 @@ class _Base(fixtures.Fixture):
 class MockPatchObject(_Base):
     """Deal with code around mock."""
 
-    def __init__(self, obj, attr, new=mock_default, **kwargs):
+    def __init__(self, obj, attr, new=None, **kwargs):
         super(MockPatchObject, self).__init__()
+        if new is None:
+            new = mock.DEFAULT
         self._get_p = lambda: mock.patch.object(obj, attr, new, **kwargs)
 
 
 class MockPatch(_Base):
     """Deal with code around mock.patch."""
 
-    def __init__(self, obj, new=mock_default, **kwargs):
+    def __init__(self, obj, new=None, **kwargs):
         super(MockPatch, self).__init__()
+        if new is None:
+            new = mock.DEFAULT
         self._get_p = lambda: mock.patch(obj, new, **kwargs)
 
 
@@ -54,7 +56,9 @@ class MockPatchMultiple(_Base):
 
     # Default value to trigger a MagicMock to be created for a named
     # attribute.
-    DEFAULT = mock_default
+    @property
+    def DEFAULT(self):
+        return mock.DEFAULT
 
     def __init__(self, obj, **kwargs):
         """Initialize the mocks
