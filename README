@@ -336,6 +336,15 @@ in test failure descriptions. Very useful in combination with MonkeyPatch.
   ...     pass
   >>> fixture.cleanUp()
 
+Deprecations
+++++++++++++
+
+Prevent code under test from calling deprecated functions.
+
+  >>> import warnings
+  >>> with fixtures.Deprecations('my_module'):
+  ...     warnings.warn('stop using me', DeprecationWarning)  # will raise
+
 EnvironmentVariable
 +++++++++++++++++++
 
