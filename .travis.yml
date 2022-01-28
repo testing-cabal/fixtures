@@ -18,4 +18,4 @@ install:
 
 script:
   - make check
-  - rst2html.py README README.html
+  - rst2html.py README.rst README.html
