@@ -35,5 +35,5 @@ def load_tests(loader, standard_tests, pattern):
     standard_tests.addTests(
         loader.loadTestsFromName('fixtures.tests._fixtures'))
     doctest.set_unittest_reportflags(doctest.REPORT_ONLY_FIRST_FAILURE)
-    standard_tests.addTest(doctest.DocFileSuite("../../README"))
+    standard_tests.addTest(doctest.DocFileSuite("../../README.rst"))
     return standard_tests
