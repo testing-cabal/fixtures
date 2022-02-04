@@ -61,6 +61,20 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         fixture = self.useFixture(FakePopen(get_info))
         fixture(**all_args)
 
+    def test_handles_all_3_7_args(self):
+        all_args = dict(
+            args="args", bufsize="bufsize", executable="executable",
+            stdin="stdin", stdout="stdout", stderr="stderr",
+            preexec_fn="preexec_fn", close_fds="close_fds", shell="shell",
+            cwd="cwd", env="env", universal_newlines="universal_newlines",
+            startupinfo="startupinfo", creationflags="creationflags",
+            text="text")
+        def get_info(proc_args):
+            self.assertEqual(all_args, proc_args)
+            return {}
+        fixture = self.useFixture(FakePopen(get_info))
+        fixture(**all_args)
+
     def test_custom_returncode(self):
         def get_info(proc_args):
             return dict(returncode=1)
