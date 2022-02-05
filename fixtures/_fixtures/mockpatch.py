@@ -51,14 +51,24 @@ class MockPatch(_Base):
         self._get_p = lambda: mock.patch(obj, new, **kwargs)
 
 
-class MockPatchMultiple(_Base):
-    """Deal with code around mock.patch.multiple."""
+class _MockPatchMultipleMeta(type):
+    """Arrange for lazy loading of MockPatchMultiple.DEFAULT."""
+
+    # For strict backward compatibility, ensure that DEFAULT also works as
+    # an instance property.
+    def __new__(cls, name, bases, namespace, **kwargs):
+        namespace['DEFAULT'] = cls.DEFAULT
+        return super().__new__(cls, name, bases, namespace, **kwargs)
 
     # Default value to trigger a MagicMock to be created for a named
     # attribute.
     @property
     def DEFAULT(self):
         return mock.DEFAULT
+
+
+class MockPatchMultiple(_Base, metaclass=_MockPatchMultipleMeta):
+    """Deal with code around mock.patch.multiple."""
 
     def __init__(self, obj, **kwargs):
         """Initialize the mocks
