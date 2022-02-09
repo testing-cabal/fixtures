@@ -13,6 +13,7 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+import inspect
 import io
 import subprocess
 import sys
@@ -39,8 +40,13 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         fixture = self.useFixture(FakePopen())
         proc = fixture(['foo', 'bar'], 1, None, 'in', 'out', 'err')
         self.assertEqual(1, len(fixture.procs))
-        self.assertEqual(dict(args=['foo', 'bar'], bufsize=1, executable=None,
-            stdin='in', stdout='out', stderr='err'), proc._args)
+        self.assertEqual(
+            dict(
+                args=['foo', 'bar'], bufsize=1, executable=None,
+                stdin='in', stdout='out', stderr='err',
+            ),
+            proc._args,
+        )
 
     def test_inject_content_stdout(self):
         def get_info(args):
@@ -68,9 +74,11 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
             all_args["umask"] = "umask"
         if sys.version_info >= (3, 10):
             all_args["pipesize"] = "pipesize"
+
         def get_info(proc_args):
             self.assertEqual(all_args, proc_args)
             return {}
+
         fixture = self.useFixture(FakePopen(get_info))
         fixture(**all_args)
 
@@ -101,6 +109,44 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
                 TypeError,
                 r".* got an unexpected keyword argument 'pipesize'"):
             fixture(args="args", pipesize=1024)
+
+    def test_function_signature(self):
+        fake_signature = inspect.getfullargspec(FakePopen.__call__)
+        real_signature = inspect.getfullargspec(subprocess.Popen)
+
+        # compare args
+
+        fake_args = fake_signature.args
+        real_args = real_signature.args
+
+        self.assertListEqual(
+            fake_args,
+            real_args,
+            "Function signature of FakePopen doesn't match subprocess.Popen",
+        )
+
+        # compare kw-only args; order doesn't matter so we use a set
+
+        fake_kwargs = set(fake_signature.kwonlyargs)
+        real_kwargs = set(real_signature.kwonlyargs)
+
+        if sys.version_info < (3, 10):
+            fake_kwargs.remove('pipesize')
+
+        if sys.version_info < (3, 9):
+            fake_kwargs.remove('group')
+            fake_kwargs.remove('extra_groups')
+            fake_kwargs.remove('user')
+            fake_kwargs.remove('umask')
+
+        if sys.version_info < (3, 7):
+            fake_kwargs.remove('text')
+
+        self.assertSetEqual(
+            fake_kwargs,
+            real_kwargs,
+            "Function signature of FakePopen doesn't match subprocess.Popen",
+        )
 
     def test_custom_returncode(self):
         def get_info(proc_args):
