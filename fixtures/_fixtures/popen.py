@@ -20,6 +20,7 @@ __all__ = [
 
 import random
 import subprocess
+import sys
 
 from fixtures import Fixture
 
@@ -126,13 +127,38 @@ class FakePopen(Fixture):
         stdin=_unpassed, stdout=_unpassed, stderr=_unpassed,
         preexec_fn=_unpassed, close_fds=_unpassed, shell=_unpassed,
         cwd=_unpassed, env=_unpassed, universal_newlines=_unpassed,
-        startupinfo=_unpassed, creationflags=_unpassed):
+        startupinfo=_unpassed, creationflags=_unpassed,
+        restore_signals=_unpassed, start_new_session=_unpassed,
+        pass_fds=_unpassed, *, group=_unpassed, extra_groups=_unpassed,
+        user=_unpassed, umask=_unpassed, encoding=_unpassed,
+        errors=_unpassed, text=_unpassed, pipesize=_unpassed):
+        # Reject arguments introduced by newer versions of Python in older
+        # versions; this makes it harder to accidentally hide compatibility
+        # problems using test doubles.
+        if sys.version_info < (3, 7) and text is not FakePopen._unpassed:
+            raise TypeError(
+                "FakePopen.__call__() got an unexpected keyword argument "
+                "'text'")
+        if sys.version_info < (3, 9):
+            for arg_name in "group", "extra_groups", "user", "umask":
+                if locals()[arg_name] is not FakePopen._unpassed:
+                    raise TypeError(
+                        "FakePopen.__call__() got an unexpected keyword "
+                        "argument '{}'".format(arg_name))
+        if sys.version_info < (3, 10) and pipesize is not FakePopen._unpassed:
+            raise TypeError(
+                "FakePopen.__call__() got an unexpected keyword argument "
+                "'pipesize'")
+
         proc_args = dict(args=args)
         local = locals()
         for param in [
             "bufsize", "executable", "stdin", "stdout", "stderr",
             "preexec_fn", "close_fds", "shell", "cwd", "env",
-            "universal_newlines", "startupinfo", "creationflags"]:
+            "universal_newlines", "startupinfo", "creationflags",
+            "restore_signals", "start_new_session", "pass_fds", "group",
+            "extra_groups", "user", "umask", "encoding", "errors", "text",
+            "pipesize"]:
             if local[param] is not FakePopen._unpassed:
                 proc_args[param] = local[param]
         proc_info = self.get_info(proc_args)

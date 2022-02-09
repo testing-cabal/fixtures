@@ -15,6 +15,7 @@
 
 import io
 import subprocess
+import sys
 
 import testtools
 
@@ -48,32 +49,58 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         proc = fixture(['foo'])
         self.assertEqual('stdout', proc.stdout)
 
-    def test_handles_all_2_7_args(self):
-        all_args = dict(
-            args="args", bufsize="bufsize", executable="executable",
-            stdin="stdin", stdout="stdout", stderr="stderr",
-            preexec_fn="preexec_fn", close_fds="close_fds", shell="shell",
-            cwd="cwd", env="env", universal_newlines="universal_newlines",
-            startupinfo="startupinfo", creationflags="creationflags")
-        def get_info(proc_args):
-            self.assertEqual(all_args, proc_args)
-            return {}
-        fixture = self.useFixture(FakePopen(get_info))
-        fixture(**all_args)
-
-    def test_handles_all_3_7_args(self):
+    def test_handles_all_Popen_args(self):
         all_args = dict(
             args="args", bufsize="bufsize", executable="executable",
             stdin="stdin", stdout="stdout", stderr="stderr",
             preexec_fn="preexec_fn", close_fds="close_fds", shell="shell",
             cwd="cwd", env="env", universal_newlines="universal_newlines",
             startupinfo="startupinfo", creationflags="creationflags",
-            text="text")
+            restore_signals="restore_signals",
+            start_new_session="start_new_session", pass_fds="pass_fds",
+            encoding="encoding", errors="errors")
+        if sys.version_info >= (3, 7):
+            all_args["text"] = "text"
+        if sys.version_info >= (3, 9):
+            all_args["group"] = "group"
+            all_args["extra_groups"] = "extra_groups"
+            all_args["user"] = "user"
+            all_args["umask"] = "umask"
+        if sys.version_info >= (3, 10):
+            all_args["pipesize"] = "pipesize"
         def get_info(proc_args):
             self.assertEqual(all_args, proc_args)
             return {}
         fixture = self.useFixture(FakePopen(get_info))
         fixture(**all_args)
+
+    @testtools.skipUnless(
+        sys.version_info < (3, 7), "only relevant on Python <3.7")
+    def test_rejects_3_7_args_on_older_versions(self):
+        fixture = self.useFixture(FakePopen(lambda proc_args: {}))
+        with testtools.ExpectedException(
+                TypeError, r".* got an unexpected keyword argument 'text'"):
+            fixture(args="args", text=True)
+
+    @testtools.skipUnless(
+        sys.version_info < (3, 9), "only relevant on Python <3.9")
+    def test_rejects_3_9_args_on_older_versions(self):
+        fixture = self.useFixture(FakePopen(lambda proc_args: {}))
+        for arg_name in ("group", "extra_groups", "user", "umask"):
+            kwargs = {arg_name: arg_name}
+            expected_message = (
+                r".* got an unexpected keyword argument '{}'".format(arg_name))
+            with testtools.ExpectedException(TypeError, expected_message):
+                fixture(args="args", **kwargs)
+
+    @testtools.skipUnless(
+        sys.version_info < (3, 10), "only relevant on Python <3.10")
+    def test_rejects_3_10_args_on_older_versions(self):
+        fixture = self.useFixture(FakePopen(lambda proc_args: {}))
+        with testtools.ExpectedException(
+                TypeError,
+                r".* got an unexpected keyword argument 'pipesize'"):
+            fixture(args="args", pipesize=1024)
 
     def test_custom_returncode(self):
         def get_info(proc_args):
