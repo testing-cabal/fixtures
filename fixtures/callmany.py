@@ -19,14 +19,12 @@ __all__ = [
 
 import sys
 
-from testtools.helpers import try_import
 
-
-class MultipleExceptions(Exception):
-    """Report multiple exc_info tuples in self.args."""
-
-MultipleExceptions = try_import(
-    "testtools.MultipleExceptions", MultipleExceptions)
+try:
+    from testtools import MultipleExceptions
+except ImportError:
+    class MultipleExceptions(Exception):
+        """Report multiple exc_info tuples in self.args."""
 
 
 class CallMany(object):
