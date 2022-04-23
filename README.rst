@@ -336,6 +336,8 @@ in test failure descriptions. Very useful in combination with MonkeyPatch.
   ...     pass
   >>> fixture.cleanUp()
 
+This requires the ``fixtures[streams]`` extra.
+
 EnvironmentVariable
 +++++++++++++++++++
 
@@ -449,6 +451,8 @@ in test failure descriptions. Very useful in combination with MonkeyPatch.
   >>> with fixtures.MonkeyPatch('sys.stdout', fixture.stream):
   ...     pass
   >>> fixture.cleanUp()
+
+This requires the ``fixtures[streams]`` extra.
 
 TempDir
 +++++++
