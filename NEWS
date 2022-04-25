@@ -5,6 +5,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+4.0.0
+~~~~~
+
 * Add missing APIs to ``FakeProcess``, making it match ``Popen``.
   (Free Ekanayaka, #1373224)
 
