@@ -25,15 +25,18 @@ __all__ = [
 import itertools
 import sys
 
-from testtools.helpers import try_import
-
 from fixtures.callmany import (
     CallMany,
     # Deprecated, imported for compatibility.
     MultipleExceptions,
     )
 
-gather_details = try_import("testtools.testcase.gather_details")
+
+try:
+    from testtools.testcase import gather_details
+except ImportError:
+    gather_details = None
+
 
 # This would be better in testtools (or a common library)
 def combine_details(source_details, target_details):

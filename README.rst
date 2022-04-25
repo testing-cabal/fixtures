@@ -31,6 +31,8 @@ Dependencies
 * pbr
   Used for version and release management of fixtures.
 
+The ``fixtures[streams]`` extra adds:
+
 * testtools <https://launchpad.net/testtools> 0.9.22 or newer.
   testtools provides helpful glue functions for the details API used to report
   information about a fixture (whether its used in a testing or production
@@ -336,6 +338,8 @@ in test failure descriptions. Very useful in combination with MonkeyPatch.
   ...     pass
   >>> fixture.cleanUp()
 
+This requires the ``fixtures[streams]`` extra.
+
 EnvironmentVariable
 +++++++++++++++++++
 
@@ -449,6 +453,8 @@ in test failure descriptions. Very useful in combination with MonkeyPatch.
   >>> with fixtures.MonkeyPatch('sys.stdout', fixture.stream):
   ...     pass
   >>> fixture.cleanUp()
+
+This requires the ``fixtures[streams]`` extra.
 
 TempDir
 +++++++

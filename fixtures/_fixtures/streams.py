@@ -22,7 +22,6 @@ __all__ = [
 import io
 
 from fixtures import Fixture
-import testtools
 
 
 class Stream(Fixture):
@@ -42,10 +41,14 @@ class Stream(Fixture):
         self._stream_factory = stream_factory
 
     def _setUp(self):
+        # Available with the fixtures[streams] extra.
+        from testtools.content import content_from_stream
+
         write_stream, read_stream = self._stream_factory()
         self.stream = write_stream
-        self.addDetail(self._detail_name,
-            testtools.content.content_from_stream(read_stream, seek_offset=0))
+        self.addDetail(
+            self._detail_name,
+            content_from_stream(read_stream, seek_offset=0))
 
 
 def _byte_stream_factory():
