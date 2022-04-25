@@ -5,10 +5,28 @@ fixtures release notes
 NEXT
 ~~~~
 
+4.0.0
+~~~~~
+
+* Add missing APIs to ``FakeProcess``, making it match ``Popen``.
+  (Free Ekanayaka, #1373224)
+
 * Dropped support for Python 2.7, Python 3.4 and Python 3.5 (EOL).
-* Added support for Python 3.7-3.10.
+  (Hugo van Kemenade)
+
+* Added support for Python 3.6-3.10.
+  (Free Ekanayaka, Stephen Finucane, Colin Watson)
+
+* Add possibility to reset the ``FakeLogger``. (Balazs Gibizer)
+
+* Access ``mock.DEFAULT`` lazily rather than at import time so ``mock`` can
+  be overridden with something else. (Jelmer Vernooĳ)
+
 * Support all ``subprocess.Popen`` arguments up to Python 3.10.
+  (Jürgen Gmach, Colin Watson)
+
 * Move ``testtools`` requirement to a new ``fixtures[streams]`` extra.
+  (Colin Watson)
 
 3.0.0
 ~~~~~
