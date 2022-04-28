@@ -21,6 +21,10 @@ import fixtures
 class TestWarnings(testtools.TestCase, fixtures.TestWithFixtures):
 
     def test_capture_reuse(self):
+        # DeprecationWarnings are hidden by default in Python 3.2+, enable them
+        # https://docs.python.org/3/library/warnings.html#default-warning-filter
+        warnings.simplefilter("always")
+
         w = fixtures.WarningsCapture()
         with w:
             warnings.warn("test", DeprecationWarning)
@@ -29,12 +33,20 @@ class TestWarnings(testtools.TestCase, fixtures.TestWithFixtures):
             self.assertEqual([], w.captures)
 
     def test_capture_message(self):
+        # DeprecationWarnings are hidden by default in Python 3.2+, enable them
+        # https://docs.python.org/3/library/warnings.html#default-warning-filter
+        warnings.simplefilter("always")
+
         w = self.useFixture(fixtures.WarningsCapture())
         warnings.warn("hi", DeprecationWarning)
         self.assertEqual(1, len(w.captures))
         self.assertEqual("hi", str(w.captures[0].message))
 
     def test_capture_category(self):
+        # DeprecationWarnings are hidden by default in Python 3.2+, enable them
+        # https://docs.python.org/3/library/warnings.html#default-warning-filter
+        warnings.simplefilter("always")
+
         w = self.useFixture(fixtures.WarningsCapture())
         categories = [
             DeprecationWarning, Warning, UserWarning,
