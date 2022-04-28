@@ -13,23 +13,16 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+import os
+
+
 def load_tests(loader, standard_tests, pattern):
     test_modules = [
-        'environ',
-        'logger',
-        'mockpatch',
-        'monkeypatch',
-        'packagepath',
-        'popen',
-        'pythonpackage',
-        'pythonpath',
-        'streams',
-        'tempdir',
-        'temphomedir',
-        'timeout',
-        'warnings',
+        os.path.splitext(path)[0]
+        for path in os.listdir(os.path.dirname(__file__))
+        if path.startswith('test_')
     ]
-    prefix = "fixtures.tests._fixtures.test_"
+    prefix = "fixtures.tests._fixtures."
     test_mod_names = [prefix + test_module for test_module in test_modules]
     standard_tests.addTests(loader.loadTestsFromNames(test_mod_names))
     return standard_tests
