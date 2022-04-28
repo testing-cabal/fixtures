@@ -23,6 +23,9 @@ from fixtures import MonkeyPatch, TestWithFixtures
 
 reference = 23
 
+NEW_PY39_CLASSMETHOD = (
+    sys.version_info >= (3, 9) and not hasattr(sys, "pypy_version_info"))
+
 class C(object):
     def foo(self, arg):
         return arg
@@ -196,7 +199,7 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             # with the class
             #
             # https://bugs.python.org/issue19072
-            if sys.version_info >= (3, 9):
+            if NEW_PY39_CLASSMETHOD:
                 cls, = C.foo_cls()
                 self.expectThat(cls, Is(D))
                 cls, = C().foo_cls()
@@ -238,13 +241,13 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
             self.expectThat(slf, Is(d))
             # See note in test_patch_classmethod_with_classmethod on changes in
             # Python 3.9
-            if sys.version_info >= (3, 9):
+            if NEW_PY39_CLASSMETHOD:
                 self.expectThat(cls, Is(None))
             else:
                 self.expectThat(cls, Is(C))
             slf, cls = C().foo_cls()
             self.expectThat(slf, Is(d))
-            if sys.version_info >= (3, 9):
+            if NEW_PY39_CLASSMETHOD:
                 self.expectThat(cls, Is(None))
             else:
                 self.expectThat(cls, Is(C))
