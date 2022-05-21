@@ -24,7 +24,8 @@ from fixtures import MonkeyPatch, TestWithFixtures
 reference = 23
 
 NEW_PY39_CLASSMETHOD = (
-    sys.version_info >= (3, 9) and not hasattr(sys, "pypy_version_info"))
+    sys.version_info[:2] in ((3, 9), (3,10))
+    and not hasattr(sys, "pypy_version_info"))
 
 class C(object):
     def foo(self, arg):
