@@ -74,6 +74,8 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
             all_args["umask"] = "umask"
         if sys.version_info >= (3, 10):
             all_args["pipesize"] = "pipesize"
+        if sys.version_info >= (3, 11):
+            all_args["process_group"] = "process_group"
 
         def get_info(proc_args):
             self.assertEqual(all_args, proc_args)
@@ -110,6 +112,15 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
                 r".* got an unexpected keyword argument 'pipesize'"):
             fixture(args="args", pipesize=1024)
 
+    @testtools.skipUnless(
+        sys.version_info < (3, 11), "only relevant on Python <3.11")
+    def test_rejects_3_11_args_on_older_versions(self):
+        fixture = self.useFixture(FakePopen(lambda proc_args: {}))
+        with testtools.ExpectedException(
+                TypeError,
+                r".* got an unexpected keyword argument 'process_group'"):
+            fixture(args="args", process_group=42)
+
     def test_function_signature(self):
         fake_signature = inspect.getfullargspec(FakePopen.__call__)
         real_signature = inspect.getfullargspec(subprocess.Popen)
@@ -129,6 +140,9 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
 
         fake_kwargs = set(fake_signature.kwonlyargs)
         real_kwargs = set(real_signature.kwonlyargs)
+
+        if sys.version_info < (3, 11):
+            fake_kwargs.remove('process_group')
 
         if sys.version_info < (3, 10):
             fake_kwargs.remove('pipesize')
