@@ -131,7 +131,8 @@ class FakePopen(Fixture):
         restore_signals=_unpassed, start_new_session=_unpassed,
         pass_fds=_unpassed, *, group=_unpassed, extra_groups=_unpassed,
         user=_unpassed, umask=_unpassed, encoding=_unpassed,
-        errors=_unpassed, text=_unpassed, pipesize=_unpassed):
+        errors=_unpassed, text=_unpassed, pipesize=_unpassed,
+        process_group=_unpassed):
         # Reject arguments introduced by newer versions of Python in older
         # versions; this makes it harder to accidentally hide compatibility
         # problems using test doubles.
@@ -149,6 +150,10 @@ class FakePopen(Fixture):
             raise TypeError(
                 "FakePopen.__call__() got an unexpected keyword argument "
                 "'pipesize'")
+        if sys.version_info < (3, 11) and process_group is not FakePopen._unpassed:
+            raise TypeError(
+                "FakePopen.__call__() got an unexpected keyword argument "
+                "'process_group'")
 
         proc_args = dict(args=args)
         local = locals()
@@ -158,7 +163,7 @@ class FakePopen(Fixture):
             "universal_newlines", "startupinfo", "creationflags",
             "restore_signals", "start_new_session", "pass_fds", "group",
             "extra_groups", "user", "umask", "encoding", "errors", "text",
-            "pipesize"]:
+            "pipesize", "process_group"]:
             if local[param] is not FakePopen._unpassed:
                 proc_args[param] = local[param]
         proc_info = self.get_info(proc_args)
