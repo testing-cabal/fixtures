@@ -5,6 +5,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+4.0.1
+~~~~~
+
 * Remove ``testtools`` from ``requirements.txt`` as well.
   (Colin Watson)
 
