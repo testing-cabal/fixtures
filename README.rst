@@ -25,7 +25,7 @@ compatible test cases easy and straight forward.
 Dependencies
 ============
 
-* Python 3.6+
+* Python 3.7+
   This is the base language fixtures is written in and for.
 
 * pbr
