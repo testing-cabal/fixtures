@@ -5,6 +5,9 @@ fixtures release notes
 NEXT
 ~~~~
 
+* Drop support for Python 3.6 (EOL)
+  (Stephen Finucane)
+
 4.0.1
 ~~~~~
 
