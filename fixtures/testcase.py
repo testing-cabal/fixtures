@@ -24,7 +24,7 @@ from fixtures.fixture import gather_details
 
 class TestWithFixtures(unittest.TestCase):
     """A TestCase with a helper function to use fixtures.
-    
+
     Normally used as a mix-in class to add useFixture.
 
     Note that test classes such as testtools.TestCase which already have a
