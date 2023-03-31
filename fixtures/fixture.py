@@ -78,7 +78,7 @@ class Fixture(object):
         self._clear_cleanups.
 
         :param cleanup: A callable to call during cleanUp.
-        :param *args: Positional args for cleanup.
+        :param args: Positional args for cleanup.
         :param kwargs: Keyword args for cleanup.
         :return: None
         """
