@@ -499,14 +499,16 @@ an exception will be raised and the test (or other covered code) will fail.
 When not gentle, the entire process will be terminated, which is less clean,
 but more likely to break hangs where no Python code is running.
 
-> *Caution*
-> Only one timeout can be active at any time across all threads in a single
-> process.  Using more than one has undefined results.  (This could be improved
-> by chaining alarms.)
+.. caution::
 
-> *Note*
-> Currently supported only on Unix because it relies on the ``alarm`` system
-> call.
+   Only one timeout can be active at any time across all threads in a single
+   process.  Using more than one has undefined results.  (This could be improved
+   by chaining alarms.)
+
+.. note::
+
+   Currently supported only on Unix because it relies on the ``alarm`` system
+   call.
 
 ``WarningsCapture``
 +++++++++++++++++++
