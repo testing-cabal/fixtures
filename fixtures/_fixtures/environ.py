@@ -15,8 +15,8 @@
 
 __all__ = [
     'EnvironmentVariable',
-    'EnvironmentVariableFixture'
-    ]
+    'EnvironmentVariableFixture',
+]
 
 import os
 

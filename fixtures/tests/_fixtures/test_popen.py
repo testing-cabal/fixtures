@@ -25,7 +25,6 @@ from fixtures._fixtures.popen import FakeProcess
 
 
 class TestFakePopen(testtools.TestCase, TestWithFixtures):
-
     def test_installs_restores_global(self):
         fixture = FakePopen()
         popen = subprocess.Popen
@@ -42,8 +41,12 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         self.assertEqual(1, len(fixture.procs))
         self.assertEqual(
             dict(
-                args=['foo', 'bar'], bufsize=1, executable=None,
-                stdin='in', stdout='out', stderr='err',
+                args=['foo', 'bar'],
+                bufsize=1,
+                executable=None,
+                stdin='in',
+                stdout='out',
+                stderr='err',
             ),
             proc._args,
         )
@@ -51,20 +54,33 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
     def test_inject_content_stdout(self):
         def get_info(args):
             return {'stdout': 'stdout'}
+
         fixture = self.useFixture(FakePopen(get_info))
         proc = fixture(['foo'])
         self.assertEqual('stdout', proc.stdout)
 
     def test_handles_all_Popen_args(self):
         all_args = dict(
-            args="args", bufsize="bufsize", executable="executable",
-            stdin="stdin", stdout="stdout", stderr="stderr",
-            preexec_fn="preexec_fn", close_fds="close_fds", shell="shell",
-            cwd="cwd", env="env", universal_newlines="universal_newlines",
-            startupinfo="startupinfo", creationflags="creationflags",
+            args="args",
+            bufsize="bufsize",
+            executable="executable",
+            stdin="stdin",
+            stdout="stdout",
+            stderr="stderr",
+            preexec_fn="preexec_fn",
+            close_fds="close_fds",
+            shell="shell",
+            cwd="cwd",
+            env="env",
+            universal_newlines="universal_newlines",
+            startupinfo="startupinfo",
+            creationflags="creationflags",
             restore_signals="restore_signals",
-            start_new_session="start_new_session", pass_fds="pass_fds",
-            encoding="encoding", errors="errors")
+            start_new_session="start_new_session",
+            pass_fds="pass_fds",
+            encoding="encoding",
+            errors="errors",
+        )
         if sys.version_info >= (3, 7):
             all_args["text"] = "text"
         if sys.version_info >= (3, 9):
@@ -85,40 +101,46 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
         fixture(**all_args)
 
     @testtools.skipUnless(
-        sys.version_info < (3, 7), "only relevant on Python <3.7")
+        sys.version_info < (3, 7), "only relevant on Python <3.7"
+    )
     def test_rejects_3_7_args_on_older_versions(self):
         fixture = self.useFixture(FakePopen(lambda proc_args: {}))
         with testtools.ExpectedException(
-                TypeError, r".* got an unexpected keyword argument 'text'"):
+            TypeError, r".* got an unexpected keyword argument 'text'"
+        ):
             fixture(args="args", text=True)
 
     @testtools.skipUnless(
-        sys.version_info < (3, 9), "only relevant on Python <3.9")
+        sys.version_info < (3, 9), "only relevant on Python <3.9"
+    )
     def test_rejects_3_9_args_on_older_versions(self):
         fixture = self.useFixture(FakePopen(lambda proc_args: {}))
         for arg_name in ("group", "extra_groups", "user", "umask"):
             kwargs = {arg_name: arg_name}
             expected_message = (
-                r".* got an unexpected keyword argument '{}'".format(arg_name))
+                r".* got an unexpected keyword argument '{}'".format(arg_name)
+            )
             with testtools.ExpectedException(TypeError, expected_message):
                 fixture(args="args", **kwargs)
 
     @testtools.skipUnless(
-        sys.version_info < (3, 10), "only relevant on Python <3.10")
+        sys.version_info < (3, 10), "only relevant on Python <3.10"
+    )
     def test_rejects_3_10_args_on_older_versions(self):
         fixture = self.useFixture(FakePopen(lambda proc_args: {}))
         with testtools.ExpectedException(
-                TypeError,
-                r".* got an unexpected keyword argument 'pipesize'"):
+            TypeError, r".* got an unexpected keyword argument 'pipesize'"
+        ):
             fixture(args="args", pipesize=1024)
 
     @testtools.skipUnless(
-        sys.version_info < (3, 11), "only relevant on Python <3.11")
+        sys.version_info < (3, 11), "only relevant on Python <3.11"
+    )
     def test_rejects_3_11_args_on_older_versions(self):
         fixture = self.useFixture(FakePopen(lambda proc_args: {}))
         with testtools.ExpectedException(
-                TypeError,
-                r".* got an unexpected keyword argument 'process_group'"):
+            TypeError, r".* got an unexpected keyword argument 'process_group'"
+        ):
             fixture(args="args", process_group=42)
 
     def test_function_signature(self):
@@ -165,6 +187,7 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
     def test_custom_returncode(self):
         def get_info(proc_args):
             return dict(returncode=1)
+
         proc = self.useFixture(FakePopen(get_info))(['foo'])
         self.assertEqual(None, proc.returncode)
         self.assertEqual(1, proc.wait())
@@ -178,7 +201,6 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
 
 
 class TestFakeProcess(testtools.TestCase):
-
     def test_wait(self):
         proc = FakeProcess({}, {})
         proc.returncode = 45

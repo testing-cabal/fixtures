@@ -15,7 +15,7 @@
 
 __all__ = [
     'TempHomeDir',
-    ]
+]
 
 import fixtures
 from fixtures._fixtures.tempdir import TempDir

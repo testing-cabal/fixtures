@@ -23,7 +23,7 @@ __all__ = [
     'FakeLogger',
     'LoggerFixture',
     'LogHandler',
-    ]
+]
 
 
 class LogHandler(Fixture):
@@ -62,6 +62,7 @@ class LogHandler(Fixture):
 
 class StreamHandlerRaiseException(StreamHandler):
     """Handler class that will raise an exception on formatting errors."""
+
     def handleError(self, record):
         _, value, tb = sys.exc_info()
         raise value.with_traceback(tb)
@@ -70,8 +71,15 @@ class StreamHandlerRaiseException(StreamHandler):
 class FakeLogger(Fixture):
     """Replace a logger and capture its output."""
 
-    def __init__(self, name="", level=INFO, format=None,
-                 datefmt=None, nuke_handlers=True, formatter=None):
+    def __init__(
+        self,
+        name="",
+        level=INFO,
+        format=None,
+        datefmt=None,
+        nuke_handlers=True,
+        formatter=None,
+    ):
         """Create a FakeLogger fixture.
 
         :param name: The name of the logger to replace. Defaults to "".
@@ -106,11 +114,16 @@ class FakeLogger(Fixture):
         self._output = output
         handler = StreamHandlerRaiseException(output)
         if self._format:
-            formatter = (self._formatter or Formatter)
+            formatter = self._formatter or Formatter
             handler.setFormatter(formatter(self._format, self._datefmt))
         self.useFixture(
-            LogHandler(handler, name=self._name, level=self._level,
-                       nuke_handlers=self._nuke_handlers))
+            LogHandler(
+                handler,
+                name=self._name,
+                level=self._level,
+                nuke_handlers=self._nuke_handlers,
+            )
+        )
 
     @property
     def output(self):

@@ -20,17 +20,15 @@ from fixtures import (
     ByteStream,
     DetailStream,
     StringStream,
-    )
+)
 
 
 class DetailStreamTest(TestCase):
-
     def test_doc_mentions_deprecated(self):
         self.assertThat(DetailStream.__doc__, Contains('Deprecated'))
 
 
 class TestByteStreams(TestCase):
-
     def test_empty_detail_stream(self):
         detail_name = 'test'
         fixture = ByteStream(detail_name)
@@ -66,7 +64,6 @@ class TestByteStreams(TestCase):
 
 
 class TestStringStreams(TestCase):
-
     def test_empty_detail_stream(self):
         detail_name = 'test'
         fixture = StringStream(detail_name)
