@@ -351,6 +351,16 @@ tests::
   >>> from io import BytesIO
   >>> fixture = fixtures.FakePopen(lambda _:{'stdout': BytesIO('foobar')})
 
+``LogHandler``
+++++++++++++++
+
+Replace or extend a logger's handlers. The behavior of this fixture depends on
+the value of the ``nuke_handlers`` parameter: if ``true``, the logger's
+existing handlers are removed and replaced by the provided handler, while if
+``false`` the logger's set of handlers is extended by the provided handler::
+
+  >>> fixture = fixtures.LogHandler(logging.StreamHandler())
+
 ``MockPatchObject``
 +++++++++++++++++++
 
@@ -429,6 +439,15 @@ path, nothing happens, if it isn't then it is added on ``setUp`` and removed on
 
   >>> fixture = fixtures.PythonPathEntry('/foo/bar')
 
+``Stream``
+++++++++++
+
+Trivial adapter to expose a file-like object as a detail object, for automatic
+inclusion in test failure descriptions. ``StringStream`` and ``BytesStream``
+provided concrete users of this fixture.
+
+This requires the ``fixtures[streams]`` extra.
+
 ``StringStream``
 ++++++++++++++++
 
@@ -487,6 +506,34 @@ but more likely to break hangs where no Python code is running.
 > *Note*
 > Currently supported only on Unix because it relies on the ``alarm`` system
 > call.
+
+``WarningsCapture``
++++++++++++++++++++
+
+Capture warnings for later analysis::
+
+  >>> fixture = fixtures.WarningsCapture()
+
+The captured warnings are stored in the ``captures`` attribute of the fixture
+after ``setUp``.
+
+``WarningsFilter``
+++++++++++++++++++
+
+Configure warnings filters during test runs::
+
+  >>> fixture = fixtures.WarningsFilter(
+  ...     [
+  ...         {
+  ...             'action': 'ignore',
+  ...             'message': 'foo',
+  ...             'category': DeprecationWarning,
+  ...         },
+  ...     ]
+  ... )
+
+Order is important: entries closer to the front of the list override entries
+later in the list, if both match a particular warning.
 
 Contributing
 ============
