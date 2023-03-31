@@ -20,7 +20,7 @@ __all__ = [
     'MethodFixture',
     'MultipleExceptions',
     'SetupError',
-    ]
+]
 
 import itertools
 import sys
@@ -29,7 +29,7 @@ from fixtures.callmany import (
     CallMany,
     # Deprecated, imported for compatibility.
     MultipleExceptions,
-    )
+)
 
 
 try:
@@ -305,9 +305,9 @@ class FunctionFixture(Fixture):
                 return 42
             The result of setup_fn is assigned to the fn_result attribute bu
             FunctionFixture.setUp.
-        :param cleanup_fn: Optional callable which takes a single parameter, which
-            must be that which is returned from the setup_fn. This is called
-            from cleanUp.
+        :param cleanup_fn: Optional callable which takes a single parameter,
+            which must be that which is returned from the setup_fn. This is
+            called from cleanUp.
         :param reset_fn: Optional callable which takes a single parameter like
             cleanup_fn, but also returns a new object for use as the fn_result:
             if defined this replaces the use of cleanup_fn and setup_fn when

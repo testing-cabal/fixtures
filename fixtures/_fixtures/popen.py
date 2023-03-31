@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2010, 2011, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -15,8 +15,8 @@
 
 __all__ = [
     'FakePopen',
-    'PopenFixture'
-    ]
+    'PopenFixture',
+]
 
 import random
 import subprocess
@@ -90,7 +90,7 @@ class FakePopen(Fixture):
 
     _unpassed = object()
 
-    def __init__(self, get_info=lambda _:{}):
+    def __init__(self, get_info=lambda _: {}):
         """Create a PopenFixture
 
         :param get_info: Optional callback to control the behaviour of the
@@ -100,7 +100,7 @@ class FakePopen(Fixture):
             dict, making it possible to detect the difference between 'passed
             with a default value' and 'not passed at all'.
 
-            e.g. 
+            e.g.
             def get_info(proc_args):
                 self.assertEqual(subprocess.PIPE, proc_args['stdin'])
                 return {'stdin': StringIO('foobar')}
@@ -123,47 +123,94 @@ class FakePopen(Fixture):
 
     # The method has the correct signature so we error appropriately if called
     # wrongly.
-    def __call__(self, args, bufsize=_unpassed, executable=_unpassed,
-        stdin=_unpassed, stdout=_unpassed, stderr=_unpassed,
-        preexec_fn=_unpassed, close_fds=_unpassed, shell=_unpassed,
-        cwd=_unpassed, env=_unpassed, universal_newlines=_unpassed,
-        startupinfo=_unpassed, creationflags=_unpassed,
-        restore_signals=_unpassed, start_new_session=_unpassed,
-        pass_fds=_unpassed, *, group=_unpassed, extra_groups=_unpassed,
-        user=_unpassed, umask=_unpassed, encoding=_unpassed,
-        errors=_unpassed, text=_unpassed, pipesize=_unpassed,
-        process_group=_unpassed):
+    def __call__(
+        self,
+        args,
+        bufsize=_unpassed,
+        executable=_unpassed,
+        stdin=_unpassed,
+        stdout=_unpassed,
+        stderr=_unpassed,
+        preexec_fn=_unpassed,
+        close_fds=_unpassed,
+        shell=_unpassed,
+        cwd=_unpassed,
+        env=_unpassed,
+        universal_newlines=_unpassed,
+        startupinfo=_unpassed,
+        creationflags=_unpassed,
+        restore_signals=_unpassed,
+        start_new_session=_unpassed,
+        pass_fds=_unpassed,
+        *,
+        group=_unpassed,
+        extra_groups=_unpassed,
+        user=_unpassed,
+        umask=_unpassed,
+        encoding=_unpassed,
+        errors=_unpassed,
+        text=_unpassed,
+        pipesize=_unpassed,
+        process_group=_unpassed
+    ):
         # Reject arguments introduced by newer versions of Python in older
         # versions; this makes it harder to accidentally hide compatibility
         # problems using test doubles.
         if sys.version_info < (3, 7) and text is not FakePopen._unpassed:
             raise TypeError(
                 "FakePopen.__call__() got an unexpected keyword argument "
-                "'text'")
+                "'text'"
+            )
         if sys.version_info < (3, 9):
             for arg_name in "group", "extra_groups", "user", "umask":
                 if locals()[arg_name] is not FakePopen._unpassed:
                     raise TypeError(
                         "FakePopen.__call__() got an unexpected keyword "
-                        "argument '{}'".format(arg_name))
+                        "argument '{}'".format(arg_name)
+                    )
         if sys.version_info < (3, 10) and pipesize is not FakePopen._unpassed:
             raise TypeError(
                 "FakePopen.__call__() got an unexpected keyword argument "
-                "'pipesize'")
-        if sys.version_info < (3, 11) and process_group is not FakePopen._unpassed:
+                "'pipesize'"
+            )
+        if (
+            sys.version_info < (3, 11)
+            and process_group is not FakePopen._unpassed
+        ):
             raise TypeError(
                 "FakePopen.__call__() got an unexpected keyword argument "
-                "'process_group'")
+                "'process_group'"
+            )
 
         proc_args = dict(args=args)
         local = locals()
         for param in [
-            "bufsize", "executable", "stdin", "stdout", "stderr",
-            "preexec_fn", "close_fds", "shell", "cwd", "env",
-            "universal_newlines", "startupinfo", "creationflags",
-            "restore_signals", "start_new_session", "pass_fds", "group",
-            "extra_groups", "user", "umask", "encoding", "errors", "text",
-            "pipesize", "process_group"]:
+            "bufsize",
+            "executable",
+            "stdin",
+            "stdout",
+            "stderr",
+            "preexec_fn",
+            "close_fds",
+            "shell",
+            "cwd",
+            "env",
+            "universal_newlines",
+            "startupinfo",
+            "creationflags",
+            "restore_signals",
+            "start_new_session",
+            "pass_fds",
+            "group",
+            "extra_groups",
+            "user",
+            "umask",
+            "encoding",
+            "errors",
+            "text",
+            "pipesize",
+            "process_group",
+        ]:
             if local[param] is not FakePopen._unpassed:
                 proc_args[param] = local[param]
         proc_info = self.get_info(proc_args)

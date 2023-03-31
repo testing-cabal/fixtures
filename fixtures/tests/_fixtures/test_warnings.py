@@ -19,7 +19,6 @@ import fixtures
 
 
 class TestWarningsCapture(testtools.TestCase, fixtures.TestWithFixtures):
-
     def test_capture_reuse(self):
         # DeprecationWarnings are hidden by default in Python 3.2+, enable them
         # https://docs.python.org/3/library/warnings.html#default-warning-filter
@@ -52,9 +51,13 @@ class TestWarningsCapture(testtools.TestCase, fixtures.TestWithFixtures):
 
         w = self.useFixture(fixtures.WarningsCapture())
         categories = [
-            DeprecationWarning, Warning, UserWarning,
-            SyntaxWarning, RuntimeWarning,
-            UnicodeWarning, FutureWarning,
+            DeprecationWarning,
+            Warning,
+            UserWarning,
+            SyntaxWarning,
+            RuntimeWarning,
+            UnicodeWarning,
+            FutureWarning,
         ]
         for category in categories:
             warnings.warn("test", category)
@@ -65,7 +68,6 @@ class TestWarningsCapture(testtools.TestCase, fixtures.TestWithFixtures):
 
 
 class TestWarningsFilter(testtools.TestCase, fixtures.TestWithFixtures):
-
     def test_filter(self):
         fixture = fixtures.WarningsFilter(
             [
@@ -89,7 +91,6 @@ class TestWarningsFilter(testtools.TestCase, fixtures.TestWithFixtures):
         self.assertEqual(1, len(w))
 
     def test_filters_restored(self):
-
         class CustomWarning(Warning):
             pass
 

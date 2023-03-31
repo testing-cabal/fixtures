@@ -37,6 +37,7 @@ Most users will want to look at TestWithFixtures and Fixture, to start with.
 # If the releaselevel is 'final', then the tarball will be major.minor.micro.
 # Otherwise it is major.minor.micro~$(revno).
 from pbr.version import VersionInfo
+
 _version = VersionInfo('fixtures')
 __version__ = _version.semantic_version().version_tuple()
 version = _version.release_string()
@@ -76,7 +77,7 @@ __all__ = [
     'WarningsFilter',
     '__version__',
     'version',
-    ]
+]
 
 
 from fixtures.fixture import (
@@ -86,7 +87,7 @@ from fixtures.fixture import (
     MethodFixture,
     MultipleExceptions,
     SetupError,
-    )
+)
 from fixtures._fixtures import (
     ByteStream,
     DetailStream,
@@ -112,12 +113,13 @@ from fixtures._fixtures import (
     TimeoutException,
     WarningsCapture,
     WarningsFilter,
-    )
+)
 from fixtures.testcase import TestWithFixtures
 
 
 def test_suite():
     import fixtures.tests
+
     return fixtures.tests.test_suite()
 
 

@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -22,11 +22,10 @@ from testtools.matchers import StartsWith
 from fixtures import (
     NestedTempfile,
     TempDir,
-    )
+)
 
 
 class TestTempDir(testtools.TestCase):
-
     def test_basic(self):
         fixture = TempDir()
         sentinel = object()
@@ -50,22 +49,23 @@ class TestTempDir(testtools.TestCase):
         temp_dir = self.useFixture(TempDir())
         root = temp_dir.path
         relpath = 'foo/bar/baz'
-        self.assertEqual(
-            os.path.join(root, relpath), temp_dir.join(relpath))
+        self.assertEqual(os.path.join(root, relpath), temp_dir.join(relpath))
 
     def test_join_multiple_children(self):
         temp_dir = self.useFixture(TempDir())
         root = temp_dir.path
         self.assertEqual(
             os.path.join(root, 'foo', 'bar', 'baz'),
-            temp_dir.join('foo', 'bar', 'baz'))
+            temp_dir.join('foo', 'bar', 'baz'),
+        )
 
     def test_join_naughty_children(self):
         temp_dir = self.useFixture(TempDir())
         root = temp_dir.path
         self.assertEqual(
             os.path.abspath(os.path.join(root, '..', 'bar', 'baz')),
-            temp_dir.join('..', 'bar', 'baz'))
+            temp_dir.join('..', 'bar', 'baz'),
+        )
 
 
 class NestedTempfileTest(testtools.TestCase):
@@ -88,6 +88,7 @@ class NestedTempfileTest(testtools.TestCase):
         # the code running in context raises an exception.
         class ContrivedException(Exception):
             pass
+
         try:
             with NestedTempfile():
                 nested_tempdir = tempfile.tempdir

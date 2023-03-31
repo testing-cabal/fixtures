@@ -21,10 +21,10 @@ from testtools.matchers import StartsWith
 from fixtures import (
     TempDir,
     TempHomeDir,
-    )
+)
+
 
 class TestTempDir(testtools.TestCase):
-
     def test_basic(self):
         fixture = TempHomeDir()
         sentinel = object()

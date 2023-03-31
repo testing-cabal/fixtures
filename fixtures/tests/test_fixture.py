@@ -24,21 +24,23 @@ from fixtures.fixture import gather_details
 from fixtures.tests.helpers import LoggingFixture
 
 
-require_gather_details = skipIf(gather_details is None,
-        "gather_details() is not available.")
+require_gather_details = skipIf(
+    gather_details is None, "gather_details() is not available."
+)
 
 
 # Note: the cleanup related tests are strictly speaking redundant, IFF they are
 # replaced with contract tests for correct use of CallMany.
 class TestFixture(testtools.TestCase):
-
     def test_resetCallsSetUpCleanUp(self):
         calls = []
+
         class FixtureWithSetupOnly(fixtures.Fixture):
             def setUp(self):
                 super(FixtureWithSetupOnly, self).setUp()
                 calls.append('setUp')
                 self.addCleanup(calls.append, 'cleanUp')
+
         fixture = FixtureWithSetupOnly()
         fixture.setUp()
         fixture.reset()
@@ -49,9 +51,11 @@ class TestFixture(testtools.TestCase):
         class FixtureWithSetupOnly(fixtures.Fixture):
             def do_raise(self):
                 raise Exception('foo')
+
             def setUp(self):
                 super(FixtureWithSetupOnly, self).setUp()
                 self.addCleanup(self.do_raise)
+
         fixture = FixtureWithSetupOnly()
         fixture.setUp()
         exc = self.assertRaises(Exception, fixture.reset)
@@ -59,17 +63,21 @@ class TestFixture(testtools.TestCase):
 
     def test_cleanUp_raise_first_false_callscleanups_returns_exceptions(self):
         calls = []
+
         def raise_exception1():
             calls.append('1')
             raise Exception('woo')
+
         def raise_exception2():
             calls.append('2')
             raise Exception('woo')
+
         class FixtureWithException(fixtures.Fixture):
             def setUp(self):
                 super(FixtureWithException, self).setUp()
                 self.addCleanup(raise_exception2)
                 self.addCleanup(raise_exception1)
+
         fixture = FixtureWithException()
         fixture.setUp()
         exceptions = fixture.cleanUp(raise_first=False)
@@ -91,17 +99,21 @@ class TestFixture(testtools.TestCase):
 
     def test_exit_runs_all_raises_first_exception(self):
         calls = []
+
         def raise_exception1():
             calls.append('1')
             raise Exception('woo')
+
         def raise_exception2():
             calls.append('2')
             raise Exception('hoo')
+
         class FixtureWithException(fixtures.Fixture):
             def setUp(self):
                 super(FixtureWithException, self).setUp()
                 self.addCleanup(raise_exception2)
                 self.addCleanup(raise_exception1)
+
         fixture = FixtureWithException()
         fixture.__enter__()
         exc = self.assertRaises(Exception, fixture.__exit__, None, None, None)
@@ -117,49 +129,59 @@ class TestFixture(testtools.TestCase):
         parent.cleanUp()
         self.assertEqual(
             ['setUp-outer', 'setUp-inner', 'cleanUp-inner', 'cleanUp-outer'],
-            parent.calls)
+            parent.calls,
+        )
 
     @require_gather_details
     def test_useFixture_details_captured_from_setUp(self):
         # Details added during fixture set-up are gathered even if setUp()
         # fails with an unknown exception.
-        class SomethingBroke(Exception): pass
+        class SomethingBroke(Exception):
+            pass
+
         class BrokenFixture(fixtures.Fixture):
             def setUp(self):
                 super(BrokenFixture, self).setUp()
                 self.addDetail('content', text_content("foobar"))
                 raise SomethingBroke()
+
         broken_fixture = BrokenFixture()
+
         class SimpleFixture(fixtures.Fixture):
             def setUp(self):
                 super(SimpleFixture, self).setUp()
                 self.useFixture(broken_fixture)
+
         simple_fixture = SimpleFixture()
         self.assertRaises(SomethingBroke, simple_fixture.setUp)
         self.assertEqual(
-            {"content": text_content("foobar")},
-            broken_fixture.getDetails())
+            {"content": text_content("foobar")}, broken_fixture.getDetails()
+        )
         self.assertEqual(
-            {"content": text_content("foobar")},
-            simple_fixture.getDetails())
+            {"content": text_content("foobar")}, simple_fixture.getDetails()
+        )
 
     @require_gather_details
     def test_useFixture_details_captured_from_setUp_MultipleExceptions(self):
         # Details added during fixture set-up are gathered even if setUp()
         # fails with (cleanly - with MultipleExceptions / SetupError).
-        class SomethingBroke(Exception): pass
+        class SomethingBroke(Exception):
+            pass
+
         class BrokenFixture(fixtures.Fixture):
             def _setUp(self):
                 self.addDetail('content', text_content("foobar"))
                 raise SomethingBroke()
+
         class SimpleFixture(fixtures.Fixture):
             def _setUp(self):
                 self.useFixture(BrokenFixture())
+
         simple = SimpleFixture()
         e = self.assertRaises(fixtures.MultipleExceptions, simple.setUp)
         self.assertEqual(
-            {"content": text_content("foobar")},
-            e.args[-1][1].args[0])
+            {"content": text_content("foobar")}, e.args[-1][1].args[0]
+        )
 
     def test_getDetails(self):
         fixture = fixtures.Fixture()
@@ -191,8 +213,13 @@ class TestFixture(testtools.TestCase):
             # Note that we add the detail *after* using the fixture: the parent
             # has to query just-in-time.
             child.addDetail('foo', 'child-content')
-            self.assertEqual({'foo': 'parent-content',
-                              'foo-1': 'child-content',}, parent.getDetails())
+            self.assertEqual(
+                {
+                    'foo': 'parent-content',
+                    'foo-1': 'child-content',
+                },
+                parent.getDetails(),
+            )
 
     def test_addDetail(self):
         fixture = fixtures.Fixture()
@@ -213,6 +240,7 @@ class TestFixture(testtools.TestCase):
                 super(Subclass, self).setUp()
                 self.fred = 1
                 self.addCleanup(setattr, self, 'fred', 2)
+
         with Subclass() as f:
             self.assertEqual(1, f.fred)
         self.assertEqual(2, f.fred)
@@ -223,6 +251,7 @@ class TestFixture(testtools.TestCase):
             def _setUp(self):
                 self.fred = 1
                 self.addCleanup(setattr, self, 'fred', 2)
+
         with Subclass() as f:
             self.assertEqual(1, f.fred)
         self.assertEqual(2, f.fred)
@@ -233,7 +262,8 @@ class TestFixture(testtools.TestCase):
         class Subclass(fixtures.Fixture):
             def _setUp(self):
                 self.addDetail('log', text_content('stuff'))
-                1/0
+                1 / 0
+
         f = Subclass()
         e = self.assertRaises(fixtures.MultipleExceptions, f.setUp)
         self.assertRaises(TypeError, f.cleanUp)
@@ -247,8 +277,9 @@ class TestFixture(testtools.TestCase):
         class Subclass(fixtures.Fixture):
             def _setUp(self):
                 self.addDetail('log', text_content('stuff'))
-                self.addCleanup(lambda: 1/0)
+                self.addCleanup(lambda: 1 / 0)
                 raise Exception('fred')
+
         f = Subclass()
         e = self.assertRaises(fixtures.MultipleExceptions, f.setUp)
         self.assertRaises(TypeError, f.cleanUp)
@@ -260,13 +291,17 @@ class TestFixture(testtools.TestCase):
     def test_setup_failures_with_base_exception(self):
         # when _setUp fails with a BaseException (or subclass thereof) that
         # exception is propagated as is, but we still call cleanups etc.
-        class MyBase(BaseException):pass
+        class MyBase(BaseException):
+            pass
+
         log = []
+
         class Subclass(fixtures.Fixture):
             def _setUp(self):
                 self.addDetail('log', text_content('stuff'))
                 self.addCleanup(log.append, 'cleaned')
                 raise MyBase('fred')
+
         f = Subclass()
         self.assertRaises(MyBase, f.setUp)
         self.assertRaises(TypeError, f.cleanUp)
@@ -274,7 +309,6 @@ class TestFixture(testtools.TestCase):
 
 
 class TestFunctionFixture(testtools.TestCase):
-
     def test_setup_only(self):
         fixture = fixtures.FunctionFixture(lambda: 42)
         fixture.setUp()
@@ -294,11 +328,14 @@ class TestFunctionFixture(testtools.TestCase):
     def test_reset(self):
         results = []
         expected = [21, 7]
+
         def setUp():
             return expected.pop(0)
+
         def reset(result):
             results.append(('reset', result))
             return expected.pop(0)
+
         fixture = fixtures.FunctionFixture(setUp, results.append, reset)
         fixture.setUp()
         self.assertEqual([], results)
@@ -310,10 +347,10 @@ class TestFunctionFixture(testtools.TestCase):
 
 
 class TestMethodFixture(testtools.TestCase):
-
     def test_no_setup_cleanup(self):
         class Stub:
             pass
+
         fixture = fixtures.MethodFixture(Stub())
         fixture.setUp()
         fixture.reset()
@@ -324,6 +361,7 @@ class TestMethodFixture(testtools.TestCase):
         class Stub:
             def setUp(self):
                 self.value = 42
+
         fixture = fixtures.MethodFixture(Stub())
         fixture.setUp()
         self.assertEqual(42, fixture.obj.value)
@@ -333,8 +371,10 @@ class TestMethodFixture(testtools.TestCase):
     def test_cleanup_only(self):
         class Stub:
             value = None
+
             def tearDown(self):
                 self.value = 42
+
         fixture = fixtures.MethodFixture(Stub())
         fixture.setUp()
         self.assertEqual(None, fixture.obj.value)
@@ -346,8 +386,10 @@ class TestMethodFixture(testtools.TestCase):
         class Stub:
             def setUp(self):
                 self.value = 42
+
             def tearDown(self):
                 self.value = 84
+
         fixture = fixtures.MethodFixture(Stub())
         fixture.setUp()
         self.assertEqual(42, fixture.obj.value)
@@ -359,6 +401,7 @@ class TestMethodFixture(testtools.TestCase):
         class Stub:
             def mysetup(self):
                 self.value = 42
+
         obj = Stub()
         fixture = fixtures.MethodFixture(obj, setup=obj.mysetup)
         fixture.setUp()
@@ -369,8 +412,10 @@ class TestMethodFixture(testtools.TestCase):
     def test_custom_cleanUp(self):
         class Stub:
             value = 42
+
             def mycleanup(self):
                 self.value = None
+
         obj = Stub()
         fixture = fixtures.MethodFixture(obj, cleanup=obj.mycleanup)
         fixture.setUp()
@@ -383,10 +428,13 @@ class TestMethodFixture(testtools.TestCase):
         class Stub:
             def setUp(self):
                 self.value = 42
+
             def tearDown(self):
                 self.value = 84
+
             def reset(self):
                 self.value = 126
+
         obj = Stub()
         fixture = fixtures.MethodFixture(obj, reset=obj.reset)
         fixture.setUp()
