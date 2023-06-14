@@ -61,7 +61,9 @@ Creating Fixtures
 =================
 
 Minimally, subclass ``Fixture``, define ``_setUp`` to initialize your state,
-schedule a cleanup for when ``cleanUp`` is called, and you're done::
+schedule a cleanup for when ``cleanUp`` is called, and you're done:
+
+.. code-block:: python
 
   >>> import unittest
   >>> import fixtures
@@ -78,7 +80,9 @@ recommended.
 
 If your fixture has diagnostic data - for instance the log file of an
 application server, or log messages - it can expose that by creating a content
-object (``testtools.content.Content``) and calling ``addDetail``::
+object (``testtools.content.Content``) and calling ``addDetail``:
+
+.. code-block:: python
 
   >>> from testtools.content import text_content
   >>> class WithLog(fixtures.Fixture):
@@ -87,14 +91,18 @@ object (``testtools.content.Content``) and calling ``addDetail``::
 
 The method ``useFixture`` will use another fixture, call ``setUp`` on it, call
 ``self.addCleanup(thefixture.cleanUp)``, attach any details from it and return
-the fixture. This allows simple composition of different fixtures::
+the fixture. This allows simple composition of different fixtures:
+
+.. code-block:: python
 
   >>> class ReusingFixture(fixtures.Fixture):
   ...     def _setUp(self):
   ...         self.noddy = self.useFixture(NoddyFixture())
 
 There is a helper for adapting a function or function pair into Fixtures. It
-puts the result of the function in ``fn_result``::
+puts the result of the function in ``fn_result``:
+
+.. code-block:: python
 
   >>> import os.path
   >>> import shutil
@@ -109,7 +117,9 @@ puts the result of the function in ``fn_result``::
   True
   >>> fixture.cleanUp()
 
-This can be expressed even more pithily::
+This can be expressed even more pithily:
+
+.. code-block:: python
 
   >>> fixture = fixtures.FunctionFixture(tempfile.mkdtemp, shutil.rmtree)
   >>> fixture.setUp()
@@ -118,7 +128,9 @@ This can be expressed even more pithily::
   >>> fixture.cleanUp()
 
 Another variation is ``MethodFixture`` which is useful for adapting alternate
-fixture implementations to Fixture::
+fixture implementations to Fixture:
+
+.. code-block:: python
 
   >>> class MyServer:
   ...    def start(self):
@@ -128,7 +140,9 @@ fixture implementations to Fixture::
   >>> server = MyServer()
   >>> fixture = fixtures.MethodFixture(server, server.start, server.stop)
 
-You can also combine existing fixtures using ``CompoundFixture``::
+You can also combine existing fixtures using ``CompoundFixture``:
+
+.. code-block:: python
 
   >>> noddy_with_log = fixtures.CompoundFixture([NoddyFixture(),
   ...                                            WithLog()])
@@ -159,14 +173,18 @@ When using a fixture with a test you can manually call the ``setUp`` and
 ``fixtures.TestWithFixtures`` which provides a mixin defining ``useFixture``
 (camel case because ``unittest`` is camel case throughout) method. It will call
 ``setUp`` on the fixture, call ``self.addCleanup(fixture)`` to schedule a
-cleanup, and return the fixture. This lets one write::
+cleanup, and return the fixture. This lets one write:
+
+.. code-block:: python
 
   >>> import testtools
   >>> import unittest
 
 Note that we use ``testtools.TestCase``. ``testtools`` has it's own
 implementation of ``useFixture`` so there is no need to use
-``fixtures.TestWithFixtures`` with ``testtools.TestCase``::
+``fixtures.TestWithFixtures`` with ``testtools.TestCase``:
+
+.. code-block:: python
 
   >>> class NoddyTest(testtools.TestCase, fixtures.TestWithFixtures):
   ...     def test_example(self):
@@ -178,14 +196,18 @@ implementation of ``useFixture`` so there is no need to use
   True
 
 Fixtures implement the context protocol, so you can also use a fixture as a
-context manager::
+context manager:
+
+.. code-block:: python
 
   >>> with fixtures.FunctionFixture(setup_function, teardown_function) as fixture:
   ...    print (os.path.isdir(fixture.fn_result))
   True
 
 When multiple cleanups error, ``fixture.cleanUp()`` will raise a wrapper
-exception rather than choosing an arbitrary single exception to raise::
+exception rather than choosing an arbitrary single exception to raise:
+
+.. code-block:: python
 
   >>> import sys
   >>> from fixtures.fixture import MultipleExceptions
@@ -205,7 +227,9 @@ exception rather than choosing an arbitrary single exception to raise::
 Fixtures often expose diagnostic details that can be useful for tracking down
 issues. The ``getDetails`` method will return a dict of all the attached
 details but can only be called before ``cleanUp`` is called. Each detail
-object is an instance of ``testtools.content.Content``::
+object is an instance of ``testtools.content.Content``:
+
+.. code-block:: python
 
   >>> with WithLog() as l:
   ...     print(l.getDetails()['message'].as_text())
@@ -252,7 +276,9 @@ just want the webserver and DB fixture to coexist in the same tempdir.
 
 A simple option is to just provide an explicit dependency fixture for the
 higher layer fixtures to use.  This pushes complexity out of the core and onto
-users of fixtures::
+users of fixtures:
+
+.. code-block:: python
 
   >>> class WithDep(fixtures.Fixture):
   ...     def __init__(self, tempdir, dependency_fixture):
@@ -282,7 +308,9 @@ a signal of some sort for each user of a fixture before it is reset. In the
 example here, ``TempDir`` might offer a subscribers attribute that both the
 DB and web server would be registered in. Calling ``reset`` or ``cleanUp``
 on the tempdir would trigger a callback to all the subscribers; the DB and
-web server reset methods would look something like::
+web server reset methods would look something like:
+
+.. code-block:: python
 
   >>> def reset(self):
   ...     if not self._cleaned:
@@ -316,7 +344,9 @@ docs.
 Trivial adapter to make a ``BytesIO`` (though it may in future auto-spill to
 disk for large content) and expose that as a detail object, for automatic
 inclusion in test failure descriptions. Very useful in combination with
-``MonkeyPatch``::
+``MonkeyPatch``:
+
+.. code-block:: python
 
   >>> fixture = fixtures.StringStream('my-content')
   >>> fixture.setUp()
@@ -330,7 +360,9 @@ This requires the ``fixtures[streams]`` extra.
 +++++++++++++++++++++++
 
 Isolate your code from environmental variables, delete them or set them to a
-new value::
+new value:
+
+.. code-block:: python
 
   >>> fixture = fixtures.EnvironmentVariable('HOME')
 
@@ -338,7 +370,9 @@ new value::
 ++++++++++++++
 
 Isolate your code from an external logging configuration - so that your test
-gets the output from logged messages, but they don't go to e.g. the console::
+gets the output from logged messages, but they don't go to e.g. the console:
+
+.. code-block:: python
 
   >>> fixture = fixtures.FakeLogger()
 
@@ -346,7 +380,9 @@ gets the output from logged messages, but they don't go to e.g. the console::
 +++++++++++++
 
 Pretend to run an external command rather than needing it to be present to run
-tests::
+tests:
+
+.. code-block:: python
 
   >>> from io import BytesIO
   >>> fixture = fixtures.FakePopen(lambda _:{'stdout': BytesIO('foobar')})
@@ -357,7 +393,9 @@ tests::
 Replace or extend a logger's handlers. The behavior of this fixture depends on
 the value of the ``nuke_handlers`` parameter: if ``true``, the logger's
 existing handlers are removed and replaced by the provided handler, while if
-``false`` the logger's set of handlers is extended by the provided handler::
+``false`` the logger's set of handlers is extended by the provided handler:
+
+.. code-block:: python
 
   >>> from logging import StreamHandler
   >>> fixture = fixtures.LogHandler(StreamHandler())
@@ -365,7 +403,9 @@ existing handlers are removed and replaced by the provided handler, while if
 ``MockPatchObject``
 +++++++++++++++++++
 
-Adapts ``mock.patch.object`` to be used as a fixture::
+Adapts ``mock.patch.object`` to be used as a fixture:
+
+.. code-block:: python
 
   >>> class Fred:
   ...     value = 1
@@ -379,21 +419,27 @@ Adapts ``mock.patch.object`` to be used as a fixture::
 ``MockPatch``
 +++++++++++++
 
-Adapts ``mock.patch`` to be used as a fixture::
+Adapts ``mock.patch`` to be used as a fixture:
+
+.. code-block:: python
 
   >>> fixture = fixtures.MockPatch('subprocess.Popen.returncode', 3)
 
 ``MockPatchMultiple``
 +++++++++++++++++++++
 
-Adapts ``mock.patch.multiple`` to be used as a ``fixture``::
+Adapts ``mock.patch.multiple`` to be used as a ``fixture``:
+
+.. code-block:: python
 
   >>> fixture = fixtures.MockPatchMultiple('subprocess.Popen', returncode=3)
 
 ``MonkeyPatch``
 +++++++++++++++
 
-Control the value of a named Python attribute::
+Control the value of a named Python attribute
+
+.. code-block:: python
 
   >>> def fake_open(path, mode):
   ...     pass
@@ -408,7 +454,9 @@ API documentation for details.
 Change the default directory that the ``tempfile`` module places temporary
 files and directories in. This can be useful for containing the noise created
 by code which doesn't clean up its temporary files. This does not affect
-temporary file creation where an explicit containing directory was provided::
+temporary file creation where an explicit containing directory was provided
+
+.. code-block:: python
 
   >>> fixture = fixtures.NestedTempfile()
 
@@ -418,7 +466,9 @@ temporary file creation where an explicit containing directory was provided::
 Adds a single directory to the path for an existing Python package. This adds
 to the ``package.__path__`` list. If the directory is already in the path,
 nothing happens, if it isn't then it is added on ``setUp`` and removed on
-``cleanUp``::
+``cleanUp``:
+
+.. code-block:: python
 
   >>> fixture = fixtures.PackagePathEntry('package/name', '/foo/bar')
 
@@ -427,7 +477,9 @@ nothing happens, if it isn't then it is added on ``setUp`` and removed on
 
 Creates a python package directory. Particularly useful for testing code that
 dynamically loads packages/modules, or for mocking out the command line entry
-points to Python programs::
+points to Python programs:
+
+.. code-block:: python
 
   >>> fixture = fixtures.PythonPackage('foo.bar', [('quux.py', '')])
 
@@ -436,7 +488,9 @@ points to Python programs::
 
 Adds a single directory to ``sys.path``. If the directory is already in the
 path, nothing happens, if it isn't then it is added on ``setUp`` and removed on
-``cleanUp``::
+``cleanUp``:
+
+.. code-block:: python
 
   >>> fixture = fixtures.PythonPathEntry('/foo/bar')
 
@@ -455,7 +509,9 @@ This requires the ``fixtures[streams]`` extra.
 Trivial adapter to make a ``StringIO`` (though it may in future auto-spill to
 disk for large content) and expose that as a detail object, for automatic
 inclusion in test failure descriptions. Very useful in combination with
-``MonkeyPatch``::
+``MonkeyPatch``:
+
+.. code-block:: python
 
   >>> fixture = fixtures.StringStream('stdout')
   >>> fixture.setUp()
@@ -468,7 +524,9 @@ This requires the ``fixtures[streams]`` extra.
 ``TempDir``
 +++++++++++
 
-Create a temporary directory and clean it up later::
+Create a temporary directory and clean it up later:
+
+.. code-block:: python
 
   >>> fixture = fixtures.TempDir()
 
@@ -478,7 +536,9 @@ The created directory is stored in the ``path`` attribute of the fixture after
 ``TempHomeDir``
 +++++++++++++++
 
-Create a temporary directory and set it as ``$HOME`` in the environment::
+Create a temporary directory and set it as ``$HOME`` in the environment:
+
+.. code-block:: python
 
   >>> fixture = fixtures.TempHomeDir()
 
@@ -513,7 +573,9 @@ but more likely to break hangs where no Python code is running.
 ``WarningsCapture``
 +++++++++++++++++++
 
-Capture warnings for later analysis::
+Capture warnings for later analysis:
+
+.. code-block:: python
 
   >>> fixture = fixtures.WarningsCapture()
 
@@ -523,7 +585,9 @@ after ``setUp``.
 ``WarningsFilter``
 ++++++++++++++++++
 
-Configure warnings filters during test runs::
+Configure warnings filters during test runs:
+
+.. code-block:: python
 
   >>> fixture = fixtures.WarningsFilter(
   ...     [
