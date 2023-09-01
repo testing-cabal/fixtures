@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -15,7 +15,7 @@
 
 __all__ = [
     'TestWithFixtures',
-    ]
+]
 
 import unittest
 
@@ -41,8 +41,9 @@ class TestWithFixtures(unittest.TestCase):
            it.
         """
         use_details = (
-            gather_details is not None and
-            getattr(self, "addDetail", None) is not None)
+            gather_details is not None
+            and getattr(self, "addDetail", None) is not None
+        )
         try:
             fixture.setUp()
         except:

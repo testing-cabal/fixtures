@@ -1,12 +1,12 @@
 #  fixtures: Fixtures with cleanups for testing and convenience.
 #
 # Copyright (c) 2010, Robert Collins <robertc@robertcollins.net>
-# 
+#
 # Licensed under either the Apache License, Version 2.0 or the BSD 3-clause
 # license at the users choice. A copy of both licenses are available in the
 # project source as Apache-2.0 and BSD. You may not use this file except in
 # compliance with one of these two licences.
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under these licenses is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -21,15 +21,17 @@ from fixtures.callmany import CallMany
 
 
 class TestCallMany(testtools.TestCase):
-
     def test__call__raise_errors_false_callsall_returns_exceptions(self):
         calls = []
+
         def raise_exception1():
             calls.append('1')
             raise Exception('woo')
+
         def raise_exception2():
             calls.append('2')
             raise Exception('woo')
+
         call = CallMany()
         call.push(raise_exception2)
         call.push(raise_exception1)
@@ -52,12 +54,15 @@ class TestCallMany(testtools.TestCase):
 
     def test_exit_runs_all_raises_first_exception(self):
         calls = []
+
         def raise_exception1():
             calls.append('1')
             raise Exception('woo')
+
         def raise_exception2():
             calls.append('2')
             raise Exception('hoo')
+
         call = CallMany()
         call.push(raise_exception2)
         call.push(raise_exception1)

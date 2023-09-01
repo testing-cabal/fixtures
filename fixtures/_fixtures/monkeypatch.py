@@ -14,7 +14,7 @@
 # limitations under that license.
 
 __all__ = [
-    'MonkeyPatch'
+    'MonkeyPatch',
 ]
 
 import functools
@@ -23,7 +23,7 @@ import types
 from fixtures import Fixture
 
 
-_class_types = (type, )
+_class_types = (type,)
 
 
 def _coerce_values(obj, name, new_value, sentinel):
@@ -144,7 +144,8 @@ class MonkeyPatch(Fixture):
             current = getattr(current, component)
         sentinel = object()
         new_value, old_value = _coerce_values(
-            current, attribute, self.new_value, sentinel)
+            current, attribute, self.new_value, sentinel
+        )
 
         if self.new_value is self.delete:
             if old_value is not sentinel:

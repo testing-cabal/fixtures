@@ -24,7 +24,7 @@ from fixtures import (
     FakeLogger,
     LogHandler,
     TestWithFixtures,
-    )
+)
 
 
 # A simple custom formatter that prepends Foo to all log messages, for
@@ -37,7 +37,6 @@ class FooFormatter(logging.Formatter):
 
 
 class FakeLoggerTest(TestCase, TestWithFixtures):
-
     def setUp(self):
         super(FakeLoggerTest, self).setUp()
         self.logger = logging.getLogger()
@@ -93,23 +92,25 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
         self.assertEqual("test_logger\n", fixture.output)
 
     def test_custom_datefmt(self):
-        fixture = FakeLogger(format="%(asctime)s %(module)s",
-                             datefmt="%Y")
+        fixture = FakeLogger(format="%(asctime)s %(module)s", datefmt="%Y")
         self.useFixture(fixture)
         logging.info("message")
         self.assertEqual(
-            time.strftime("%Y test_logger\n", time.localtime()),
-            fixture.output)
+            time.strftime("%Y test_logger\n", time.localtime()), fixture.output
+        )
 
     def test_custom_formatter(self):
-        fixture = FakeLogger(format="%(asctime)s %(module)s",
-                             formatter=FooFormatter,
-                             datefmt="%Y")
+        fixture = FakeLogger(
+            format="%(asctime)s %(module)s",
+            formatter=FooFormatter,
+            datefmt="%Y",
+        )
         self.useFixture(fixture)
         logging.info("message")
         self.assertEqual(
             time.strftime("Foo %Y test_logger\n", time.localtime()),
-            fixture.output)
+            fixture.output,
+        )
 
     def test_logging_output_included_in_details(self):
         fixture = FakeLogger()
@@ -152,9 +153,7 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
 
 
 class LogHandlerTest(TestCase, TestWithFixtures):
-
     class CustomHandler(logging.Handler):
-
         def __init__(self, *args, **kwargs):
             """Create the instance, and add a records attribute."""
             logging.Handler.__init__(self, *args, **kwargs)

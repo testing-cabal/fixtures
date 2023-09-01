@@ -15,7 +15,7 @@
 
 __all__ = [
     'CallMany',
-    ]
+]
 
 import sys
 
@@ -23,6 +23,7 @@ import sys
 try:
     from testtools import MultipleExceptions
 except ImportError:
+
     class MultipleExceptions(Exception):
         """Report multiple exc_info tuples in self.args."""
 
