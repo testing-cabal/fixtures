@@ -194,7 +194,7 @@ class Fixture(object):
         self._clear_cleanups()
         try:
             self._setUp()
-        except:
+        except BaseException:
             err = sys.exc_info()
             details = {}
             if gather_details is not None:
@@ -380,12 +380,14 @@ class MethodFixture(Fixture):
         if setup is None:
             setup = getattr(obj, 'setUp', None)
             if setup is None:
-                setup = lambda: None
+                def setup():
+                    return None
         self._setup = setup
         if cleanup is None:
             cleanup = getattr(obj, 'tearDown', None)
             if cleanup is None:
-                cleanup = lambda: None
+                def cleanup():
+                    return None
         self._cleanup = cleanup
         if reset is None:
             reset = getattr(obj, 'reset', None)

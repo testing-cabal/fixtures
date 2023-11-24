@@ -80,7 +80,7 @@ __all__ = [
 ]
 
 
-from fixtures.fixture import (
+from fixtures.fixture import (  # noqa: E402
     CompoundFixture,
     Fixture,
     FunctionFixture,
@@ -88,7 +88,7 @@ from fixtures.fixture import (
     MultipleExceptions,
     SetupError,
 )
-from fixtures._fixtures import (
+from fixtures._fixtures import (  # noqa: E402
     ByteStream,
     DetailStream,
     EnvironmentVariable,
@@ -114,11 +114,11 @@ from fixtures._fixtures import (
     WarningsCapture,
     WarningsFilter,
 )
-from fixtures.testcase import TestWithFixtures
+from fixtures.testcase import TestWithFixtures  # noqa: E402
 
 
 def test_suite():
-    import fixtures.tests
+    import fixtures.tests  # noqa: F401
 
     return fixtures.tests.test_suite()
 
