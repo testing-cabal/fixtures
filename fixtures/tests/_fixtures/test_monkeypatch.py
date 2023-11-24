@@ -113,7 +113,7 @@ class TestMonkeyPatch(testtools.TestCase, TestWithFixtures):
         self.assertFalse('new_attr' in globals())
         fixture.setUp()
         try:
-            self.assertEqual(True, new_attr)
+            self.assertEqual(True, new_attr)  # noqa: F821
         finally:
             fixture.cleanUp()
             self.assertFalse('new_attr' in globals())

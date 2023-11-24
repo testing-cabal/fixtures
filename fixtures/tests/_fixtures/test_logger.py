@@ -134,7 +134,7 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
             self.assertEqual("some message\n", content.as_text())
         except AssertionError:
             raise
-        except:
+        except BaseException:
             pass
 
     def test_exceptionraised(self):
