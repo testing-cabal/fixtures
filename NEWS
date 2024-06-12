@@ -11,6 +11,9 @@ NEXT
 * Drop support for Python 3.6 (EOL)
   (Stephen Finucane)
 
+* Drop support for Python 3.7 (EOL)
+  (Jelmer Vernooĳ)
+
 * Add a new ``WarningsFilter`` filter, allowing users to filter warnings as
   part of their tests, before restoring said filters.
   (Stephen Finucane)

@@ -11,7 +11,7 @@ provided that makes using fixtures that meet the ``Fixtures`` contract in
 Dependencies
 ============
 
-* Python 3.7+
+* Python 3.8+
   This is the base language fixtures is written in and for.
 
 * ``pbr``

@@ -153,14 +153,6 @@ class FakePopen(Fixture):
         pipesize=_unpassed,
         process_group=_unpassed
     ):
-        # Reject arguments introduced by newer versions of Python in older
-        # versions; this makes it harder to accidentally hide compatibility
-        # problems using test doubles.
-        if sys.version_info < (3, 7) and text is not FakePopen._unpassed:
-            raise TypeError(
-                "FakePopen.__call__() got an unexpected keyword argument "
-                "'text'"
-            )
         if sys.version_info < (3, 9):
             for arg_name in "group", "extra_groups", "user", "umask":
                 if locals()[arg_name] is not FakePopen._unpassed:

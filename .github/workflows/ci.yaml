@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.7", "pypy-3.8", "pypy-3.9"]
+        python: ["3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.8", "pypy-3.9"]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -42,6 +42,10 @@ jobs:
         run: python -m pip install docutils
       - name: Build docs
         run: rst2html.py README.rst README.html
+        if: matrix.python == '3.8'
+      - name: Build docs
+        run: rst2html README.rst README.html
+        if: matrix.python != '3.8'
       - name: Archive build results
         uses: actions/upload-artifact@v3
         with:
