@@ -13,8 +13,8 @@
 #    under the License.
 
 
-import mock  # Yes, we only test the rolling backport
 import testtools
+from unittest import mock
 
 from fixtures import (
     MockPatch,

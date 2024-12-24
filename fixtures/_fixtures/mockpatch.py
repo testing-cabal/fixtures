@@ -15,13 +15,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import fixtures
+import unittest.mock as mock
 
-# TODO(stephenfin): Make this configurable
-try:
-    import mock
-except ImportError:
-    import unittest.mock as mock
+import fixtures
 
 
 class _Base(fixtures.Fixture):
