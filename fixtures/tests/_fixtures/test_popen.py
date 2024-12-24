@@ -80,9 +80,8 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
             pass_fds="pass_fds",
             encoding="encoding",
             errors="errors",
+            text="text",
         )
-        if sys.version_info >= (3, 7):
-            all_args["text"] = "text"
         if sys.version_info >= (3, 9):
             all_args["group"] = "group"
             all_args["extra_groups"] = "extra_groups"
@@ -99,16 +98,6 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
 
         fixture = self.useFixture(FakePopen(get_info))
         fixture(**all_args)
-
-    @testtools.skipUnless(
-        sys.version_info < (3, 7), "only relevant on Python <3.7"
-    )
-    def test_rejects_3_7_args_on_older_versions(self):
-        fixture = self.useFixture(FakePopen(lambda proc_args: {}))
-        with testtools.ExpectedException(
-            TypeError, r".* got an unexpected keyword argument 'text'"
-        ):
-            fixture(args="args", text=True)
 
     @testtools.skipUnless(
         sys.version_info < (3, 9), "only relevant on Python <3.9"
@@ -174,9 +163,6 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
             fake_kwargs.remove('extra_groups')
             fake_kwargs.remove('user')
             fake_kwargs.remove('umask')
-
-        if sys.version_info < (3, 7):
-            fake_kwargs.remove('text')
 
         self.assertSetEqual(
             fake_kwargs,
