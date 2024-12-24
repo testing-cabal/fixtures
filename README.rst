@@ -403,7 +403,7 @@ existing handlers are removed and replaced by the provided handler, while if
 ``MockPatchObject``
 +++++++++++++++++++
 
-Adapts ``mock.patch.object`` to be used as a fixture:
+Adapts ``unittest.mock.patch.object`` to be used as a fixture:
 
 .. code-block:: python
 
@@ -419,7 +419,7 @@ Adapts ``mock.patch.object`` to be used as a fixture:
 ``MockPatch``
 +++++++++++++
 
-Adapts ``mock.patch`` to be used as a fixture:
+Adapts ``unittest.mock.patch`` to be used as a fixture:
 
 .. code-block:: python
 
@@ -428,7 +428,7 @@ Adapts ``mock.patch`` to be used as a fixture:
 ``MockPatchMultiple``
 +++++++++++++++++++++
 
-Adapts ``mock.patch.multiple`` to be used as a ``fixture``:
+Adapts ``unittest.mock.patch.multiple`` to be used as a ``fixture``:
 
 .. code-block:: python
 
