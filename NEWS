@@ -5,6 +5,12 @@ fixtures release notes
 NEXT
 ~~~~
 
+4.2.2
+~~~~~
+
+* Republish using Trusted Publishing (properly this time).
+  (Colin Watson)
+
 4.2.1
 ~~~~~
 
