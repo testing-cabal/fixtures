@@ -5,14 +5,26 @@ fixtures release notes
 NEXT
 ~~~~
 
+4.2.0
+~~~~~
+
+* Use ``code-block`` directive for Python code.
+  (Pavel Kulyov)
+
+* Add support for Python 3.12 and 3.13.
+  (James Page, Colin Watson)
+
+* Drop support for Python 3.7 (EOL)
+  (Jelmer Vernooĳ)
+
+* Drop support for external ``mock`` package.
+  (Colin Watson, https://github.com/testing-cabal/fixtures/issues/88)
+
 4.1.0
 ~~~~~
 
 * Drop support for Python 3.6 (EOL)
   (Stephen Finucane)
-
-* Drop support for Python 3.7 (EOL)
-  (Jelmer Vernooĳ)
 
 * Add a new ``WarningsFilter`` filter, allowing users to filter warnings as
   part of their tests, before restoring said filters.
