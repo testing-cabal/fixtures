@@ -47,7 +47,7 @@ jobs:
         run: rst2html README.rst README.html
         if: matrix.python != '3.8'
       - name: Archive build results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: html-docs-build
           path: README.html
