@@ -1,3 +1,49 @@
 [build-system]
-requires = ["pbr>=5.7.0", "setuptools>=36.6.0"]
-build-backend = "pbr.build"
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fixtures"
+description = "Fixtures, reusable state for writing clean tests and more."
+readme = "README.rst"
+classifiers = [
+    "Development Status :: 6 - Mature",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+]
+authors = [{name = "Robert Collins", email = "robertc@robertcollins.net"}]
+license = {text = "Apache-2.0 or BSD"}
+requires-python = ">=3.8"
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/testing-cabal/fixtures"
+"Bug Tracker" = "https://github.com/testing-cabal/fixtures/issues"
+"Source Code" = "https://github.com/testing-cabal/fixtures"
+
+[project.optional-dependencies]
+"streams" = ["testools"]
+"test" = ["testtools"]
+"docs" = ["docutils"]
+
+[tool.setuptools.packages.find]
+include = ["fixtures*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "fixtures.version_string"}
+[tool.setuptools]
+license-files = ["COPYING"]

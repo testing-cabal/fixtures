@@ -9,8 +9,6 @@ fixtures.egg-info
 *.pyc
 .*.swp
 *~
-AUTHORS
-ChangeLog
 .eggs
 build
 .tox
