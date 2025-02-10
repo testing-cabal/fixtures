@@ -25,10 +25,7 @@ methods for details.
 Most users will want to look at TestWithFixtures and Fixture, to start with.
 """
 
-from fixtures import _version
-
-version_string = ".".join(map(str, _version[:3]))
-
+from fixtures._version import __version__
 
 __all__ = [
     'ByteStream',
@@ -63,7 +60,6 @@ __all__ = [
     'WarningsCapture',
     'WarningsFilter',
     '__version__',
-    'version',
 ]
 
 
