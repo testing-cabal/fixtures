@@ -25,9 +25,9 @@ methods for details.
 Most users will want to look at TestWithFixtures and Fixture, to start with.
 """
 
-__version__ = (4, 2, 3, "final", 0)
+from fixtures import _version
 
-version_string = ".".join(map(str, __version__[:3]))
+version_string = ".".join(map(str, _version[:3]))
 
 
 __all__ = [

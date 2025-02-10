@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61.2"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 [project]
 name = "fixtures"
@@ -40,10 +40,11 @@ Homepage = "https://github.com/testing-cabal/fixtures"
 "test" = ["testtools"]
 "docs" = ["docutils"]
 
-[tool.setuptools.packages.find]
-include = ["fixtures*"]
+[tool.hatch.version]
+source = "vcs"
 
-[tool.setuptools.dynamic]
-version = {attr = "fixtures.version_string"}
-[tool.setuptools]
-license-files = ["COPYING"]
+[tool.hatch.build.hooks.vcs]
+version-file = "fixtures/_version.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["fixtures*"]
