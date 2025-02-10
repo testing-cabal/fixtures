@@ -12,3 +12,4 @@ fixtures.egg-info
 .eggs
 build
 .tox
+fixtures/_version.py
