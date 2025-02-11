@@ -14,9 +14,6 @@ Dependencies
 * Python 3.8+
   This is the base language fixtures is written in and for.
 
-* ``pbr``
-  Used for version and release management of fixtures.
-
 The ``fixtures[streams]`` extra adds:
 
 * ``testtools`` <https://launchpad.net/testtools>
