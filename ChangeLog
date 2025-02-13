@@ -1,6 +1,10 @@
 CHANGES
 =======
 
+4.2.3.post1
+-----------
+* Remove accidentally included `venv` folder.
+
 4.2.3
 -----
 * Remove dependency of pbr and start using pyproject.toml for setuptools
