@@ -1,6 +1,10 @@
 CHANGES
 =======
 
+4.2.3.post2
+-----------
+* Add missing license and metadata files to sdist.
+
 4.2.3.post1
 -----------
 * Remove accidentally included `venv` folder.
