@@ -1,6 +1,10 @@
 CHANGES
 =======
 
+4.2.5
+-----
+* Add missing Apache license to sdist.
+
 4.2.3.post2
 -----------
 * Add missing license and metadata files to sdist.
