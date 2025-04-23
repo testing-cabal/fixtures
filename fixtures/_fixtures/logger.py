@@ -20,9 +20,9 @@ from fixtures import Fixture
 from fixtures._fixtures.streams import StringStream
 
 __all__ = [
-    'FakeLogger',
-    'LoggerFixture',
-    'LogHandler',
+    "FakeLogger",
+    "LoggerFixture",
+    "LogHandler",
 ]
 
 

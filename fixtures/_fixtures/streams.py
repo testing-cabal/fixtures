@@ -14,9 +14,9 @@
 # limitations under that license.
 
 __all__ = [
-    'ByteStream',
-    'DetailStream',
-    'StringStream',
+    "ByteStream",
+    "DetailStream",
+    "StringStream",
 ]
 
 import io

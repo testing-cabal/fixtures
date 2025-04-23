@@ -14,7 +14,7 @@
 # limitations under that license.
 
 __all__ = [
-    'TestWithFixtures',
+    "TestWithFixtures",
 ]
 
 import unittest
@@ -41,8 +41,7 @@ class TestWithFixtures(unittest.TestCase):
            it.
         """
         use_details = (
-            gather_details is not None
-            and getattr(self, "addDetail", None) is not None
+            gather_details is not None and getattr(self, "addDetail", None) is not None
         )
         try:
             fixture.setUp()

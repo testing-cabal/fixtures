@@ -16,14 +16,13 @@
 
 """Timeout fixture."""
 
-
 import signal
 
 import fixtures
 
 __all__ = [
-    'Timeout',
-    'TimeoutException',
+    "Timeout",
+    "TimeoutException",
 ]
 
 
@@ -45,7 +44,7 @@ class Timeout(fixtures.Fixture):
 
     def __init__(self, timeout_secs, gentle):
         self.timeout_secs = timeout_secs
-        self.alarm_fn = getattr(signal, 'alarm', None)
+        self.alarm_fn = getattr(signal, "alarm", None)
         self.gentle = gentle
 
     def signal_handler(self, signum, frame):

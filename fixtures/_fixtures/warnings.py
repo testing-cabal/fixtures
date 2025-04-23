@@ -12,8 +12,8 @@
 # limitations under that license.
 
 __all__ = [
-    'WarningsCapture',
-    'WarningsFilter',
+    "WarningsCapture",
+    "WarningsFilter",
 ]
 
 import warnings

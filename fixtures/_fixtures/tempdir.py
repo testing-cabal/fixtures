@@ -14,8 +14,8 @@
 # limitations under that license.
 
 __all__ = [
-    'NestedTempfile',
-    'TempDir',
+    "NestedTempfile",
+    "TempDir",
 ]
 
 import os

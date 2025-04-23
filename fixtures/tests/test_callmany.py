@@ -25,18 +25,18 @@ class TestCallMany(testtools.TestCase):
         calls = []
 
         def raise_exception1():
-            calls.append('1')
-            raise Exception('woo')
+            calls.append("1")
+            raise Exception("woo")
 
         def raise_exception2():
-            calls.append('2')
-            raise Exception('woo')
+            calls.append("2")
+            raise Exception("woo")
 
         call = CallMany()
         call.push(raise_exception2)
         call.push(raise_exception1)
         exceptions = call(raise_errors=False)
-        self.assertEqual(['1', '2'], calls)
+        self.assertEqual(["1", "2"], calls)
         # There should be two exceptions
         self.assertEqual(2, len(exceptions))
         # They should be a sys.exc_info tuple.
@@ -44,7 +44,7 @@ class TestCallMany(testtools.TestCase):
         type, value, tb = exceptions[0]
         self.assertEqual(Exception, type)
         self.assertIsInstance(value, Exception)
-        self.assertEqual(('woo',), value.args)
+        self.assertEqual(("woo",), value.args)
         self.assertIsInstance(tb, types.TracebackType)
 
     def test_exit_propagates_exceptions(self):
@@ -56,18 +56,18 @@ class TestCallMany(testtools.TestCase):
         calls = []
 
         def raise_exception1():
-            calls.append('1')
-            raise Exception('woo')
+            calls.append("1")
+            raise Exception("woo")
 
         def raise_exception2():
-            calls.append('2')
-            raise Exception('hoo')
+            calls.append("2")
+            raise Exception("hoo")
 
         call = CallMany()
         call.push(raise_exception2)
         call.push(raise_exception1)
         call.__enter__()
         exc = self.assertRaises(Exception, call.__exit__, None, None, None)
-        self.assertEqual(('woo',), exc.args[0][1].args)
-        self.assertEqual(('hoo',), exc.args[1][1].args)
-        self.assertEqual(['1', '2'], calls)
+        self.assertEqual(("woo",), exc.args[0][1].args)
+        self.assertEqual(("hoo",), exc.args[1][1].args)
+        self.assertEqual(["1", "2"], calls)

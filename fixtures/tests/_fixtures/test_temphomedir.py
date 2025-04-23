@@ -28,7 +28,7 @@ class TestTempDir(testtools.TestCase):
     def test_basic(self):
         fixture = TempHomeDir()
         sentinel = object()
-        self.assertEqual(sentinel, getattr(fixture, 'path', sentinel))
+        self.assertEqual(sentinel, getattr(fixture, "path", sentinel))
         fixture.setUp()
         try:
             path = fixture.path
