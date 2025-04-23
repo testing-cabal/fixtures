@@ -25,16 +25,14 @@ def test_suite():
 
 def load_tests(loader, standard_tests, pattern):
     test_modules = [
-        'callmany',
-        'fixture',
-        'testcase',
+        "callmany",
+        "fixture",
+        "testcase",
     ]
     prefix = "fixtures.tests.test_"
     test_mod_names = [prefix + test_module for test_module in test_modules]
     standard_tests.addTests(loader.loadTestsFromNames(test_mod_names))
-    standard_tests.addTests(
-        loader.loadTestsFromName('fixtures.tests._fixtures')
-    )
+    standard_tests.addTests(loader.loadTestsFromName("fixtures.tests._fixtures"))
     doctest.set_unittest_reportflags(doctest.REPORT_ONLY_FIRST_FAILURE)
     standard_tests.addTest(doctest.DocFileSuite("../../README.rst"))
     return standard_tests

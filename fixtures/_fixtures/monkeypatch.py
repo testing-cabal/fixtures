@@ -14,7 +14,7 @@
 # limitations under that license.
 
 __all__ = [
-    'MonkeyPatch',
+    "MonkeyPatch",
 ]
 
 import functools
@@ -74,7 +74,7 @@ def _coerce_values(obj, name, new_value, sentinel):
     elif isinstance(old_value, classmethod):
         new_value = classmethod(new_value)
     elif isinstance(old_value, types.FunctionType):
-        if hasattr(new_value, '__get__'):
+        if hasattr(new_value, "__get__"):
             # new_value is a descriptor, and that would result in it being
             # rebound if we assign it to a class - we want to preserve the
             # bound state rather than having it bound to the new object
@@ -130,7 +130,7 @@ class MonkeyPatch(Fixture):
         self.new_value = new_value
 
     def _setUp(self):
-        location, attribute = self.name.rsplit('.', 1)
+        location, attribute = self.name.rsplit(".", 1)
         # Import, swallowing all errors as any element of location may be
         # a class or some such thing.
         try:
@@ -138,7 +138,7 @@ class MonkeyPatch(Fixture):
         except ImportError:
             pass
 
-        components = location.split('.')
+        components = location.split(".")
         current = __import__(components[0], {}, {})
         for component in components[1:]:
             current = getattr(current, component)

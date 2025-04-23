@@ -29,34 +29,30 @@ class Foo(object):
 
 
 def mocking_bar(self):
-    return 'mocked!'
+    return "mocked!"
 
 
 class TestMockPatch(testtools.TestCase):
     def test_mock_patch_with_replacement(self):
-        self.useFixture(MockPatch('%s.Foo.bar' % (__name__), mocking_bar))
+        self.useFixture(MockPatch("%s.Foo.bar" % (__name__), mocking_bar))
         instance = Foo()
-        self.assertEqual(instance.bar(), 'mocked!')
+        self.assertEqual(instance.bar(), "mocked!")
 
     def test_mock_patch_without_replacement(self):
-        self.useFixture(MockPatch('%s.Foo.bar' % (__name__)))
+        self.useFixture(MockPatch("%s.Foo.bar" % (__name__)))
         instance = Foo()
         self.assertIsInstance(instance.bar(), mock.MagicMock)
 
 
 class TestMockMultiple(testtools.TestCase):
     def test_mock_multiple_with_replacement(self):
-        self.useFixture(
-            MockPatchMultiple('%s.Foo' % (__name__), bar=mocking_bar)
-        )
+        self.useFixture(MockPatchMultiple("%s.Foo" % (__name__), bar=mocking_bar))
         instance = Foo()
-        self.assertEqual(instance.bar(), 'mocked!')
+        self.assertEqual(instance.bar(), "mocked!")
 
     def test_mock_patch_without_replacement(self):
         self.useFixture(
-            MockPatchMultiple(
-                '%s.Foo' % (__name__), bar=MockPatchMultiple.DEFAULT
-            )
+            MockPatchMultiple("%s.Foo" % (__name__), bar=MockPatchMultiple.DEFAULT)
         )
         instance = Foo()
         self.assertIsInstance(instance.bar(), mock.MagicMock)
@@ -64,11 +60,11 @@ class TestMockMultiple(testtools.TestCase):
 
 class TestMockPatchObject(testtools.TestCase):
     def test_mock_patch_object_with_replacement(self):
-        self.useFixture(MockPatchObject(Foo, 'bar', mocking_bar))
+        self.useFixture(MockPatchObject(Foo, "bar", mocking_bar))
         instance = Foo()
-        self.assertEqual(instance.bar(), 'mocked!')
+        self.assertEqual(instance.bar(), "mocked!")
 
     def test_mock_patch_object_without_replacement(self):
-        self.useFixture(MockPatchObject(Foo, 'bar'))
+        self.useFixture(MockPatchObject(Foo, "bar"))
         instance = Foo()
         self.assertIsInstance(instance.bar(), mock.MagicMock)

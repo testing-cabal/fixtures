@@ -33,16 +33,16 @@ class TestTestWithFixtures(unittest.TestCase):
                 self.useFixture(fixture)
 
         result = unittest.TestResult()
-        SimpleTest('test_foo').run(result)
+        SimpleTest("test_foo").run(result)
         self.assertTrue(result.wasSuccessful())
-        self.assertEqual(['setUp', 'cleanUp'], fixture.calls)
+        self.assertEqual(["setUp", "cleanUp"], fixture.calls)
 
     def test_useFixture_uses_raise_first(self):
         calls = []
 
         def raiser(ignored):
-            calls.append('called')
-            raise Exception('foo')
+            calls.append("called")
+            raise Exception("foo")
 
         fixture = fixtures.FunctionFixture(lambda: None, raiser)
 
@@ -51,9 +51,9 @@ class TestTestWithFixtures(unittest.TestCase):
                 self.useFixture(fixture)
 
         result = unittest.TestResult()
-        SimpleTest('test_foo').run(result)
+        SimpleTest("test_foo").run(result)
         self.assertFalse(result.wasSuccessful())
-        self.assertEqual(['called'], calls)
+        self.assertEqual(["called"], calls)
 
     @skipIf(gather_details is None, "gather_details() is not available.")
     def test_useFixture_details_captured_from_setUp(self):
@@ -65,7 +65,7 @@ class TestTestWithFixtures(unittest.TestCase):
         class BrokenFixture(fixtures.Fixture):
             def setUp(self):
                 super(BrokenFixture, self).setUp()
-                self.addDetail('content', text_content("foobar"))
+                self.addDetail("content", text_content("foobar"))
                 raise SomethingBroke()
 
         broken_fixture = BrokenFixture()
@@ -98,7 +98,7 @@ class TestTestWithFixtures(unittest.TestCase):
         class BrokenFixture(fixtures.Fixture):
             def setUp(self):
                 super(BrokenFixture, self).setUp()
-                self.addDetail('content', text_content("foobar"))
+                self.addDetail("content", text_content("foobar"))
                 raise SomethingBroke()
 
         broken_fixture = BrokenFixture()

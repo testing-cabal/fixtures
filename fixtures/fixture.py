@@ -14,12 +14,12 @@
 # limitations under that license.
 
 __all__ = [
-    'CompoundFixture',
-    'Fixture',
-    'FunctionFixture',
-    'MethodFixture',
-    'MultipleExceptions',
-    'SetupError',
+    "CompoundFixture",
+    "Fixture",
+    "FunctionFixture",
+    "MethodFixture",
+    "MultipleExceptions",
+    "SetupError",
 ]
 
 import itertools
@@ -45,7 +45,7 @@ def combine_details(source_details, target_details):
         new_name = name
         disambiguator = itertools.count(1)
         while new_name in target_details:
-            new_name = '%s-%d' % (name, next(disambiguator))
+            new_name = "%s-%d" % (name, next(disambiguator))
         name = new_name
         target_details[name] = content_object
 
@@ -331,7 +331,7 @@ class FunctionFixture(Fixture):
             self._maybe_cleanup(fn_result)
 
     def _maybe_cleanup(self, fn_result):
-        self.addCleanup(delattr, self, 'fn_result')
+        self.addCleanup(delattr, self, "fn_result")
         if self.cleanup_fn is not None:
             self.addCleanup(self.cleanup_fn, fn_result)
         self.fn_result = fn_result
@@ -378,19 +378,23 @@ class MethodFixture(Fixture):
         super(MethodFixture, self).__init__()
         self.obj = obj
         if setup is None:
-            setup = getattr(obj, 'setUp', None)
+            setup = getattr(obj, "setUp", None)
             if setup is None:
+
                 def setup():
                     return None
+
         self._setup = setup
         if cleanup is None:
-            cleanup = getattr(obj, 'tearDown', None)
+            cleanup = getattr(obj, "tearDown", None)
             if cleanup is None:
+
                 def cleanup():
                     return None
+
         self._cleanup = cleanup
         if reset is None:
-            reset = getattr(obj, 'reset', None)
+            reset = getattr(obj, "reset", None)
         self._reset = reset
 
     def _setUp(self):

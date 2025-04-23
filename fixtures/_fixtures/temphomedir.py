@@ -14,7 +14,7 @@
 # limitations under that license.
 
 __all__ = [
-    'TempHomeDir',
+    "TempHomeDir",
 ]
 
 import fixtures

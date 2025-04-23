@@ -14,8 +14,8 @@
 # limitations under that license.
 
 __all__ = [
-    'FakePopen',
-    'PopenFixture',
+    "FakePopen",
+    "PopenFixture",
 ]
 
 import random
@@ -30,11 +30,11 @@ class FakeProcess(object):
 
     def __init__(self, args, info):
         self._args = args
-        self.stdin = info.get('stdin')
-        self.stdout = info.get('stdout')
-        self.stderr = info.get('stderr')
+        self.stdin = info.get("stdin")
+        self.stdout = info.get("stdout")
+        self.stderr = info.get("stderr")
         self.pid = random.randint(0, 65536)
-        self._returncode = info.get('returncode', 0)
+        self._returncode = info.get("returncode", 0)
         self.returncode = None
 
     @property
@@ -57,11 +57,11 @@ class FakeProcess(object):
         if self.stdout:
             out = self.stdout.getvalue()
         else:
-            out = ''
+            out = ""
         if self.stderr:
             err = self.stderr.getvalue()
         else:
-            err = ''
+            err = ""
         return out, err
 
     def __enter__(self):
@@ -117,7 +117,7 @@ class FakePopen(Fixture):
         self.get_info = get_info
 
     def _setUp(self):
-        self.addCleanup(setattr, subprocess, 'Popen', subprocess.Popen)
+        self.addCleanup(setattr, subprocess, "Popen", subprocess.Popen)
         subprocess.Popen = self
         self.procs = []
 
@@ -151,7 +151,7 @@ class FakePopen(Fixture):
         errors=_unpassed,
         text=_unpassed,
         pipesize=_unpassed,
-        process_group=_unpassed
+        process_group=_unpassed,
     ):
         if sys.version_info < (3, 9):
             for arg_name in "group", "extra_groups", "user", "umask":
@@ -162,13 +162,9 @@ class FakePopen(Fixture):
                     )
         if sys.version_info < (3, 10) and pipesize is not FakePopen._unpassed:
             raise TypeError(
-                "FakePopen.__call__() got an unexpected keyword argument "
-                "'pipesize'"
+                "FakePopen.__call__() got an unexpected keyword argument 'pipesize'"
             )
-        if (
-            sys.version_info < (3, 11)
-            and process_group is not FakePopen._unpassed
-        ):
+        if sys.version_info < (3, 11) and process_group is not FakePopen._unpassed:
             raise TypeError(
                 "FakePopen.__call__() got an unexpected keyword argument "
                 "'process_group'"

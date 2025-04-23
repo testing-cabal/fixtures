@@ -42,7 +42,7 @@ def sample_long_delay_with_harsh_timeout():
 
 class TestTimeout(testtools.TestCase, fixtures.TestWithFixtures):
     def requireUnix(self):
-        if getattr(signal, 'alarm', None) is None:
+        if getattr(signal, "alarm", None) is None:
             raise TestSkipped("no alarm() function")
 
     def test_timeout_passes(self):
@@ -57,6 +57,7 @@ class TestTimeout(testtools.TestCase, fixtures.TestWithFixtures):
 
     def test_timeout_harsh(self):
         self.requireUnix()
+
         # This will normally kill the whole process, which would be
         # inconvenient.  Let's hook the alarm here so we can observe it.
         class GotAlarm(Exception):

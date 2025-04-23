@@ -118,7 +118,7 @@ class FakeLoggerTest(TestCase, TestWithFixtures):
         with fixture:
             content = fixture.getDetails()[detail_name]
             # Output after getDetails is called is included.
-            logging.info('some message')
+            logging.info("some message")
             self.assertEqual("some message\n", content.as_text())
         # The old content object returns the old usage after cleanUp (not
         # strictly needed but convenient). Note that no guarantee is made that

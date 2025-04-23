@@ -22,7 +22,7 @@ from fixtures import PythonPackage, TestWithFixtures
 
 class TestPythonPackage(testtools.TestCase, TestWithFixtures):
     def test_has_tempdir(self):
-        fixture = PythonPackage('foo', [])
+        fixture = PythonPackage("foo", [])
         fixture.setUp()
         try:
             self.assertTrue(os.path.isdir(fixture.base))
@@ -30,27 +30,25 @@ class TestPythonPackage(testtools.TestCase, TestWithFixtures):
             fixture.cleanUp()
 
     def test_writes_package(self):
-        fixture = PythonPackage('foo', [('bar.py', b'woo')])
+        fixture = PythonPackage("foo", [("bar.py", b"woo")])
         fixture.setUp()
         try:
             self.assertEqual(
-                '',
-                open(os.path.join(fixture.base, 'foo', '__init__.py')).read(),
+                "",
+                open(os.path.join(fixture.base, "foo", "__init__.py")).read(),
             )
             self.assertEqual(
-                'woo', open(os.path.join(fixture.base, 'foo', 'bar.py')).read()
+                "woo", open(os.path.join(fixture.base, "foo", "bar.py")).read()
             )
         finally:
             fixture.cleanUp()
 
     def test_no__init__(self):
-        fixture = PythonPackage('foo', [('bar.py', b'woo')], init=False)
+        fixture = PythonPackage("foo", [("bar.py", b"woo")], init=False)
         fixture.setUp()
         try:
             self.assertFalse(
-                os.path.exists(
-                    os.path.join(fixture.base, 'foo', '__init__.py')
-                )
+                os.path.exists(os.path.join(fixture.base, "foo", "__init__.py"))
             )
         finally:
             fixture.cleanUp()

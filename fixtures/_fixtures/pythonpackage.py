@@ -14,7 +14,7 @@
 # limitations under that license.
 
 __all__ = [
-    'PythonPackage',
+    "PythonPackage",
 ]
 
 import os.path
@@ -54,12 +54,12 @@ class PythonPackage(Fixture):
         os.mkdir(root)
         init_seen = not self.init
         for modulename, contents in self.modulelist:
-            stream = open(os.path.join(root, modulename), 'wb')
+            stream = open(os.path.join(root, modulename), "wb")
             try:
                 stream.write(contents)
             finally:
                 stream.close()
-            if modulename == '__init__.py':
+            if modulename == "__init__.py":
                 init_seen = True
         if not init_seen:
-            open(os.path.join(root, '__init__.py'), 'wb').close()
+            open(os.path.join(root, "__init__.py"), "wb").close()

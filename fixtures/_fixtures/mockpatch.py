@@ -53,7 +53,7 @@ class _MockPatchMultipleMeta(type):
     # For strict backward compatibility, ensure that DEFAULT also works as
     # an instance property.
     def __new__(cls, name, bases, namespace, **kwargs):
-        namespace['DEFAULT'] = cls.DEFAULT
+        namespace["DEFAULT"] = cls.DEFAULT
         return super().__new__(cls, name, bases, namespace, **kwargs)
 
     # Default value to trigger a MagicMock to be created for a named

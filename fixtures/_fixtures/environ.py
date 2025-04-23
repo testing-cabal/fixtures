@@ -14,8 +14,8 @@
 # limitations under that license.
 
 __all__ = [
-    'EnvironmentVariable',
-    'EnvironmentVariableFixture',
+    "EnvironmentVariable",
+    "EnvironmentVariableFixture",
 ]
 
 import os
@@ -47,11 +47,11 @@ class EnvironmentVariable(Fixture):
             self.addCleanup(os.environ.__setitem__, varname, orig_value)
             del os.environ[varname]
         else:
-            self.addCleanup(os.environ.pop, varname, '')
+            self.addCleanup(os.environ.pop, varname, "")
         if self.newvalue is not None:
             os.environ[varname] = self.newvalue
         else:
-            os.environ.pop(varname, '')
+            os.environ.pop(varname, "")
 
 
 EnvironmentVariableFixture = EnvironmentVariable

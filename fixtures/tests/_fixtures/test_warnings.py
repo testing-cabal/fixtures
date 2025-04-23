@@ -72,19 +72,19 @@ class TestWarningsFilter(testtools.TestCase, fixtures.TestWithFixtures):
         fixture = fixtures.WarningsFilter(
             [
                 {
-                    'action': 'ignore',
-                    'category': DeprecationWarning,
+                    "action": "ignore",
+                    "category": DeprecationWarning,
                 },
                 {
-                    'action': 'once',
-                    'category': UserWarning,
+                    "action": "once",
+                    "category": UserWarning,
                 },
             ],
         )
         self.useFixture(fixture)
         with warnings.catch_warnings(record=True) as w:
-            warnings.warn('deprecated', DeprecationWarning)
-            warnings.warn('user', UserWarning)
+            warnings.warn("deprecated", DeprecationWarning)
+            warnings.warn("user", UserWarning)
 
         # only the user warning should be present, and it should only have been
         # raised once
@@ -97,8 +97,8 @@ class TestWarningsFilter(testtools.TestCase, fixtures.TestWithFixtures):
         fixture = fixtures.WarningsFilter(
             [
                 {
-                    'action': 'once',
-                    'category': CustomWarning,
+                    "action": "once",
+                    "category": CustomWarning,
                 },
             ],
         )

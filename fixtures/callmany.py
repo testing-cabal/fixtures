@@ -14,7 +14,7 @@
 # limitations under that license.
 
 __all__ = [
-    'CallMany',
+    "CallMany",
 ]
 
 import sys
