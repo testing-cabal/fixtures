@@ -160,9 +160,7 @@ class Fixture(object):
             raise_first was False
         """
         try:
-            if self._cleanups is not None:
-                return self._cleanups(raise_errors=raise_first)
-            return None
+            return self._cleanups(raise_errors=raise_first)  # type: ignore[misc]
         finally:
             self._remove_state()
 
@@ -208,7 +206,7 @@ class Fixture(object):
 
         :return: Dict from name -> content_object.
         """
-        result = dict(self._details) if self._details is not None else {}
+        result = dict(self._details)  # type: ignore[arg-type]
         if self._detail_sources is not None:
             for source in self._detail_sources:
                 combine_details(source.getDetails(), result)
