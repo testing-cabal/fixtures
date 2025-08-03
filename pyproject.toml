@@ -50,7 +50,6 @@ include = [
     "fixtures*",
     "Apache-2.0",
     "BSD",
-    "ChangeLog",
     "COPYING",
     "GOALS",
     "HACKING",
