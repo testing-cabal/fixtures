@@ -69,7 +69,7 @@ class LogHandler(Fixture):
             self.addCleanup(logger.removeHandler, self.handler)
 
 
-class StreamHandlerRaiseException(StreamHandler[IO[str]]):
+class StreamHandlerRaiseException(StreamHandler):
     """Handler class that will raise an exception on formatting errors."""
 
     def handleError(self, record: LogRecord) -> None:
