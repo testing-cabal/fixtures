@@ -5,6 +5,40 @@ fixtures release notes
 NEXT
 ~~~~
 
+* Add typing support with py.typed marker for PEP 561 compliance.
+  (Jelmer Vernooĳ)
+
+* Drop support for Python 3.8 (EOL).
+  (Jelmer Vernooĳ)
+
+* Format code with ruff.
+  (Jelmer Vernooĳ)
+
+4.2.5
+~~~~~
+
+* Fix Python 3.9 and 3.10 compatibility issues with typing.
+  (Robert Collins, Jelmer Vernooĳ)
+
+4.2.4
+~~~~~
+
+* Include missing Apache license file in sdist.
+  (Jürgen Gmach, #103)
+
+4.2.3.post1
+~~~~~~~~~~~
+
+* Remove accidentally included 'venv' folder from release.
+  (Jürgen Gmach, #97)
+
+4.2.3
+~~~~~
+
+* Include missing configuration, license and metadata files in sdist
+  when building with hatch(ling).
+  (Jürgen Gmach)
+
 4.2.2
 ~~~~~
 
