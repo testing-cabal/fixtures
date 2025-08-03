@@ -13,6 +13,8 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+from __future__ import annotations
+
 from logging import StreamHandler, getLogger, INFO, Formatter, Handler, LogRecord
 import sys
 from typing import IO, Optional, Type
