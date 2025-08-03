@@ -17,6 +17,7 @@
 """Timeout fixture."""
 
 import signal
+from typing import Any, Callable, Optional
 
 import fixtures
 
@@ -42,15 +43,19 @@ class Timeout(fixtures.Fixture):
      * Only one Timeout can be used at any time per process.
     """
 
-    def __init__(self, timeout_secs, gentle):
+    timeout_secs: int
+    alarm_fn: Optional[Callable[[int], int]]
+    gentle: bool
+
+    def __init__(self, timeout_secs: int, gentle: bool) -> None:
         self.timeout_secs = timeout_secs
         self.alarm_fn = getattr(signal, "alarm", None)
         self.gentle = gentle
 
-    def signal_handler(self, signum, frame):
+    def signal_handler(self, signum: int, frame: Any) -> None:
         raise TimeoutException()
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         if self.alarm_fn is None:
             return  # Can't run on Windows
         if self.gentle:
@@ -60,7 +65,8 @@ class Timeout(fixtures.Fixture):
         # We add the slarm cleanup before the cleanup for the signal handler,
         # otherwise there is a race condition where the signal handler is
         # cleaned up but the alarm still fires.
-        self.addCleanup(lambda: self.alarm_fn(0))
-        self.alarm_fn(self.timeout_secs)
+        if self.alarm_fn is not None:
+            self.addCleanup(lambda: self.alarm_fn(0) if self.alarm_fn else None)
+            self.alarm_fn(self.timeout_secs)
         if self.gentle:
             self.addCleanup(lambda: signal.signal(signal.SIGALRM, old_handler))

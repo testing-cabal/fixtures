@@ -18,6 +18,7 @@ __all__ = [
 ]
 
 import os.path
+from typing import List, Tuple
 
 from fixtures import Fixture
 from fixtures._fixtures.tempdir import TempDir
@@ -31,7 +32,9 @@ class PythonPackage(Fixture):
         for the module.
     """
 
-    def __init__(self, packagename, modulelist, init=True):
+    def __init__(
+        self, packagename: str, modulelist: List[Tuple[str, bytes]], init: bool = True
+    ) -> None:
         """Create a PythonPackage.
 
         :param packagename: The name of the package to create - e.g.
@@ -47,7 +50,7 @@ class PythonPackage(Fixture):
         self.modulelist = modulelist
         self.init = init
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         self.base = self.useFixture(TempDir()).path
         base = self.base
         root = os.path.join(base, self.packagename)

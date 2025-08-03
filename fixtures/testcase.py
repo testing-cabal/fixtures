@@ -18,8 +18,14 @@ __all__ = [
 ]
 
 import unittest
+from typing import TypeVar
 
-from fixtures.fixture import gather_details
+from fixtures.fixture import Fixture
+import fixtures.fixture
+
+gather_details = fixtures.fixture.gather_details  # type: ignore[attr-defined]
+
+T = TypeVar("T", bound=Fixture)
 
 
 class TestWithFixtures(unittest.TestCase):
@@ -31,7 +37,7 @@ class TestWithFixtures(unittest.TestCase):
     ``useFixture`` method do not need this mixed in.
     """
 
-    def useFixture(self, fixture):
+    def useFixture(self, fixture: T) -> T:
         """Use fixture in a test case.
 
         The fixture will be setUp, and self.addCleanup(fixture.cleanUp) called.
@@ -48,7 +54,7 @@ class TestWithFixtures(unittest.TestCase):
         except:
             if use_details:
                 # Capture the details now, in case the fixture goes away.
-                gather_details(fixture.getDetails(), self.getDetails())
+                gather_details(fixture.getDetails(), self.getDetails())  # type: ignore[attr-defined]
             raise
         else:
             self.addCleanup(fixture.cleanUp)

@@ -21,6 +21,7 @@ __all__ = [
 import os
 import shutil
 import tempfile
+from typing import Optional
 
 import fixtures
 
@@ -31,7 +32,10 @@ class TempDir(fixtures.Fixture):
     :ivar path: The path of the temporary directory.
     """
 
-    def __init__(self, rootdir=None):
+    path: str
+    rootdir: Optional[str]
+
+    def __init__(self, rootdir: Optional[str] = None) -> None:
         """Create a TempDir.
 
         :param rootdir: If supplied force the temporary directory to be a
@@ -39,11 +43,11 @@ class TempDir(fixtures.Fixture):
         """
         self.rootdir = rootdir
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         self.path = tempfile.mkdtemp(dir=self.rootdir)
         self.addCleanup(shutil.rmtree, self.path, ignore_errors=True)
 
-    def join(self, *children):
+    def join(self, *children: str) -> str:
         """Return an absolute path, given one relative to this ``TempDir``.
 
         WARNING: This does not do any checking of ``children`` to make sure
@@ -62,7 +66,8 @@ class NestedTempfile(fixtures.Fixture):
     down.
     """
 
-    def _setUp(self):
-        tempdir = self.useFixture(TempDir()).path
+    def _setUp(self) -> None:
+        tempdir_fixture = self.useFixture(TempDir())
+        tempdir = tempdir_fixture.path
         patch = fixtures.MonkeyPatch("tempfile.tempdir", tempdir)
         self.useFixture(patch)

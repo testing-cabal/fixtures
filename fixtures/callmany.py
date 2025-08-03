@@ -18,13 +18,17 @@ __all__ = [
 ]
 
 import sys
+from typing import Any, Callable, List, Literal, Optional, Tuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from types import TracebackType
 
 
 try:
     from testtools import MultipleExceptions
 except ImportError:
-
-    class MultipleExceptions(Exception):
+    # Define MultipleExceptions locally if testtools is not available
+    class MultipleExceptions(Exception):  # type: ignore[no-redef]
         """Report multiple exc_info tuples in self.args."""
 
 
@@ -38,10 +42,12 @@ class CallMany(object):
     This is used by Fixture to manage its addCleanup feature.
     """
 
-    def __init__(self):
-        self._cleanups = []
+    def __init__(self) -> None:
+        self._cleanups: List[
+            Tuple[Callable[..., Any], Tuple[Any, ...], dict[str, Any]]
+        ] = []
 
-    def push(self, cleanup, *args, **kwargs):
+    def push(self, cleanup: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
         """Add a function to be called from __call__.
 
         On __call__ all functions are called - see __call__ for details on how
@@ -54,7 +60,17 @@ class CallMany(object):
         """
         self._cleanups.append((cleanup, args, kwargs))
 
-    def __call__(self, raise_errors=True):
+    def __call__(
+        self, raise_errors: bool = True
+    ) -> Optional[
+        List[
+            Tuple[
+                Optional[type[BaseException]],
+                Optional[BaseException],
+                Optional["TracebackType"],
+            ]
+        ]
+    ]:
         """Run all the registered functions.
 
         :param raise_errors: Deprecated parameter from before testtools gained
@@ -73,7 +89,13 @@ class CallMany(object):
         """
         cleanups = reversed(self._cleanups)
         self._cleanups = []
-        result = []
+        result: List[
+            Tuple[
+                Optional[type[BaseException]],
+                Optional[BaseException],
+                Optional["TracebackType"],
+            ]
+        ] = []
         for cleanup, args, kwargs in cleanups:
             try:
                 cleanup(*args, **kwargs)
@@ -82,15 +104,18 @@ class CallMany(object):
         if result and raise_errors:
             if 1 == len(result):
                 error = result[0]
-                raise error[1].with_traceback(error[2])
+                exc = error[1]
+                if exc is not None:
+                    raise exc.with_traceback(error[2])
             else:
                 raise MultipleExceptions(*result)
         if not raise_errors:
             return result
+        return None
 
-    def __enter__(self):
+    def __enter__(self) -> "CallMany":
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> Literal[False]:
         self()
         return False  # Propagate exceptions from the with body.

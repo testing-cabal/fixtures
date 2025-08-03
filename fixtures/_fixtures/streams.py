@@ -20,17 +20,27 @@ __all__ = [
 ]
 
 import io
+from typing import Callable, Generic, IO, Tuple, TypeVar, Union
 
 from fixtures import Fixture
 
+# Type variable for the stream type
+T = TypeVar("T", IO[bytes], IO[str])
 
-class Stream(Fixture):
+
+class Stream(Generic[T], Fixture):
     """Expose a file-like object as a detail.
 
     :attr stream: The file-like object.
     """
 
-    def __init__(self, detail_name, stream_factory):
+    stream: T
+
+    def __init__(
+        self,
+        detail_name: str,
+        stream_factory: Callable[[], Tuple[T, Union[IO[bytes], IO[str]]]],
+    ) -> None:
         """Create a ByteStream.
 
         :param detail_name: Use this as the name of the stream.
@@ -38,9 +48,11 @@ class Stream(Fixture):
             (write_stream, content_stream).
         """
         self._detail_name = detail_name
-        self._stream_factory = stream_factory
+        self._stream_factory: Callable[[], Tuple[T, Union[IO[bytes], IO[str]]]] = (
+            stream_factory
+        )
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         # Available with the fixtures[streams] extra.
         from testtools.content import content_from_stream
 
@@ -51,12 +63,12 @@ class Stream(Fixture):
         )
 
 
-def _byte_stream_factory():
+def _byte_stream_factory() -> Tuple[IO[bytes], IO[bytes]]:
     result = io.BytesIO()
     return (result, result)
 
 
-def ByteStream(detail_name):
+def ByteStream(detail_name: str) -> Stream[IO[bytes]]:
     """Provide a file-like object that accepts bytes and expose as a detail.
 
     :param detail_name: The name of the detail.
@@ -66,15 +78,15 @@ def ByteStream(detail_name):
     return Stream(detail_name, _byte_stream_factory)
 
 
-def _string_stream_factory():
+def _string_stream_factory() -> Tuple[IO[str], IO[bytes]]:
     lower = io.BytesIO()
     upper = io.TextIOWrapper(lower, encoding="utf8")
     # See http://bugs.python.org/issue7955
-    upper._CHUNK_SIZE = 1
+    upper._CHUNK_SIZE = 1  # type: ignore[attr-defined]
     return upper, lower
 
 
-def StringStream(detail_name):
+def StringStream(detail_name: str) -> Stream[IO[str]]:
     """Provide a file-like object that accepts strings and expose as a detail.
 
     :param detail_name: The name of the detail.
@@ -84,6 +96,6 @@ def StringStream(detail_name):
     return Stream(detail_name, _string_stream_factory)
 
 
-def DetailStream(detail_name):
+def DetailStream(detail_name: str) -> Stream[IO[bytes]]:
     """Deprecated alias for ByteStream."""
     return ByteStream(detail_name)
