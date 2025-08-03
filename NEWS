@@ -2,8 +2,8 @@
 fixtures release notes
 ----------------------
 
-NEXT
-~~~~
+4.2.6
+~~~~~
 
 * Add typing support with py.typed marker for PEP 561 compliance.
   (Jelmer Vernooĳ)
