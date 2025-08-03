@@ -17,8 +17,10 @@ __all__ = [
 ]
 
 import warnings
+from typing import Any, Dict, List, Optional, cast
 
 import fixtures
+from fixtures._fixtures.monkeypatch import MonkeyPatch
 
 
 class WarningsCapture(fixtures.Fixture):
@@ -30,11 +32,13 @@ class WarningsCapture(fixtures.Fixture):
     :attribute captures: A list of warning capture ``WarningMessage`` objects.
     """
 
-    def _showwarning(self, *args, **kwargs):
+    captures: List[warnings.WarningMessage]
+
+    def _showwarning(self, *args: Any, **kwargs: Any) -> None:
         self.captures.append(warnings.WarningMessage(*args, **kwargs))
 
-    def _setUp(self):
-        patch = fixtures.MonkeyPatch("warnings.showwarning", self._showwarning)
+    def _setUp(self) -> None:
+        patch = MonkeyPatch("warnings.showwarning", self._showwarning)
         self.useFixture(patch)
         self.captures = []
 
@@ -46,7 +50,7 @@ class WarningsFilter(fixtures.Fixture):
     configuration.
     """
 
-    def __init__(self, filters=None):
+    def __init__(self, filters: Optional[List[Dict[str, Any]]] = None) -> None:
         """Create a WarningsFilter fixture.
 
         :param filters: An optional list of dictionaries with arguments
@@ -75,13 +79,15 @@ class WarningsFilter(fixtures.Fixture):
         super().__init__()
         self.filters = filters or []
 
-    def _setUp(self):
-        self._original_warning_filters = warnings.filters[:]
+    def _setUp(self) -> None:
+        self._original_warning_filters = list(warnings.filters)
 
         for filt in self.filters:
             warnings.filterwarnings(**filt)
 
         self.addCleanup(self._reset_warning_filters)
 
-    def _reset_warning_filters(self):
-        warnings.filters[:] = self._original_warning_filters
+    def _reset_warning_filters(self) -> None:
+        filters_list = cast(List[Any], warnings.filters)
+        filters_list.clear()
+        filters_list.extend(self._original_warning_filters)

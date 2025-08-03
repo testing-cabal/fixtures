@@ -16,12 +16,16 @@
 # under the License.
 
 import unittest.mock as mock
+from typing import Any, Callable
 
 import fixtures
 
 
 class _Base(fixtures.Fixture):
-    def _setUp(self):
+    _get_p: Callable[[], Any]  # Returns mock._patch or similar
+    mock: mock.MagicMock
+
+    def _setUp(self) -> None:
         _p = self._get_p()
         self.addCleanup(_p.stop)
         self.mock = _p.start()
@@ -30,21 +34,23 @@ class _Base(fixtures.Fixture):
 class MockPatchObject(_Base):
     """Deal with code around mock."""
 
-    def __init__(self, obj, attr, new=None, **kwargs):
+    def __init__(self, obj: Any, attr: str, new: Any = None, **kwargs: Any) -> None:
         super(MockPatchObject, self).__init__()
         if new is None:
             new = mock.DEFAULT
-        self._get_p = lambda: mock.patch.object(obj, attr, new, **kwargs)
+        self._get_p: Callable[[], Any] = lambda: mock.patch.object(
+            obj, attr, new, **kwargs
+        )
 
 
 class MockPatch(_Base):
     """Deal with code around mock.patch."""
 
-    def __init__(self, obj, new=None, **kwargs):
+    def __init__(self, obj: str, new: Any = None, **kwargs: Any) -> None:
         super(MockPatch, self).__init__()
         if new is None:
             new = mock.DEFAULT
-        self._get_p = lambda: mock.patch(obj, new, **kwargs)
+        self._get_p: Callable[[], Any] = lambda: mock.patch(obj, new, **kwargs)
 
 
 class _MockPatchMultipleMeta(type):
@@ -52,21 +58,27 @@ class _MockPatchMultipleMeta(type):
 
     # For strict backward compatibility, ensure that DEFAULT also works as
     # an instance property.
-    def __new__(cls, name, bases, namespace, **kwargs):
+    def __new__(
+        cls,
+        name: str,
+        bases: tuple[type, ...],
+        namespace: dict[str, Any],
+        **kwargs: Any,
+    ) -> type:
         namespace["DEFAULT"] = cls.DEFAULT
         return super().__new__(cls, name, bases, namespace, **kwargs)
 
     # Default value to trigger a MagicMock to be created for a named
     # attribute.
     @property
-    def DEFAULT(self):
+    def DEFAULT(self) -> Any:
         return mock.DEFAULT
 
 
 class MockPatchMultiple(_Base, metaclass=_MockPatchMultipleMeta):
     """Deal with code around mock.patch.multiple."""
 
-    def __init__(self, obj, **kwargs):
+    def __init__(self, obj: Any, **kwargs: Any) -> None:
         """Initialize the mocks
 
         Pass name=value to replace obj.name with value.
@@ -80,4 +92,4 @@ class MockPatchMultiple(_Base, metaclass=_MockPatchMultipleMeta):
 
         """
         super(MockPatchMultiple, self).__init__()
-        self._get_p = lambda: mock.patch.multiple(obj, **kwargs)
+        self._get_p: Callable[[], Any] = lambda: mock.patch.multiple(obj, **kwargs)

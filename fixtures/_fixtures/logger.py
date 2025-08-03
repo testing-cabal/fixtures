@@ -13,11 +13,20 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
-from logging import StreamHandler, getLogger, INFO, Formatter
+from __future__ import annotations
+
+from logging import StreamHandler, getLogger, INFO, Formatter, Handler, LogRecord
 import sys
+from typing import IO, Optional, Type, TYPE_CHECKING
 
 from fixtures import Fixture
 from fixtures._fixtures.streams import StringStream
+
+# Type alias for proper typing during type checking
+if TYPE_CHECKING:
+    StreamHandlerStr = StreamHandler[IO[str]]
+else:
+    StreamHandlerStr = StreamHandler
 
 __all__ = [
     "FakeLogger",
@@ -29,7 +38,13 @@ __all__ = [
 class LogHandler(Fixture):
     """Replace a logger's handlers."""
 
-    def __init__(self, handler, name="", level=None, nuke_handlers=True):
+    def __init__(
+        self,
+        handler: Handler,
+        name: str = "",
+        level: Optional[int] = None,
+        nuke_handlers: bool = True,
+    ) -> None:
         """Create a LogHandler fixture.
 
         :param handler: The handler to replace other handlers with.
@@ -45,7 +60,7 @@ class LogHandler(Fixture):
         self._level = level
         self._nuke_handlers = nuke_handlers
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         logger = getLogger(self._name)
         if self._level:
             self.addCleanup(logger.setLevel, logger.level)
@@ -60,12 +75,13 @@ class LogHandler(Fixture):
             self.addCleanup(logger.removeHandler, self.handler)
 
 
-class StreamHandlerRaiseException(StreamHandler):
+class StreamHandlerRaiseException(StreamHandlerStr):
     """Handler class that will raise an exception on formatting errors."""
 
-    def handleError(self, record):
+    def handleError(self, record: LogRecord) -> None:
         _, value, tb = sys.exc_info()
-        raise value.with_traceback(tb)
+        if value is not None:
+            raise value.with_traceback(tb)
 
 
 class FakeLogger(Fixture):
@@ -73,13 +89,13 @@ class FakeLogger(Fixture):
 
     def __init__(
         self,
-        name="",
-        level=INFO,
-        format=None,
-        datefmt=None,
-        nuke_handlers=True,
-        formatter=None,
-    ):
+        name: str = "",
+        level: int = INFO,
+        format: Optional[str] = None,
+        datefmt: Optional[str] = None,
+        nuke_handlers: bool = True,
+        formatter: Optional[Type[Formatter]] = None,
+    ) -> None:
         """Create a FakeLogger fixture.
 
         :param name: The name of the logger to replace. Defaults to "".
@@ -108,10 +124,11 @@ class FakeLogger(Fixture):
         self._nuke_handlers = nuke_handlers
         self._formatter = formatter
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         name = "pythonlogging:'%s'" % self._name
-        output = self.useFixture(StringStream(name)).stream
-        self._output = output
+        stream_fixture = self.useFixture(StringStream(name))
+        output = stream_fixture.stream
+        self._output: IO[str] = output
         handler = StreamHandlerRaiseException(output)
         if self._format:
             formatter = self._formatter or Formatter
@@ -126,11 +143,11 @@ class FakeLogger(Fixture):
         )
 
     @property
-    def output(self):
+    def output(self) -> str:
         self._output.seek(0)
         return self._output.read()
 
-    def reset_output(self):
+    def reset_output(self) -> None:
         self._output.truncate(0)
 
 

@@ -31,7 +31,7 @@ class PackagePathEntry(Fixture):
     list will not be altered.
     """
 
-    def __init__(self, packagename, directory):
+    def __init__(self, packagename: str, directory: str) -> None:
         """Create a PackagePathEntry.
 
         :param directory: The directory to add to the package.__path__.
@@ -39,7 +39,7 @@ class PackagePathEntry(Fixture):
         self.packagename = packagename
         self.directory = directory
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         path = sys.modules[self.packagename].__path__
         if self.directory in path:
             return

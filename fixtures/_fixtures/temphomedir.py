@@ -17,8 +17,8 @@ __all__ = [
     "TempHomeDir",
 ]
 
-import fixtures
 from fixtures._fixtures.tempdir import TempDir
+from fixtures._fixtures.environ import EnvironmentVariable
 
 
 class TempHomeDir(TempDir):
@@ -27,6 +27,6 @@ class TempHomeDir(TempDir):
     :ivar path: the path of the temporary directory.
     """
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         super(TempHomeDir, self)._setUp()
-        self.useFixture(fixtures.EnvironmentVariable("HOME", self.path))
+        self.useFixture(EnvironmentVariable("HOME", self.path))

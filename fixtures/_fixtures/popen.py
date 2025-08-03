@@ -21,27 +21,37 @@ __all__ = [
 import random
 import subprocess
 import sys
+from typing import Any, Callable, Dict, IO, List, Optional, Tuple, Union, Final
 
 from fixtures import Fixture
+
+
+class _Unpassed:
+    """Sentinel type for unpassed arguments."""
+
+    pass
+
+
+_unpassed: Final = _Unpassed()
 
 
 class FakeProcess(object):
     """A test double process, roughly meeting subprocess.Popen's contract."""
 
-    def __init__(self, args, info):
+    def __init__(self, args: Dict[str, Any], info: Dict[str, Any]) -> None:
         self._args = args
-        self.stdin = info.get("stdin")
-        self.stdout = info.get("stdout")
-        self.stderr = info.get("stderr")
-        self.pid = random.randint(0, 65536)
-        self._returncode = info.get("returncode", 0)
-        self.returncode = None
+        self.stdin: Any = info.get("stdin")
+        self.stdout: Any = info.get("stdout")
+        self.stderr: Any = info.get("stderr")
+        self.pid: int = random.randint(0, 65536)
+        self._returncode: int = info.get("returncode", 0)
+        self.returncode: Optional[int] = None
 
     @property
-    def args(self):
+    def args(self) -> Any:
         return self._args["args"]
 
-    def poll(self):
+    def poll(self) -> Optional[int]:
         """Get the current value of FakeProcess.returncode.
 
         The returncode is None before communicate() and/or wait() are called,
@@ -50,7 +60,9 @@ class FakeProcess(object):
         """
         return self.returncode
 
-    def communicate(self, input=None, timeout=None):
+    def communicate(
+        self, input: Optional[Union[bytes, str]] = None, timeout: Optional[float] = None
+    ) -> Tuple[Any, Any]:
         self.returncode = self._returncode
         if self.stdin and input:
             self.stdin.write(input)
@@ -64,16 +76,18 @@ class FakeProcess(object):
             err = ""
         return out, err
 
-    def __enter__(self):
+    def __enter__(self) -> "FakeProcess":
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
         self.wait()
 
-    def kill(self):
+    def kill(self) -> None:
         pass
 
-    def wait(self, timeout=None, endtime=None):
+    def wait(
+        self, timeout: Optional[float] = None, endtime: Optional[float] = None
+    ) -> Optional[int]:
         if self.returncode is None:
             self.communicate()
         return self.returncode
@@ -88,9 +102,9 @@ class FakePopen(Fixture):
     :ivar procs: A list of the processes created by the fixture.
     """
 
-    _unpassed = object()
-
-    def __init__(self, get_info=lambda _: {}):
+    def __init__(
+        self, get_info: Callable[[Dict[str, Any]], Dict[str, Any]] = lambda _: {}
+    ) -> None:
         """Create a PopenFixture
 
         :param get_info: Optional callback to control the behaviour of the
@@ -116,55 +130,55 @@ class FakePopen(Fixture):
         super(FakePopen, self).__init__()
         self.get_info = get_info
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         self.addCleanup(setattr, subprocess, "Popen", subprocess.Popen)
-        subprocess.Popen = self
-        self.procs = []
+        subprocess.Popen = self  # type: ignore[assignment,misc]
+        self.procs: List[FakeProcess] = []
 
     # The method has the correct signature so we error appropriately if called
     # wrongly.
     def __call__(
         self,
-        args,
-        bufsize=_unpassed,
-        executable=_unpassed,
-        stdin=_unpassed,
-        stdout=_unpassed,
-        stderr=_unpassed,
-        preexec_fn=_unpassed,
-        close_fds=_unpassed,
-        shell=_unpassed,
-        cwd=_unpassed,
-        env=_unpassed,
-        universal_newlines=_unpassed,
-        startupinfo=_unpassed,
-        creationflags=_unpassed,
-        restore_signals=_unpassed,
-        start_new_session=_unpassed,
-        pass_fds=_unpassed,
+        args: Union[str, List[str]],
+        bufsize: Union[int, _Unpassed] = _unpassed,
+        executable: Union[str, None, _Unpassed] = _unpassed,
+        stdin: Union[None, int, IO[Any], _Unpassed] = _unpassed,
+        stdout: Union[None, int, IO[Any], _Unpassed] = _unpassed,
+        stderr: Union[None, int, IO[Any], _Unpassed] = _unpassed,
+        preexec_fn: Union[Callable[[], None], None, _Unpassed] = _unpassed,
+        close_fds: Union[bool, _Unpassed] = _unpassed,
+        shell: Union[bool, _Unpassed] = _unpassed,
+        cwd: Union[str, None, _Unpassed] = _unpassed,
+        env: Union[Dict[str, str], None, _Unpassed] = _unpassed,
+        universal_newlines: Union[bool, _Unpassed] = _unpassed,
+        startupinfo: Union[Any, _Unpassed] = _unpassed,
+        creationflags: Union[int, _Unpassed] = _unpassed,
+        restore_signals: Union[bool, _Unpassed] = _unpassed,
+        start_new_session: Union[bool, _Unpassed] = _unpassed,
+        pass_fds: Union[Any, _Unpassed] = _unpassed,
         *,
-        group=_unpassed,
-        extra_groups=_unpassed,
-        user=_unpassed,
-        umask=_unpassed,
-        encoding=_unpassed,
-        errors=_unpassed,
-        text=_unpassed,
-        pipesize=_unpassed,
-        process_group=_unpassed,
-    ):
+        group: Union[str, int, None, _Unpassed] = _unpassed,
+        extra_groups: Union[List[Union[str, int]], None, _Unpassed] = _unpassed,
+        user: Union[str, int, None, _Unpassed] = _unpassed,
+        umask: Union[int, None, _Unpassed] = _unpassed,
+        encoding: Union[str, None, _Unpassed] = _unpassed,
+        errors: Union[str, None, _Unpassed] = _unpassed,
+        text: Union[bool, None, _Unpassed] = _unpassed,
+        pipesize: Union[int, _Unpassed] = _unpassed,
+        process_group: Union[int, None, _Unpassed] = _unpassed,
+    ) -> FakeProcess:
         if sys.version_info < (3, 9):
             for arg_name in "group", "extra_groups", "user", "umask":
-                if locals()[arg_name] is not FakePopen._unpassed:
+                if not isinstance(locals()[arg_name], _Unpassed):
                     raise TypeError(
                         "FakePopen.__call__() got an unexpected keyword "
                         "argument '{}'".format(arg_name)
                     )
-        if sys.version_info < (3, 10) and pipesize is not FakePopen._unpassed:
+        if sys.version_info < (3, 10) and not isinstance(pipesize, _Unpassed):
             raise TypeError(
                 "FakePopen.__call__() got an unexpected keyword argument 'pipesize'"
             )
-        if sys.version_info < (3, 11) and process_group is not FakePopen._unpassed:
+        if sys.version_info < (3, 11) and not isinstance(process_group, _Unpassed):
             raise TypeError(
                 "FakePopen.__call__() got an unexpected keyword argument "
                 "'process_group'"
@@ -199,7 +213,7 @@ class FakePopen(Fixture):
             "pipesize",
             "process_group",
         ]:
-            if local[param] is not FakePopen._unpassed:
+            if not isinstance(local[param], _Unpassed):
                 proc_args[param] = local[param]
         proc_info = self.get_info(proc_args)
         result = FakeProcess(proc_args, proc_info)

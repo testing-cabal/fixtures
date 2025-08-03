@@ -28,14 +28,16 @@ class PythonPathEntry(Fixture):
     If the path is already in sys.path, sys.path will not be altered.
     """
 
-    def __init__(self, directory):
+    directory: str
+
+    def __init__(self, directory: str) -> None:
         """Create a PythonPathEntry.
 
         :param directory: The directory to add to sys.path.
         """
         self.directory = directory
 
-    def _setUp(self):
+    def _setUp(self) -> None:
         if self.directory in sys.path:
             return
         self.addCleanup(sys.path.remove, self.directory)
