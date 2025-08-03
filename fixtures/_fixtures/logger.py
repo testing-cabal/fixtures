@@ -17,10 +17,16 @@ from __future__ import annotations
 
 from logging import StreamHandler, getLogger, INFO, Formatter, Handler, LogRecord
 import sys
-from typing import IO, Optional, Type
+from typing import IO, Optional, Type, TYPE_CHECKING
 
 from fixtures import Fixture
 from fixtures._fixtures.streams import StringStream
+
+# Type alias for proper typing during type checking
+if TYPE_CHECKING:
+    StreamHandlerStr = StreamHandler[IO[str]]
+else:
+    StreamHandlerStr = StreamHandler
 
 __all__ = [
     "FakeLogger",
@@ -69,7 +75,7 @@ class LogHandler(Fixture):
             self.addCleanup(logger.removeHandler, self.handler)
 
 
-class StreamHandlerRaiseException(StreamHandler):
+class StreamHandlerRaiseException(StreamHandlerStr):
     """Handler class that will raise an exception on formatting errors."""
 
     def handleError(self, record: LogRecord) -> None:
