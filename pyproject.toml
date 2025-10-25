@@ -35,7 +35,7 @@ Homepage = "https://github.com/testing-cabal/fixtures"
 "Source Code" = "https://github.com/testing-cabal/fixtures"
 
 [project.optional-dependencies]
-"streams" = ["testools"]
+"streams" = ["testtools"]
 "test" = ["testtools"]
 "docs" = ["docutils"]
 
