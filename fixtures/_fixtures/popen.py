@@ -167,17 +167,6 @@ class FakePopen(Fixture):
         pipesize: Union[int, _Unpassed] = _unpassed,
         process_group: Union[int, None, _Unpassed] = _unpassed,
     ) -> FakeProcess:
-        if sys.version_info < (3, 9):
-            for arg_name in "group", "extra_groups", "user", "umask":
-                if not isinstance(locals()[arg_name], _Unpassed):
-                    raise TypeError(
-                        "FakePopen.__call__() got an unexpected keyword "
-                        "argument '{}'".format(arg_name)
-                    )
-        if sys.version_info < (3, 10) and not isinstance(pipesize, _Unpassed):
-            raise TypeError(
-                "FakePopen.__call__() got an unexpected keyword argument 'pipesize'"
-            )
         if sys.version_info < (3, 11) and not isinstance(process_group, _Unpassed):
             raise TypeError(
                 "FakePopen.__call__() got an unexpected keyword argument "
