@@ -81,14 +81,12 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
             encoding="encoding",
             errors="errors",
             text="text",
+            group="group",
+            extra_groups="extra_groups",
+            user="user",
+            umask="umask",
+            pipesize="pipesize",
         )
-        if sys.version_info >= (3, 9):
-            all_args["group"] = "group"
-            all_args["extra_groups"] = "extra_groups"
-            all_args["user"] = "user"
-            all_args["umask"] = "umask"
-        if sys.version_info >= (3, 10):
-            all_args["pipesize"] = "pipesize"
         if sys.version_info >= (3, 11):
             all_args["process_group"] = "process_group"
 
@@ -98,25 +96,6 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
 
         fixture = self.useFixture(FakePopen(get_info))
         fixture(**all_args)
-
-    @testtools.skipUnless(sys.version_info < (3, 9), "only relevant on Python <3.9")
-    def test_rejects_3_9_args_on_older_versions(self):
-        fixture = self.useFixture(FakePopen(lambda proc_args: {}))
-        for arg_name in ("group", "extra_groups", "user", "umask"):
-            kwargs = {arg_name: arg_name}
-            expected_message = r".* got an unexpected keyword argument '{}'".format(
-                arg_name
-            )
-            with testtools.ExpectedException(TypeError, expected_message):
-                fixture(args="args", **kwargs)
-
-    @testtools.skipUnless(sys.version_info < (3, 10), "only relevant on Python <3.10")
-    def test_rejects_3_10_args_on_older_versions(self):
-        fixture = self.useFixture(FakePopen(lambda proc_args: {}))
-        with testtools.ExpectedException(
-            TypeError, r".* got an unexpected keyword argument 'pipesize'"
-        ):
-            fixture(args="args", pipesize=1024)
 
     @testtools.skipUnless(sys.version_info < (3, 11), "only relevant on Python <3.11")
     def test_rejects_3_11_args_on_older_versions(self):
@@ -148,15 +127,6 @@ class TestFakePopen(testtools.TestCase, TestWithFixtures):
 
         if sys.version_info < (3, 11):
             fake_kwargs.remove("process_group")
-
-        if sys.version_info < (3, 10):
-            fake_kwargs.remove("pipesize")
-
-        if sys.version_info < (3, 9):
-            fake_kwargs.remove("group")
-            fake_kwargs.remove("extra_groups")
-            fake_kwargs.remove("user")
-            fake_kwargs.remove("umask")
 
         self.assertSetEqual(
             fake_kwargs,
