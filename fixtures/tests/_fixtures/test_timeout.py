@@ -15,11 +15,9 @@
 
 import signal
 import time
+from unittest import SkipTest
 
 import testtools
-from testtools.testcase import (
-    TestSkipped,
-)
 from testtools.matchers import raises
 
 import fixtures
@@ -43,7 +41,7 @@ def sample_long_delay_with_harsh_timeout():
 class TestTimeout(testtools.TestCase, fixtures.TestWithFixtures):
     def requireUnix(self):
         if getattr(signal, "alarm", None) is None:
-            raise TestSkipped("no alarm() function")
+            raise SkipTest("no alarm() function")
 
     def test_timeout_passes(self):
         # This can pass even on Windows - the test is skipped.
