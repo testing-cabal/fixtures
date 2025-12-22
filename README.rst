@@ -11,7 +11,7 @@ provided that makes using fixtures that meet the ``Fixtures`` contract in
 Dependencies
 ============
 
-* Python 3.9+
+* Python
   This is the base language fixtures is written in and for.
 
 The ``fixtures[streams]`` extra adds:
@@ -28,6 +28,9 @@ is easy. Alternatively, you can simply use Fixtures directly without any
 support code.
 
 To run the test suite for fixtures, ``testtools`` is needed.
+
+To see exactly what version of Python is supported, see
+``requires-python`` in ``pyprojec.toml``.
 
 Why Fixtures
 ============
