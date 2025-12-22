@@ -25,9 +25,6 @@ methods for details.
 Most users will want to look at TestWithFixtures and Fixture, to start with.
 """
 
-from typing import Any
-import unittest
-
 from fixtures._version import __version__
 
 __all__ = [
@@ -101,16 +98,3 @@ from fixtures._fixtures import (  # noqa: E402
     WarningsFilter,
 )
 from fixtures.testcase import TestWithFixtures  # noqa: E402
-
-
-def test_suite() -> unittest.TestSuite:
-    import fixtures.tests  # noqa: F401
-
-    return fixtures.tests.test_suite()
-
-
-def load_tests(
-    loader: unittest.TestLoader, standard_tests: unittest.TestSuite, pattern: Any
-) -> unittest.TestSuite:
-    standard_tests.addTests(loader.loadTestsFromNames(["fixtures.tests"]))
-    return standard_tests

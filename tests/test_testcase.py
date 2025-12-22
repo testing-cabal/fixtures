@@ -21,7 +21,7 @@ from testtools.testcase import skipIf
 import fixtures
 from fixtures import TestWithFixtures
 from fixtures.fixture import gather_details
-from fixtures.tests.helpers import LoggingFixture
+from tests.helpers import LoggingFixture
 
 
 class TestTestWithFixtures(unittest.TestCase):

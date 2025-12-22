@@ -74,8 +74,3 @@ warn_unused_ignores = true
 warn_no_return = true
 warn_unreachable = true
 strict_equality = true
-
-# Disable strict checking for tests
-[[tool.mypy.overrides]]
-module = "fixtures.tests.*"
-ignore_errors = true

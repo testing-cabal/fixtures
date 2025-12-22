@@ -35,6 +35,7 @@ from typing import (
     Tuple,
     TypeVar,
     TYPE_CHECKING,
+    Union,
 )
 
 from fixtures.callmany import (
@@ -51,9 +52,11 @@ T = TypeVar("T", bound="Fixture")
 
 MultipleExceptions = fixtures.callmany.MultipleExceptions  # type: ignore[attr-defined]
 
-
+gather_details: Union[Callable[[Dict[str, Any], Dict[str, Any]], None], None]
 try:
-    from testtools.testcase import gather_details
+    from testtools.testcase import gather_details as _gather_details
+
+    gather_details = _gather_details
 except ImportError:
     gather_details = None
 
