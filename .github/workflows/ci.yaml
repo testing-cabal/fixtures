@@ -27,6 +27,7 @@ jobs:
         run: ruff format --check .
       - name: Run mypy type checking
         run: mypy fixtures/ --exclude fixtures/tests/
+        if: matrix.python != 'pypy-3.10'
       - name: Run unit tests (via tox)
         # Run tox using the version of Python in `PATH`
         run: tox -e py

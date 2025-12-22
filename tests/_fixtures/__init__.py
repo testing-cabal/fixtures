@@ -22,7 +22,7 @@ def load_tests(loader, standard_tests, pattern):
         for path in os.listdir(os.path.dirname(__file__))
         if path.startswith("test_")
     ]
-    prefix = "fixtures.tests._fixtures."
+    prefix = "tests._fixtures."
     test_mod_names = [prefix + test_module for test_module in test_modules]
     standard_tests.addTests(loader.loadTestsFromNames(test_mod_names))
     return standard_tests

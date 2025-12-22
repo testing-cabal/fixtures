@@ -23,7 +23,7 @@ from typing import TypeVar
 from fixtures.fixture import Fixture
 import fixtures.fixture
 
-gather_details = fixtures.fixture.gather_details  # type: ignore[attr-defined]
+gather_details = fixtures.fixture.gather_details
 
 T = TypeVar("T", bound=Fixture)
 
@@ -52,15 +52,23 @@ class TestWithFixtures(unittest.TestCase):
         try:
             fixture.setUp()
         except:
-            if use_details:
+            if gather_details is not None and use_details:
                 # Capture the details now, in case the fixture goes away.
-                gather_details(fixture.getDetails(), self.getDetails())  # type: ignore[attr-defined]
+                get_details = getattr(self, "getDetails", None)
+                if get_details is not None:
+                    gather_details(fixture.getDetails(), get_details())
             raise
         else:
             self.addCleanup(fixture.cleanUp)
-            if use_details:
+            if gather_details is not None and use_details:
                 # Capture the details from the fixture during test teardown;
                 # this will evaluate the details before tearing down the
                 # fixture.
-                self.addCleanup(gather_details, fixture, self)
+                def cleanup_details() -> None:
+                    if gather_details is not None:
+                        get_details = getattr(self, "getDetails", None)
+                        if get_details is not None:
+                            gather_details(fixture.getDetails(), get_details())
+
+                self.addCleanup(cleanup_details)
             return fixture
