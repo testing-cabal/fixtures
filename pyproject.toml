@@ -58,6 +58,9 @@ include = [
     "tox.ini",
     ]
 
+[tool.hatch.build.targets.wheel]
+packages = ["fixtures"]
+
 [tool.mypy]
 ignore_missing_imports = true
 # Enable strict typing by default for fixtures package
