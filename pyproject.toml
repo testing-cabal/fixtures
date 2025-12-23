@@ -48,6 +48,7 @@ version-file = "fixtures/_version.py"
 [tool.hatch.build.targets.sdist]
 include = [
     "fixtures*",
+    "tests*",
     "Apache-2.0",
     "BSD",
     "COPYING",
