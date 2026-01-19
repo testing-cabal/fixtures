@@ -44,7 +44,7 @@ class FakeProcess:
         self.stdin: Any = info.get("stdin")
         self.stdout: Any = info.get("stdout")
         self.stderr: Any = info.get("stderr")
-        self.pid: int = random.randint(0, 65536)
+        self.pid: int = random.randint(0, 65536)  # noqa: S311
         self._returncode: int = info.get("returncode", 0)
         self.returncode: int | None = None
 
