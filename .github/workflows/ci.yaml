@@ -35,10 +35,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Set up Python 3.11
+      - name: Set up Python 3.14
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.14"
       - name: Install dependencies
         run: python -m pip install tox
       - name: Run ruff (via tox)
@@ -51,10 +51,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Set up Python 3.11
+      - name: Set up Python 3.14
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.14"
       - name: Install dependencies
         run: python -m pip install docutils
       - name: Build docs
@@ -75,10 +75,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Set up Python 3.11
+      - name: Set up Python 3.14
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.14"
       - name: Install dependencies
         run: python -m pip install build
       - name: Build a binary wheel and a source tarball
