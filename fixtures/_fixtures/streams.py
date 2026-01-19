@@ -20,7 +20,8 @@ __all__ = [
 ]
 
 import io
-from typing import Callable, Generic, IO, Tuple, TypeVar, Union
+from typing import Generic, IO, TypeVar
+from collections.abc import Callable
 
 from fixtures import Fixture
 
@@ -39,7 +40,7 @@ class Stream(Generic[T], Fixture):
     def __init__(
         self,
         detail_name: str,
-        stream_factory: Callable[[], Tuple[T, Union[IO[bytes], IO[str]]]],
+        stream_factory: Callable[[], tuple[T, IO[bytes] | IO[str]]],
     ) -> None:
         """Create a ByteStream.
 
@@ -48,7 +49,7 @@ class Stream(Generic[T], Fixture):
             (write_stream, content_stream).
         """
         self._detail_name = detail_name
-        self._stream_factory: Callable[[], Tuple[T, Union[IO[bytes], IO[str]]]] = (
+        self._stream_factory: Callable[[], tuple[T, IO[bytes] | IO[str]]] = (
             stream_factory
         )
 
@@ -64,7 +65,7 @@ class Stream(Generic[T], Fixture):
         )
 
 
-def _byte_stream_factory() -> Tuple[IO[bytes], IO[bytes]]:
+def _byte_stream_factory() -> tuple[IO[bytes], IO[bytes]]:
     result = io.BytesIO()
     return (result, result)
 
@@ -79,7 +80,7 @@ def ByteStream(detail_name: str) -> Stream[IO[bytes]]:
     return Stream(detail_name, _byte_stream_factory)
 
 
-def _string_stream_factory() -> Tuple[IO[str], IO[bytes]]:
+def _string_stream_factory() -> tuple[IO[str], IO[bytes]]:
     lower = io.BytesIO()
     upper = io.TextIOWrapper(lower, encoding="utf8")
     # See http://bugs.python.org/issue7955

@@ -28,5 +28,5 @@ class TempHomeDir(TempDir):
     """
 
     def _setUp(self) -> None:
-        super(TempHomeDir, self)._setUp()
+        super()._setUp()
         self.useFixture(EnvironmentVariable("HOME", self.path))

@@ -26,17 +26,12 @@ import itertools
 import sys
 from typing import (
     Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
     Literal,
     Optional,
-    Tuple,
     TypeVar,
     TYPE_CHECKING,
-    Union,
 )
+from collections.abc import Callable, Iterable
 
 from fixtures.callmany import (
     CallMany,
@@ -52,7 +47,7 @@ T = TypeVar("T", bound="Fixture")
 
 MultipleExceptions = fixtures.callmany.MultipleExceptions  # type: ignore[attr-defined]
 
-gather_details: Union[Callable[[Dict[str, Any], Dict[str, Any]], None], None]
+gather_details: Callable[[dict[str, Any], dict[str, Any]], None] | None
 try:
     from testtools.testcase import gather_details as _gather_details
 
@@ -63,14 +58,14 @@ except ImportError:
 
 # This would be better in testtools (or a common library)
 def combine_details(
-    source_details: Dict[str, Any], target_details: Dict[str, Any]
+    source_details: dict[str, Any], target_details: dict[str, Any]
 ) -> None:
     """Add every value from source to target deduping common keys."""
     for name, content_object in source_details.items():
         new_name = name
         disambiguator = itertools.count(1)
         while new_name in target_details:
-            new_name = "%s-%d" % (name, next(disambiguator))
+            new_name = f"{name}-{next(disambiguator)}"
         name = new_name
         target_details[name] = content_object
 
@@ -82,10 +77,10 @@ class SetupError(Exception):
     """
 
 
-class Fixture(object):
-    _cleanups: Optional[CallMany]
-    _details: Optional[Dict[str, Any]]
-    _detail_sources: Optional[List["Fixture"]]
+class Fixture:
+    _cleanups: CallMany | None
+    _details: dict[str, Any] | None
+    _detail_sources: list["Fixture"] | None
     """A Fixture representing some state or resource.
 
     Often used in tests, a Fixture must be setUp before using it, and cleanUp
@@ -130,15 +125,16 @@ class Fixture(object):
 
     def cleanUp(
         self, raise_first: bool = True
-    ) -> Optional[
-        List[
-            Tuple[
-                Optional[type[BaseException]],
-                Optional[BaseException],
+    ) -> (
+        list[
+            tuple[
+                type[BaseException] | None,
+                BaseException | None,
                 Optional["TracebackType"],
             ]
         ]
-    ]:
+        | None
+    ):
         """Cleanup the fixture.
 
         This function will free all resources managed by the Fixture, restoring
@@ -201,7 +197,7 @@ class Fixture(object):
             self._remove_state()
         return False  # propagate exceptions from the with body.
 
-    def getDetails(self) -> Dict[str, Any]:
+    def getDetails(self) -> dict[str, Any]:
         """Get the current details registered with the fixture.
 
         This does not return the internal dictionary: mutating it will have no
@@ -239,12 +235,12 @@ class Fixture(object):
         try:
             self._setUp()
         except BaseException:
-            err: Tuple[
-                Optional[type[BaseException]],
-                Optional[BaseException],
-                Optional["TracebackType"],
+            err: tuple[
+                type[BaseException] | None,
+                BaseException | None,
+                TracebackType | None,
             ] = sys.exc_info()
-            details: Dict[str, Any] = {}
+            details: dict[str, Any] = {}
             if gather_details is not None:
                 # Materialise all details since we're about to cleanup.
                 gather_details(self.getDetails(), details)
@@ -352,8 +348,8 @@ class FunctionFixture(Fixture):
     def __init__(
         self,
         setup_fn: Callable[[], Any],
-        cleanup_fn: Optional[Callable[[Any], None]] = None,
-        reset_fn: Optional[Callable[[Any], Any]] = None,
+        cleanup_fn: Callable[[Any], None] | None = None,
+        reset_fn: Callable[[Any], Any] | None = None,
     ) -> None:
         """Create a FunctionFixture.
 
@@ -371,7 +367,7 @@ class FunctionFixture(Fixture):
             if defined this replaces the use of cleanup_fn and setup_fn when
             reset() is called.
         """
-        super(FunctionFixture, self).__init__()
+        super().__init__()
         self.setup_fn = setup_fn
         self.cleanup_fn = cleanup_fn
         self.reset_fn = reset_fn
@@ -382,7 +378,7 @@ class FunctionFixture(Fixture):
 
     def reset(self) -> None:
         if self.reset_fn is None:
-            super(FunctionFixture, self).reset()
+            super().reset()
         else:
             self._clear_cleanups()
             fn_result = self.reset_fn(self.fn_result)
@@ -421,9 +417,9 @@ class MethodFixture(Fixture):
     def __init__(
         self,
         obj: Any,
-        setup: Optional[Callable[[], None]] = None,
-        cleanup: Optional[Callable[[], None]] = None,
-        reset: Optional[Callable[[], None]] = None,
+        setup: Callable[[], None] | None = None,
+        cleanup: Callable[[], None] | None = None,
+        reset: Callable[[], None] | None = None,
     ) -> None:
         """Create a MethodFixture.
 
@@ -439,7 +435,7 @@ class MethodFixture(Fixture):
             If not supplied, then the method 'reset' is used if it exists,
             otherwise cleanUp and setUp are called as per Fixture.reset().
         """
-        super(MethodFixture, self).__init__()
+        super().__init__()
         self.obj = obj
         if setup is None:
             setup = getattr(obj, "setUp", None)
@@ -466,22 +462,23 @@ class MethodFixture(Fixture):
 
     def cleanUp(
         self, raise_first: bool = True
-    ) -> Optional[
-        List[
-            Tuple[
-                Optional[type[BaseException]],
-                Optional[BaseException],
+    ) -> (
+        list[
+            tuple[
+                type[BaseException] | None,
+                BaseException | None,
                 Optional["TracebackType"],
             ]
         ]
-    ]:
-        result = super(MethodFixture, self).cleanUp(raise_first)
+        | None
+    ):
+        result = super().cleanUp(raise_first)
         self._cleanup()
         return result
 
     def reset(self) -> None:
         if self._reset is None:
-            super(MethodFixture, self).reset()
+            super().reset()
         else:
             self._reset()
 
@@ -497,7 +494,7 @@ class CompoundFixture(Fixture):
 
         :param fixtures: An iterable of fixtures.
         """
-        super(CompoundFixture, self).__init__()
+        super().__init__()
         self.fixtures = list(fixtures)
 
     def _setUp(self) -> None:

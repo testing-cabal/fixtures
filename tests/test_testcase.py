@@ -64,7 +64,7 @@ class TestTestWithFixtures(unittest.TestCase):
 
         class BrokenFixture(fixtures.Fixture):
             def setUp(self):
-                super(BrokenFixture, self).setUp()
+                super().setUp()
                 self.addDetail("content", text_content("foobar"))
                 raise SomethingBroke()
 
@@ -72,7 +72,7 @@ class TestTestWithFixtures(unittest.TestCase):
 
         class DetailedTestCase(TestWithFixtures, testtools.TestCase):
             def setUp(self):
-                super(DetailedTestCase, self).setUp()
+                super().setUp()
                 self.useFixture(broken_fixture)
 
             def test(self):
@@ -97,7 +97,7 @@ class TestTestWithFixtures(unittest.TestCase):
 
         class BrokenFixture(fixtures.Fixture):
             def setUp(self):
-                super(BrokenFixture, self).setUp()
+                super().setUp()
                 self.addDetail("content", text_content("foobar"))
                 raise SomethingBroke()
 
@@ -105,7 +105,7 @@ class TestTestWithFixtures(unittest.TestCase):
 
         class NonDetailedTestCase(TestWithFixtures, unittest.TestCase):
             def setUp(self):
-                super(NonDetailedTestCase, self).setUp()
+                super().setUp()
                 self.useFixture(broken_fixture)
 
             def test(self):

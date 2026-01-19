@@ -37,7 +37,7 @@ class TestFixture(testtools.TestCase):
 
         class FixtureWithSetupOnly(fixtures.Fixture):
             def setUp(self):
-                super(FixtureWithSetupOnly, self).setUp()
+                super().setUp()
                 calls.append("setUp")
                 self.addCleanup(calls.append, "cleanUp")
 
@@ -53,7 +53,7 @@ class TestFixture(testtools.TestCase):
                 raise Exception("foo")
 
             def setUp(self):
-                super(FixtureWithSetupOnly, self).setUp()
+                super().setUp()
                 self.addCleanup(self.do_raise)
 
         fixture = FixtureWithSetupOnly()
@@ -74,7 +74,7 @@ class TestFixture(testtools.TestCase):
 
         class FixtureWithException(fixtures.Fixture):
             def setUp(self):
-                super(FixtureWithException, self).setUp()
+                super().setUp()
                 self.addCleanup(raise_exception2)
                 self.addCleanup(raise_exception1)
 
@@ -110,7 +110,7 @@ class TestFixture(testtools.TestCase):
 
         class FixtureWithException(fixtures.Fixture):
             def setUp(self):
-                super(FixtureWithException, self).setUp()
+                super().setUp()
                 self.addCleanup(raise_exception2)
                 self.addCleanup(raise_exception1)
 
@@ -141,7 +141,7 @@ class TestFixture(testtools.TestCase):
 
         class BrokenFixture(fixtures.Fixture):
             def setUp(self):
-                super(BrokenFixture, self).setUp()
+                super().setUp()
                 self.addDetail("content", text_content("foobar"))
                 raise SomethingBroke()
 
@@ -149,7 +149,7 @@ class TestFixture(testtools.TestCase):
 
         class SimpleFixture(fixtures.Fixture):
             def setUp(self):
-                super(SimpleFixture, self).setUp()
+                super().setUp()
                 self.useFixture(broken_fixture)
 
         simple_fixture = SimpleFixture()
@@ -235,7 +235,7 @@ class TestFixture(testtools.TestCase):
         # overriding setUp and calling super().setUp still works.
         class Subclass(fixtures.Fixture):
             def setUp(self):
-                super(Subclass, self).setUp()
+                super().setUp()
                 self.fred = 1
                 self.addCleanup(setattr, self, "fred", 2)
 

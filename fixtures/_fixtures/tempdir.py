@@ -21,7 +21,6 @@ __all__ = [
 import os
 import shutil
 import tempfile
-from typing import Optional
 
 import fixtures
 
@@ -33,9 +32,9 @@ class TempDir(fixtures.Fixture):
     """
 
     path: str
-    rootdir: Optional[str]
+    rootdir: str | None
 
-    def __init__(self, rootdir: Optional[str] = None) -> None:
+    def __init__(self, rootdir: str | None = None) -> None:
         """Create a TempDir.
 
         :param rootdir: If supplied force the temporary directory to be a

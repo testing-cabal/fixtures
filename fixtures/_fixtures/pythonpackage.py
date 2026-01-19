@@ -18,7 +18,6 @@ __all__ = [
 ]
 
 import os.path
-from typing import List, Tuple
 
 from fixtures import Fixture
 from fixtures._fixtures.tempdir import TempDir
@@ -33,7 +32,7 @@ class PythonPackage(Fixture):
     """
 
     def __init__(
-        self, packagename: str, modulelist: List[Tuple[str, bytes]], init: bool = True
+        self, packagename: str, modulelist: list[tuple[str, bytes]], init: bool = True
     ) -> None:
         """Create a PythonPackage.
 

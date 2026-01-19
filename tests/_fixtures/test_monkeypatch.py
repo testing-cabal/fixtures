@@ -28,7 +28,7 @@ NEW_PY39_CLASSMETHOD = sys.version_info[:2] == (3, 10) and not hasattr(
 )
 
 
-class C(object):
+class C:
     def foo(self, arg):
         return arg
 
@@ -41,7 +41,7 @@ class C(object):
         pass
 
 
-class D(object):
+class D:
     def bar(self):
         pass
 

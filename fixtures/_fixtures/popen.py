@@ -21,7 +21,8 @@ __all__ = [
 import random
 import subprocess
 import sys
-from typing import Any, Callable, Dict, IO, List, Optional, Tuple, Union, Final
+from typing import Any, IO, Final
+from collections.abc import Callable
 
 from fixtures import Fixture
 
@@ -35,23 +36,23 @@ class _Unpassed:
 _unpassed: Final = _Unpassed()
 
 
-class FakeProcess(object):
+class FakeProcess:
     """A test double process, roughly meeting subprocess.Popen's contract."""
 
-    def __init__(self, args: Dict[str, Any], info: Dict[str, Any]) -> None:
+    def __init__(self, args: dict[str, Any], info: dict[str, Any]) -> None:
         self._args = args
         self.stdin: Any = info.get("stdin")
         self.stdout: Any = info.get("stdout")
         self.stderr: Any = info.get("stderr")
         self.pid: int = random.randint(0, 65536)
         self._returncode: int = info.get("returncode", 0)
-        self.returncode: Optional[int] = None
+        self.returncode: int | None = None
 
     @property
     def args(self) -> Any:
         return self._args["args"]
 
-    def poll(self) -> Optional[int]:
+    def poll(self) -> int | None:
         """Get the current value of FakeProcess.returncode.
 
         The returncode is None before communicate() and/or wait() are called,
@@ -61,8 +62,8 @@ class FakeProcess(object):
         return self.returncode
 
     def communicate(
-        self, input: Optional[Union[bytes, str]] = None, timeout: Optional[float] = None
-    ) -> Tuple[Any, Any]:
+        self, input: bytes | str | None = None, timeout: float | None = None
+    ) -> tuple[Any, Any]:
         self.returncode = self._returncode
         if self.stdin and input:
             self.stdin.write(input)
@@ -86,8 +87,8 @@ class FakeProcess(object):
         pass
 
     def wait(
-        self, timeout: Optional[float] = None, endtime: Optional[float] = None
-    ) -> Optional[int]:
+        self, timeout: float | None = None, endtime: float | None = None
+    ) -> int | None:
         if self.returncode is None:
             self.communicate()
         return self.returncode
@@ -103,7 +104,7 @@ class FakePopen(Fixture):
     """
 
     def __init__(
-        self, get_info: Callable[[Dict[str, Any]], Dict[str, Any]] = lambda _: {}
+        self, get_info: Callable[[dict[str, Any]], dict[str, Any]] = lambda _: {}
     ) -> None:
         """Create a PopenFixture
 
@@ -127,45 +128,45 @@ class FakePopen(Fixture):
             get_info is not supplied or doesn't return a dict with an explicit
             'returncode' key).
         """
-        super(FakePopen, self).__init__()
+        super().__init__()
         self.get_info = get_info
 
     def _setUp(self) -> None:
         self.addCleanup(setattr, subprocess, "Popen", subprocess.Popen)
         subprocess.Popen = self  # type: ignore[assignment,misc]
-        self.procs: List[FakeProcess] = []
+        self.procs: list[FakeProcess] = []
 
     # The method has the correct signature so we error appropriately if called
     # wrongly.
     def __call__(
         self,
-        args: Union[str, List[str]],
-        bufsize: Union[int, _Unpassed] = _unpassed,
-        executable: Union[str, None, _Unpassed] = _unpassed,
-        stdin: Union[None, int, IO[Any], _Unpassed] = _unpassed,
-        stdout: Union[None, int, IO[Any], _Unpassed] = _unpassed,
-        stderr: Union[None, int, IO[Any], _Unpassed] = _unpassed,
-        preexec_fn: Union[Callable[[], None], None, _Unpassed] = _unpassed,
-        close_fds: Union[bool, _Unpassed] = _unpassed,
-        shell: Union[bool, _Unpassed] = _unpassed,
-        cwd: Union[str, None, _Unpassed] = _unpassed,
-        env: Union[Dict[str, str], None, _Unpassed] = _unpassed,
-        universal_newlines: Union[bool, _Unpassed] = _unpassed,
-        startupinfo: Union[Any, _Unpassed] = _unpassed,
-        creationflags: Union[int, _Unpassed] = _unpassed,
-        restore_signals: Union[bool, _Unpassed] = _unpassed,
-        start_new_session: Union[bool, _Unpassed] = _unpassed,
-        pass_fds: Union[Any, _Unpassed] = _unpassed,
+        args: str | list[str],
+        bufsize: int | _Unpassed = _unpassed,
+        executable: str | None | _Unpassed = _unpassed,
+        stdin: None | int | IO[Any] | _Unpassed = _unpassed,
+        stdout: None | int | IO[Any] | _Unpassed = _unpassed,
+        stderr: None | int | IO[Any] | _Unpassed = _unpassed,
+        preexec_fn: Callable[[], None] | None | _Unpassed = _unpassed,
+        close_fds: bool | _Unpassed = _unpassed,
+        shell: bool | _Unpassed = _unpassed,
+        cwd: str | None | _Unpassed = _unpassed,
+        env: dict[str, str] | None | _Unpassed = _unpassed,
+        universal_newlines: bool | _Unpassed = _unpassed,
+        startupinfo: Any | _Unpassed = _unpassed,
+        creationflags: int | _Unpassed = _unpassed,
+        restore_signals: bool | _Unpassed = _unpassed,
+        start_new_session: bool | _Unpassed = _unpassed,
+        pass_fds: Any | _Unpassed = _unpassed,
         *,
-        group: Union[str, int, None, _Unpassed] = _unpassed,
-        extra_groups: Union[List[Union[str, int]], None, _Unpassed] = _unpassed,
-        user: Union[str, int, None, _Unpassed] = _unpassed,
-        umask: Union[int, None, _Unpassed] = _unpassed,
-        encoding: Union[str, None, _Unpassed] = _unpassed,
-        errors: Union[str, None, _Unpassed] = _unpassed,
-        text: Union[bool, None, _Unpassed] = _unpassed,
-        pipesize: Union[int, _Unpassed] = _unpassed,
-        process_group: Union[int, None, _Unpassed] = _unpassed,
+        group: str | int | None | _Unpassed = _unpassed,
+        extra_groups: list[str | int] | None | _Unpassed = _unpassed,
+        user: str | int | None | _Unpassed = _unpassed,
+        umask: int | None | _Unpassed = _unpassed,
+        encoding: str | None | _Unpassed = _unpassed,
+        errors: str | None | _Unpassed = _unpassed,
+        text: bool | None | _Unpassed = _unpassed,
+        pipesize: int | _Unpassed = _unpassed,
+        process_group: int | None | _Unpassed = _unpassed,
     ) -> FakeProcess:
         if sys.version_info < (3, 11) and not isinstance(process_group, _Unpassed):
             raise TypeError(

@@ -18,7 +18,8 @@ __all__ = [
 ]
 
 import sys
-from typing import Any, Callable, List, Literal, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Literal, Optional, TYPE_CHECKING
+from collections.abc import Callable
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -32,7 +33,7 @@ except ImportError:
         """Report multiple exc_info tuples in self.args."""
 
 
-class CallMany(object):
+class CallMany:
     """A stack of functions which will all be called on __call__.
 
     CallMany also acts as a context manager for convenience.
@@ -43,8 +44,8 @@ class CallMany(object):
     """
 
     def __init__(self) -> None:
-        self._cleanups: List[
-            Tuple[Callable[..., Any], Tuple[Any, ...], dict[str, Any]]
+        self._cleanups: list[
+            tuple[Callable[..., Any], tuple[Any, ...], dict[str, Any]]
         ] = []
 
     def push(self, cleanup: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
@@ -62,15 +63,16 @@ class CallMany(object):
 
     def __call__(
         self, raise_errors: bool = True
-    ) -> Optional[
-        List[
-            Tuple[
-                Optional[type[BaseException]],
-                Optional[BaseException],
+    ) -> (
+        list[
+            tuple[
+                type[BaseException] | None,
+                BaseException | None,
                 Optional["TracebackType"],
             ]
         ]
-    ]:
+        | None
+    ):
         """Run all the registered functions.
 
         :param raise_errors: Deprecated parameter from before testtools gained
@@ -89,11 +91,11 @@ class CallMany(object):
         """
         cleanups = reversed(self._cleanups)
         self._cleanups = []
-        result: List[
-            Tuple[
-                Optional[type[BaseException]],
-                Optional[BaseException],
-                Optional["TracebackType"],
+        result: list[
+            tuple[
+                type[BaseException] | None,
+                BaseException | None,
+                TracebackType | None,
             ]
         ] = []
         for cleanup, args, kwargs in cleanups:

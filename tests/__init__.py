@@ -15,7 +15,6 @@
 
 import doctest
 import unittest
-from typing import Optional
 
 
 def test_suite() -> unittest.TestSuite:
@@ -27,7 +26,7 @@ def test_suite() -> unittest.TestSuite:
 def load_tests(
     loader: unittest.TestLoader,
     standard_tests: unittest.TestSuite,
-    pattern: Optional[str],
+    pattern: str | None,
 ) -> unittest.TestSuite:
     test_modules = [
         "callmany",
