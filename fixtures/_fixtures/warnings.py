@@ -59,9 +59,9 @@ class WarningsFilter(fixtures.Fixture):
 
                 [
                     {
-                        'action': 'ignore',
-                        'message': 'foo',
-                        'category': DeprecationWarning,
+                        "action": "ignore",
+                        "message": "foo",
+                        "category": DeprecationWarning,
                     },
                 ]
 
