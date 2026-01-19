@@ -16,7 +16,8 @@
 # under the License.
 
 import unittest.mock as mock
-from typing import Any, Callable
+from typing import Any
+from collections.abc import Callable
 
 import fixtures
 
@@ -35,7 +36,7 @@ class MockPatchObject(_Base):
     """Deal with code around mock."""
 
     def __init__(self, obj: Any, attr: str, new: Any = None, **kwargs: Any) -> None:
-        super(MockPatchObject, self).__init__()
+        super().__init__()
         if new is None:
             new = mock.DEFAULT
         self._get_p: Callable[[], Any] = lambda: mock.patch.object(
@@ -47,7 +48,7 @@ class MockPatch(_Base):
     """Deal with code around mock.patch."""
 
     def __init__(self, obj: str, new: Any = None, **kwargs: Any) -> None:
-        super(MockPatch, self).__init__()
+        super().__init__()
         if new is None:
             new = mock.DEFAULT
         self._get_p: Callable[[], Any] = lambda: mock.patch(obj, new, **kwargs)
@@ -91,5 +92,5 @@ class MockPatchMultiple(_Base, metaclass=_MockPatchMultipleMeta):
         :param kwargs: names and values of attributes of obj to be mocked.
 
         """
-        super(MockPatchMultiple, self).__init__()
+        super().__init__()
         self._get_p: Callable[[], Any] = lambda: mock.patch.multiple(obj, **kwargs)

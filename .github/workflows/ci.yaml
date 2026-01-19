@@ -20,17 +20,29 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install dependencies
-        run: python -m pip install tox ruff mypy
-      - name: Run ruff
-        run: ruff check .
-      - name: Run ruff format
-        run: ruff format --check .
-      - name: Run mypy type checking
-        run: mypy fixtures/ --exclude fixtures/tests/
+        run: python -m pip install tox mypy
+      - name: Run mypy type checking (via tox)
+        run: tox -e mypy
         if: matrix.python != 'pypy-3.10'
       - name: Run unit tests (via tox)
         # Run tox using the version of Python in `PATH`
         run: tox -e py
+  lint:
+    name: Run linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.14"
+      - name: Install dependencies
+        run: python -m pip install tox
+      - name: Run ruff (via tox)
+        run: tox -e ruff
   docs:
     name: Build docs
     runs-on: ubuntu-latest
@@ -39,10 +51,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Set up Python 3.11
+      - name: Set up Python 3.14
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.14"
       - name: Install dependencies
         run: python -m pip install docutils
       - name: Build docs
@@ -63,10 +75,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Set up Python 3.11
+      - name: Set up Python 3.14
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.14"
       - name: Install dependencies
         run: python -m pip install build
       - name: Build a binary wheel and a source tarball

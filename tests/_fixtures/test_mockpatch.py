@@ -23,7 +23,7 @@ from fixtures import (
 )
 
 
-class Foo(object):
+class Foo:
     def bar(self):
         return self
 
@@ -34,25 +34,25 @@ def mocking_bar(self):
 
 class TestMockPatch(testtools.TestCase):
     def test_mock_patch_with_replacement(self):
-        self.useFixture(MockPatch("%s.Foo.bar" % (__name__), mocking_bar))
+        self.useFixture(MockPatch(f"{__name__}.Foo.bar", mocking_bar))
         instance = Foo()
         self.assertEqual(instance.bar(), "mocked!")
 
     def test_mock_patch_without_replacement(self):
-        self.useFixture(MockPatch("%s.Foo.bar" % (__name__)))
+        self.useFixture(MockPatch(f"{__name__}.Foo.bar"))
         instance = Foo()
         self.assertIsInstance(instance.bar(), mock.MagicMock)
 
 
 class TestMockMultiple(testtools.TestCase):
     def test_mock_multiple_with_replacement(self):
-        self.useFixture(MockPatchMultiple("%s.Foo" % (__name__), bar=mocking_bar))
+        self.useFixture(MockPatchMultiple(f"{__name__}.Foo", bar=mocking_bar))
         instance = Foo()
         self.assertEqual(instance.bar(), "mocked!")
 
     def test_mock_patch_without_replacement(self):
         self.useFixture(
-            MockPatchMultiple("%s.Foo" % (__name__), bar=MockPatchMultiple.DEFAULT)
+            MockPatchMultiple(f"{__name__}.Foo", bar=MockPatchMultiple.DEFAULT)
         )
         instance = Foo()
         self.assertIsInstance(instance.bar(), mock.MagicMock)

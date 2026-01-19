@@ -38,7 +38,7 @@ class FooFormatter(logging.Formatter):
 
 class FakeLoggerTest(TestCase, TestWithFixtures):
     def setUp(self):
-        super(FakeLoggerTest, self).setUp()
+        super().setUp()
         self.logger = logging.getLogger()
         self.addCleanup(self.removeHandlers, self.logger)
 
@@ -163,7 +163,7 @@ class LogHandlerTest(TestCase, TestWithFixtures):
             self.msgs.append(record.msg)
 
     def setUp(self):
-        super(LogHandlerTest, self).setUp()
+        super().setUp()
         self.logger = logging.getLogger()
         self.addCleanup(self.removeHandlers, self.logger)
 

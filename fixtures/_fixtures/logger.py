@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from logging import StreamHandler, getLogger, INFO, Formatter, Handler, LogRecord
 import sys
-from typing import IO, Optional, Type, TYPE_CHECKING
+from typing import IO, TYPE_CHECKING
 
 from fixtures import Fixture
 from fixtures._fixtures.streams import StringStream
@@ -42,7 +42,7 @@ class LogHandler(Fixture):
         self,
         handler: Handler,
         name: str = "",
-        level: Optional[int] = None,
+        level: int | None = None,
         nuke_handlers: bool = True,
     ) -> None:
         """Create a LogHandler fixture.
@@ -54,7 +54,7 @@ class LogHandler(Fixture):
         :param nuke_handlers: If True remove all existing handles (prevents
             existing messages going to e.g. stdout). Defaults to True.
         """
-        super(LogHandler, self).__init__()
+        super().__init__()
         self.handler = handler
         self._name = name
         self._level = level
@@ -91,10 +91,10 @@ class FakeLogger(Fixture):
         self,
         name: str = "",
         level: int = INFO,
-        format: Optional[str] = None,
-        datefmt: Optional[str] = None,
+        format: str | None = None,
+        datefmt: str | None = None,
         nuke_handlers: bool = True,
-        formatter: Optional[Type[Formatter]] = None,
+        formatter: type[Formatter] | None = None,
     ) -> None:
         """Create a FakeLogger fixture.
 
@@ -116,7 +116,7 @@ class FakeLogger(Fixture):
               logging.info('message')
               self.assertEqual('message', fixture.output)
         """
-        super(FakeLogger, self).__init__()
+        super().__init__()
         self._name = name
         self._level = level
         self._format = format
@@ -125,7 +125,7 @@ class FakeLogger(Fixture):
         self._formatter = formatter
 
     def _setUp(self) -> None:
-        name = "pythonlogging:'%s'" % self._name
+        name = f"pythonlogging:'{self._name}'"
         stream_fixture = self.useFixture(StringStream(name))
         output = stream_fixture.stream
         self._output: IO[str] = output

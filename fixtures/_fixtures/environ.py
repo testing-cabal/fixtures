@@ -19,7 +19,6 @@ __all__ = [
 ]
 
 import os
-from typing import Optional
 
 from fixtures import Fixture
 
@@ -28,9 +27,9 @@ class EnvironmentVariable(Fixture):
     """Isolate a specific environment variable."""
 
     varname: str
-    newvalue: Optional[str]
+    newvalue: str | None
 
-    def __init__(self, varname: str, newvalue: Optional[str] = None) -> None:
+    def __init__(self, varname: str, newvalue: str | None = None) -> None:
         """Create an EnvironmentVariable fixture.
 
         :param varname: the name of the variable to isolate.
@@ -40,7 +39,7 @@ class EnvironmentVariable(Fixture):
         During setup the variable will be deleted or assigned the requested
         value, and this will be restored in cleanUp.
         """
-        super(EnvironmentVariable, self).__init__()
+        super().__init__()
         self.varname = varname
         self.newvalue = newvalue
 

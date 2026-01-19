@@ -17,7 +17,8 @@
 """Timeout fixture."""
 
 import signal
-from typing import Any, Callable, Optional
+from typing import Any
+from collections.abc import Callable
 
 import fixtures
 
@@ -44,7 +45,7 @@ class Timeout(fixtures.Fixture):
     """
 
     timeout_secs: int
-    alarm_fn: Optional[Callable[[int], int]]
+    alarm_fn: Callable[[int], int] | None
     gentle: bool
 
     def __init__(self, timeout_secs: int, gentle: bool) -> None:
