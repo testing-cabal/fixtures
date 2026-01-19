@@ -61,7 +61,7 @@ class Stream(Generic[T], Fixture):
         self.stream = write_stream
         self.addDetail(
             self._detail_name,
-            content_from_stream(read_stream, seek_offset=0),
+            content_from_stream(read_stream, seek_offset=0),  # type: ignore
         )
 
 
