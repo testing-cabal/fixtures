@@ -90,7 +90,7 @@ class FakeLogger(Fixture):
     def __init__(
         self,
         name: str = "",
-        level: int = INFO,
+        level: int | None = INFO,
         format: str | None = None,
         datefmt: str | None = None,
         nuke_handlers: bool = True,
