@@ -13,6 +13,8 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+from __future__ import annotations
+
 __all__ = [
     "FakePopen",
     "PopenFixture",
@@ -21,10 +23,13 @@ __all__ = [
 import random
 import subprocess
 import sys
-from typing import Any, IO, Final
+from typing import Any, IO, Final, TYPE_CHECKING
 from collections.abc import Callable
 
 from fixtures import Fixture
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 
 class _Unpassed:
@@ -77,7 +82,7 @@ class FakeProcess:
             err = ""
         return out, err
 
-    def __enter__(self) -> "FakeProcess":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:

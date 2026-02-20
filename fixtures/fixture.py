@@ -13,6 +13,8 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+from __future__ import annotations
+
 __all__ = [
     "CompoundFixture",
     "Fixture",
@@ -24,23 +26,16 @@ __all__ = [
 
 import itertools
 import sys
-from typing import (
-    Any,
-    Literal,
-    Optional,
-    TypeVar,
-    TYPE_CHECKING,
-)
+from typing import Any, Literal, Optional, TypeVar, TYPE_CHECKING
 from collections.abc import Callable, Iterable
 
-from fixtures.callmany import (
-    CallMany,
-)
+from fixtures.callmany import CallMany
 
 # Deprecated, imported for compatibility.
 import fixtures.callmany
 
 if TYPE_CHECKING:
+    from typing_extensions import Self
     from types import TracebackType
 
 T = TypeVar("T", bound="Fixture")
@@ -185,7 +180,7 @@ class Fixture:
         self._details = None
         self._detail_sources = None
 
-    def __enter__(self) -> "Fixture":
+    def __enter__(self) -> Self:
         self.setUp()
         return self
 
