@@ -13,17 +13,22 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+from __future__ import annotations
+
 __all__ = [
     "CallMany",
 ]
 
 import sys
-from typing import Any, Literal, Optional, TYPE_CHECKING
 from collections.abc import Callable
+from typing import Any, Literal, TYPE_CHECKING
+from types import TracebackType
 
 if TYPE_CHECKING:
-    from types import TracebackType
-
+    if sys.version_info >= (3, 11):
+        from typing import Self
+    else:
+        from typing_extensions import Self
 
 try:
     from testtools import MultipleExceptions
@@ -68,7 +73,7 @@ class CallMany:
             tuple[
                 type[BaseException] | None,
                 BaseException | None,
-                Optional["TracebackType"],
+                TracebackType | None,
             ]
         ]
         | None
@@ -115,7 +120,7 @@ class CallMany:
             return result
         return None
 
-    def __enter__(self) -> "CallMany":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> Literal[False]:
