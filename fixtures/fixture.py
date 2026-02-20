@@ -26,8 +26,9 @@ __all__ = [
 
 import itertools
 import sys
-from typing import Any, Literal, TypeVar, TYPE_CHECKING
 from collections.abc import Callable, Iterable
+from typing import Any, Literal, ParamSpec, TypeVar, TYPE_CHECKING
+from types import TracebackType
 
 from fixtures.callmany import CallMany
 
@@ -40,9 +41,9 @@ if TYPE_CHECKING:
     else:
         from typing_extensions import Self
 
-    from types import TracebackType
 
 T = TypeVar("T", bound="Fixture")
+P = ParamSpec("P")
 
 MultipleExceptions = fixtures.callmany.MultipleExceptions  # type: ignore[attr-defined]
 
@@ -91,7 +92,7 @@ class Fixture:
     """
 
     def addCleanup(
-        self, cleanup: Callable[..., Any], *args: Any, **kwargs: Any
+        self, cleanup: Callable[P, Any], *args: P.args, **kwargs: P.kwargs
     ) -> None:
         """Add a clean function to be called from cleanUp.
 

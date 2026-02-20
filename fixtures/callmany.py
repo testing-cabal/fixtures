@@ -21,7 +21,7 @@ __all__ = [
 
 import sys
 from collections.abc import Callable
-from typing import Any, Literal, TYPE_CHECKING
+from typing import Any, Literal, ParamSpec, TYPE_CHECKING
 from types import TracebackType
 
 if TYPE_CHECKING:
@@ -36,6 +36,9 @@ except ImportError:
     # Define MultipleExceptions locally if testtools is not available
     class MultipleExceptions(Exception):  # type: ignore[no-redef]
         """Report multiple exc_info tuples in self.args."""
+
+
+P = ParamSpec("P")
 
 
 class CallMany:
@@ -53,7 +56,9 @@ class CallMany:
             tuple[Callable[..., Any], tuple[Any, ...], dict[str, Any]]
         ] = []
 
-    def push(self, cleanup: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
+    def push(
+        self, cleanup: Callable[P, Any], *args: P.args, **kwargs: P.kwargs
+    ) -> None:
         """Add a function to be called from __call__.
 
         On __call__ all functions are called - see __call__ for details on how
