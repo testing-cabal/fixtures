@@ -11,16 +11,30 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+from __future__ import annotations
+
 __all__ = [
     "WarningsCapture",
     "WarningsFilter",
 ]
 
 import warnings
-from typing import Any, cast
+from typing import Any, cast, Literal, TextIO, TypedDict, TYPE_CHECKING
 
 import fixtures
 from fixtures._fixtures.monkeypatch import MonkeyPatch
+
+if TYPE_CHECKING:
+    from typing_extensions import NotRequired
+
+
+class _WarningFilterArgs(TypedDict):
+    action: Literal["error", "ignore", "always", "default", "module", "once"]
+    message: NotRequired[str]
+    category: NotRequired[type[Warning]]
+    module: NotRequired[str]
+    lineno: NotRequired[int]
+    append: NotRequired[bool]
 
 
 class WarningsCapture(fixtures.Fixture):
@@ -34,8 +48,18 @@ class WarningsCapture(fixtures.Fixture):
 
     captures: list[warnings.WarningMessage]
 
-    def _showwarning(self, *args: Any, **kwargs: Any) -> None:
-        self.captures.append(warnings.WarningMessage(*args, **kwargs))
+    def _showwarning(
+        self,
+        message: str,
+        category: type[Warning],
+        filename: str,
+        lineno: int,
+        file: TextIO | None = None,
+        line: str | None = None,
+    ) -> None:
+        self.captures.append(
+            warnings.WarningMessage(message, category, filename, lineno, file, line)
+        )
 
     def _setUp(self) -> None:
         patch = MonkeyPatch("warnings.showwarning", self._showwarning)
@@ -50,7 +74,7 @@ class WarningsFilter(fixtures.Fixture):
     configuration.
     """
 
-    def __init__(self, filters: list[dict[str, Any]] | None = None) -> None:
+    def __init__(self, filters: list[_WarningFilterArgs] | None = None) -> None:
         """Create a WarningsFilter fixture.
 
         :param filters: An optional list of dictionaries with arguments
