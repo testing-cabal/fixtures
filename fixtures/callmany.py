@@ -13,17 +13,19 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+from __future__ import annotations
+
 __all__ = [
     "CallMany",
 ]
 
 import sys
-from typing import Any, Literal, Optional, TYPE_CHECKING
 from collections.abc import Callable
+from typing import Any, Literal, ParamSpec, TYPE_CHECKING
+from types import TracebackType
 
 if TYPE_CHECKING:
-    from types import TracebackType
-
+    from typing_extensions import Self
 
 try:
     from testtools import MultipleExceptions
@@ -31,6 +33,9 @@ except ImportError:
     # Define MultipleExceptions locally if testtools is not available
     class MultipleExceptions(Exception):  # type: ignore[no-redef]
         """Report multiple exc_info tuples in self.args."""
+
+
+P = ParamSpec("P")
 
 
 class CallMany:
@@ -48,7 +53,9 @@ class CallMany:
             tuple[Callable[..., Any], tuple[Any, ...], dict[str, Any]]
         ] = []
 
-    def push(self, cleanup: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
+    def push(
+        self, cleanup: Callable[P, Any], *args: P.args, **kwargs: P.kwargs
+    ) -> None:
         """Add a function to be called from __call__.
 
         On __call__ all functions are called - see __call__ for details on how
@@ -68,7 +75,7 @@ class CallMany:
             tuple[
                 type[BaseException] | None,
                 BaseException | None,
-                Optional["TracebackType"],
+                TracebackType | None,
             ]
         ]
         | None
@@ -115,7 +122,7 @@ class CallMany:
             return result
         return None
 
-    def __enter__(self) -> "CallMany":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> Literal[False]:
