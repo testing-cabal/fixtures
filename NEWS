@@ -5,6 +5,54 @@ fixtures release notes
 NEXT
 ~~~~
 
+4.2.9
+~~~~~
+
+* Improve types for WarningsCapture.
+  (Stephen Finucane)
+
+* Use ParamSpec for better type hints.
+  (Stephen Finucane)
+
+* Return Self from __enter__ for better type inference.
+  (Stephen Finucane)
+
+* Accept null level for FakeLogger.
+  (Stephen Finucane)
+
+* Simplify mypy configuration.
+  (Stephen Finucane)
+
+* Run mypy via tox in CI.
+  (Stephen Finucane)
+
+* Enable additional ruff rules.
+  (Stephen Finucane)
+
+4.2.8
+~~~~~
+
+* Include tests directory in sdist.
+  (Jelmer Vernooĳ)
+
+4.2.7
+~~~~~
+
+* Drop Python 3.9 support, add Python 3.14 support.
+  (Jelmer Vernooĳ)
+
+* Fix usage of removed testtools.testcase.TestSkipped.
+  (Jakub Kulík, #112)
+
+* Fix typo in the streams extra.
+  (Michal Telka, #110)
+
+* Stop installing tests in wheel packages.
+  (Jelmer Vernooĳ)
+
+* Skip type checking on PyPy.
+  (Jelmer Vernooĳ)
+
 4.2.6
 ~~~~~
 
