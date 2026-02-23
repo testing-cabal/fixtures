@@ -13,6 +13,8 @@
 # license you chose for the specific language governing permissions and
 # limitations under that license.
 
+from __future__ import annotations
+
 __all__ = [
     "CompoundFixture",
     "Fixture",
@@ -24,26 +26,24 @@ __all__ = [
 
 import itertools
 import sys
-from typing import (
-    Any,
-    Literal,
-    Optional,
-    TypeVar,
-    TYPE_CHECKING,
-)
 from collections.abc import Callable, Iterable
+from typing import Any, Literal, ParamSpec, TypeVar, TYPE_CHECKING
+from types import TracebackType
 
-from fixtures.callmany import (
-    CallMany,
-)
+from fixtures.callmany import CallMany
 
 # Deprecated, imported for compatibility.
 import fixtures.callmany
 
 if TYPE_CHECKING:
-    from types import TracebackType
+    if sys.version_info >= (3, 11):
+        from typing import Self
+    else:
+        from typing_extensions import Self
+
 
 T = TypeVar("T", bound="Fixture")
+P = ParamSpec("P")
 
 MultipleExceptions = fixtures.callmany.MultipleExceptions  # type: ignore[attr-defined]
 
@@ -80,7 +80,7 @@ class SetupError(Exception):
 class Fixture:
     _cleanups: CallMany | None
     _details: dict[str, Any] | None
-    _detail_sources: list["Fixture"] | None
+    _detail_sources: list[Fixture] | None
     """A Fixture representing some state or resource.
 
     Often used in tests, a Fixture must be setUp before using it, and cleanUp
@@ -92,7 +92,7 @@ class Fixture:
     """
 
     def addCleanup(
-        self, cleanup: Callable[..., Any], *args: Any, **kwargs: Any
+        self, cleanup: Callable[P, Any], *args: P.args, **kwargs: P.kwargs
     ) -> None:
         """Add a clean function to be called from cleanUp.
 
@@ -130,7 +130,7 @@ class Fixture:
             tuple[
                 type[BaseException] | None,
                 BaseException | None,
-                Optional["TracebackType"],
+                TracebackType | None,
             ]
         ]
         | None
@@ -185,7 +185,7 @@ class Fixture:
         self._details = None
         self._detail_sources = None
 
-    def __enter__(self) -> "Fixture":
+    def __enter__(self) -> Self:
         self.setUp()
         return self
 
@@ -467,7 +467,7 @@ class MethodFixture(Fixture):
             tuple[
                 type[BaseException] | None,
                 BaseException | None,
-                Optional["TracebackType"],
+                TracebackType | None,
             ]
         ]
         | None
@@ -489,7 +489,7 @@ class CompoundFixture(Fixture):
     :ivar fixtures: The list of fixtures that make up this one. (read only).
     """
 
-    def __init__(self, fixtures: Iterable["Fixture"]) -> None:
+    def __init__(self, fixtures: Iterable[Fixture]) -> None:
         """Construct a fixture made of many fixtures.
 
         :param fixtures: An iterable of fixtures.
