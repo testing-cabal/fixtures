@@ -5,7 +5,7 @@ fixtures release notes
 NEXT
 ~~~~
 
-4.2.9
+4.3.1
 ~~~~~
 
 * Improve types for WarningsCapture.
@@ -16,6 +16,9 @@ NEXT
 
 * Return Self from __enter__ for better type inference.
   (Stephen Finucane)
+
+4.3.0
+~~~~~
 
 * Accept null level for FakeLogger.
   (Stephen Finucane)
